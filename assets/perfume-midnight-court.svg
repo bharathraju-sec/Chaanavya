@@ -1,0 +1,15 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Midnight Court eau de parfum bottle illustration">
+<defs>
+<radialGradient id="bg" cx="50%" cy="32%" r="75%"><stop offset="0%" stop-color="#f8f1e4"/><stop offset="100%" stop-color="#e9d9b8"/></radialGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a1030"/><stop offset="100%" stop-color="#170812"/></linearGradient>
+</defs>
+<rect width="400" height="500" fill="url(#bg)"/>
+<ellipse cx="200" cy="432" rx="95" ry="15" fill="#180a12" opacity=".1"/>
+<rect x="172" y="58" width="56" height="48" rx="6" fill="#c9a24d"/>
+<rect x="184" y="28" width="32" height="34" rx="4" fill="#d9bd72"/>
+<rect x="188" y="104" width="24" height="30" fill="url(#glass)"/>
+<path d="M140 134 h120 a10 10 0 0 1 10 10 v240 a20 20 0 0 1 -20 20 h-100 a20 20 0 0 1 -20 -20 v-240 a10 10 0 0 1 10 -10 z" fill="url(#glass)" stroke="#c9a24d" stroke-width="2"/>
+<rect x="155" y="255" width="90" height="66" rx="2" fill="#fffaf0" opacity=".94"/>
+<text x="200" y="282" text-anchor="middle" font-family="Georgia,serif" font-size="12" letter-spacing="3" fill="#170812">AURELYNE</text>
+<text x="200" y="301" text-anchor="middle" font-family="Georgia,serif" font-size="10" letter-spacing="1.5" fill="#8a7a5f">MIDNIGHT COURT</text>
+</svg>

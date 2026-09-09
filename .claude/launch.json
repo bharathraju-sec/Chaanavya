@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aurelyne-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5600"],
+      "port": 5600
+    }
+  ]
+}
