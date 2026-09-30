@@ -10,6 +10,6 @@
 <rect x="188" y="104" width="24" height="30" fill="url(#glass)"/>
 <path d="M140 134 h120 a10 10 0 0 1 10 10 v240 a20 20 0 0 1 -20 20 h-100 a20 20 0 0 1 -20 -20 v-240 a10 10 0 0 1 10 -10 z" fill="url(#glass)" stroke="#c9a24d" stroke-width="2"/>
 <rect x="155" y="255" width="90" height="66" rx="2" fill="#fffaf0" opacity=".94"/>
-<text x="200" y="282" text-anchor="middle" font-family="Georgia,serif" font-size="12" letter-spacing="3" fill="#170812">AURELYNE</text>
+<text x="200" y="282" text-anchor="middle" font-family="Georgia,serif" font-size="12" letter-spacing="3" fill="#170812">CHAANAVYA</text>
 <text x="200" y="301" text-anchor="middle" font-family="Georgia,serif" font-size="10" letter-spacing="1.5" fill="#8a7a5f">MIDNIGHT COURT</text>
 </svg>
