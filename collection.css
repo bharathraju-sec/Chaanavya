@@ -1,7 +1,7 @@
 .collection-page{background:#f8f1e4}
 .collection-header{position:absolute;top:0;left:0;right:0;background:rgba(255,253,249,.94);backdrop-filter:blur(10px)}
 .collection-hero{height:min(860px,100svh);min-height:650px;position:relative;color:#fff}
-.collection-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(24,7,20,.7),rgba(24,7,20,.06) 70%)}
+.collection-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,63,64,.7),rgba(7,63,64,.06) 70%)}
 .collection-hero img{width:100%;height:100%;object-fit:cover}
 .collection-hero-copy{position:absolute;z-index:2;left:var(--page-gutter);bottom:clamp(55px,9vw,120px)}
 .collection-hero-copy p{text-transform:uppercase;letter-spacing:2px;font-size:11px;color:var(--gold)}
