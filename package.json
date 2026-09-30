@@ -1,0 +1,12 @@
+{
+  "name": "chaanavya-storefront",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "check": "node --check script.js && node --check api/shopify.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
