@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;900&family=Poppins:wght@300;400;500;600;700&display=swap');
-:root{--ink:#123b3a;--gold:#c9a24d;--acid:#c9a24d;--royal:#0e6b63;--wine:#c8552b;--paper:#fbf7ec;--line:#e6dcc4}
+:root{--ink:#073F40;--gold:#BB893B;--acid:#DDA64C;--royal:#005357;--wine:#CF643C;--paper:#FFFAF2;--line:#eadfca}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;color:var(--ink);font-family:Poppins,Arial,sans-serif;background:var(--paper)}
@@ -18,7 +18,7 @@ h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;margin:0}
 .bag-btn b{display:inline-grid;place-items:center;background:var(--gold);color:#fff;border-radius:50%;height:22px;width:22px;margin-left:4px;font-style:normal}
 .menu-btn{display:none}
 .hero{height:calc(100vh - 112px);min-height:570px;position:relative;color:#fff;overflow:hidden}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(24,7,20,.72),rgba(24,7,20,.1) 62%)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,63,64,.72),rgba(7,63,64,.1) 62%)}
 .hero>img,.hero>picture,.hero>picture>img{height:100%;width:100%;object-fit:cover;object-position:50% 20%}
 .hero>picture{display:block}
 .hero-copy{position:absolute;z-index:2;left:7vw;top:50%;transform:translateY(-50%)}
@@ -60,22 +60,22 @@ h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;margin:0}
 .category-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .category{height:520px;position:relative;overflow:hidden;color:#fff}
 .category img{height:100%;width:100%;object-fit:cover;transition:.5s}
-.category:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(20,6,16,.75))}
+.category:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 45%,rgba(7,63,64,.75))}
 .category span{position:absolute;z-index:2;left:25px;right:25px;bottom:24px;font-size:30px;text-transform:uppercase;display:flex;justify-content:space-between;font-weight:700;font-family:'Playfair Display',Georgia,serif}
 .newsletter{background:var(--royal);padding:100px 8vw;text-align:center;color:#fff}
 .newsletter .eyebrow{color:var(--gold)}
 .newsletter form{display:flex;max-width:600px;margin:45px auto 20px;border-bottom:2px solid var(--gold)}
 .newsletter input{flex:1;border:0;background:transparent;padding:17px 0;font:inherit;font-size:18px;outline:0;color:#fff}
-.newsletter input::placeholder{color:#cbb6d0}
+.newsletter input::placeholder{color:#d6cdb6}
 .newsletter button{border:0;background:transparent;font-weight:700;text-transform:uppercase;font-size:11px;cursor:pointer;color:var(--gold)}
-.newsletter>p:last-child{font-size:11px;color:#d9c9de}
+.newsletter>p:last-child{font-size:11px;color:#e6dcc4}
 footer{background:var(--ink);color:#fff;padding:70px 4vw 35px;display:grid;grid-template-columns:2fr 1fr 1fr 2fr;gap:40px}
 footer .logo{font-size:30px}
 footer h3{font-size:11px;text-transform:uppercase;color:var(--gold);margin:0 0 18px;font-family:Poppins,Arial,sans-serif;letter-spacing:1px}
 footer div a{display:block;color:#fff;text-decoration:none;font-size:13px;margin:10px 0}
 .footer-note{text-align:right;display:flex;flex-direction:column;justify-content:space-between}
 .footer-note p{font-size:26px;margin:0}
-.footer-note span{font-size:10px;color:#a99bb0}
+.footer-note span{font-size:10px;color:#b5c4bf}
 .toast{position:fixed;right:25px;bottom:25px;background:var(--ink);color:#fff;padding:16px 24px;z-index:50;transform:translateY(120px);transition:.3s}
 .toast.show{transform:none}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}

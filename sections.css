@@ -7,7 +7,7 @@
 .collection-content{display:flex;flex-direction:column;justify-content:center;padding:clamp(54px,8vw,130px)}
 .collection-kicker{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:700;color:var(--gold)}
 .collection-content h2{font-size:clamp(52px,7vw,100px);line-height:.98;letter-spacing:-1px;text-transform:uppercase;margin:18px 0 28px}
-.collection-content>p:not(.collection-kicker){max-width:430px;font-size:17px;line-height:1.6;color:#d9c9de}
+.collection-content>p:not(.collection-kicker){max-width:430px;font-size:17px;line-height:1.6;color:#e6dcc4}
 .collection-feature.reverse .collection-content>p:not(.collection-kicker){color:#6b5c45}
 .collection-links{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
 .collection-links a{padding:15px 19px;border:1px solid currentColor;color:inherit;text-decoration:none;text-transform:uppercase;font-size:10px;letter-spacing:1px;font-weight:700}
@@ -16,7 +16,7 @@
 .collection-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;padding-top:26px;margin-top:56px;border-top:1px solid rgba(255,255,255,.25)}
 .collection-feature.reverse .collection-meta{border-color:#d9cbae}
 .collection-meta b{display:block;font-size:20px;font-family:'Playfair Display',Georgia,serif}
-.collection-meta span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#c9b7cf}
+.collection-meta span{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#e6dcc4}
 .collection-feature.reverse .collection-meta span{color:#8a7a5f}
 @media(max-width:900px){.collection-feature,.collection-feature.reverse{grid-template-columns:1fr;min-height:0}.collection-feature.reverse .collection-visual,.collection-feature.reverse .collection-content{order:initial}.collection-visual{min-height:0;height:min(110vw,680px)}.collection-content{padding:68px var(--page-gutter)}.collection-content h2{font-size:clamp(50px,16vw,84px);letter-spacing:0}.collection-meta{margin-top:48px}}
 @media(max-width:520px){.collection-visual{height:112vw;max-height:570px}.collection-content{padding-top:58px;padding-bottom:62px}.collection-content h2{font-size:52px}.collection-content>p:not(.collection-kicker){font-size:15px}.collection-links{display:grid}.collection-links a{text-align:center;min-height:46px}.collection-meta{gap:8px}.collection-meta b{font-size:17px}.collection-meta span{font-size:9px}}
