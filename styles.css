@@ -82,3 +82,6 @@ footer div a{display:block;color:#fff;text-decoration:none;font-size:13px;margin
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 @media(max-width:800px){.site-header{height:64px}.site-header nav{display:none}.menu-btn{display:block}.header-actions .icon-btn[aria-label="Wishlist"]{display:none}.hero{height:78vh}.hero h1{font-size:60px;letter-spacing:0}.hero-copy{left:24px}.products{grid-template-columns:repeat(2,1fr);row-gap:40px}.section{padding:65px 18px}.editorial{grid-template-columns:1fr}.editorial-image{height:580px}.editorial-copy{padding:70px 25px}.category-grid{grid-template-columns:1fr}.category{height:390px}footer{grid-template-columns:1fr 1fr}.footer-note{grid-column:1/-1;text-align:left;gap:40px}}
 @media(max-width:480px){.products{grid-template-columns:1fr}.product-image{aspect-ratio:.82}.section-head a{display:none}.editorial-image{height:480px}.category{height:300px}.newsletter{padding:75px 22px}.newsletter form{flex-direction:column;border:0}.newsletter input{border-bottom:2px solid var(--gold);text-align:center}.newsletter button{padding:18px}}
+
+.logo .logo-mark{width:40px;height:40px;object-fit:contain;flex:none}
+footer .logo-full{display:block;width:170px;height:auto;background:var(--paper);padding:14px 18px;border-radius:14px}
