@@ -69,7 +69,7 @@ h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:700;margin:0}
 .newsletter input::placeholder{color:#d6cdb6}
 .newsletter button{border:0;background:transparent;font-weight:700;text-transform:uppercase;font-size:11px;cursor:pointer;color:var(--gold)}
 .newsletter>p:last-child{font-size:11px;color:#e6dcc4}
-footer{background:var(--ink);color:#fff;padding:70px 4vw 35px;display:grid;grid-template-columns:2fr 1fr 1fr 2fr;gap:40px}
+footer{background:var(--ink);color:#fff;padding:70px 4vw 35px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr 2fr;gap:40px}
 footer .logo{font-size:30px}
 footer h3{font-size:11px;text-transform:uppercase;color:var(--gold);margin:0 0 18px;font-family:Poppins,Arial,sans-serif;letter-spacing:1px}
 footer div a{display:block;color:#fff;text-decoration:none;font-size:13px;margin:10px 0}
