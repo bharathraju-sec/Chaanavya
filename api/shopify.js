@@ -16,7 +16,6 @@ const operations = {
             id
             title
             availableForSale
-            quantityAvailable
             image { url altText }
             price { amount currencyCode }
           }
