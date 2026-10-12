@@ -1,0 +1,5 @@
+# Local tooling and config that must never be served from the live site
+.claude
+.env*
+.gitignore
+.vercelignore
