@@ -1,0 +1,39 @@
+# Chaanavya Changelog
+
+## Unreleased
+
+### Changed
+
+- The Essentials collection is now **Fragrance** (`/fragrance`, nav and footer label "Fragrance"); `/essentials` and `/essentials.html` redirect permanently. The clothing group (Silk Tie-Neck Blouse, Cashmere Wrap Cardigan) was removed from the page at the owner's request; the hero uses the Royal Oud bottle image. Demo catalogue entries for those two items were removed.
+- The production deployment never shows demonstration products: without a working Shopify connection, product grids show "The store is temporarily unavailable" and product pages render the new `app/error.tsx`. Local and preview builds keep the demo catalogue.
+- Removed the homepage newsletter sign-up ("The court letter") and `components/site/newsletter-form.tsx`; it validated emails but saved nothing. To be re-added with an email service.
+- `/contact` replaces the preview form and template hours, styling card and hello@/styling@ addresses with the owner-confirmed email and WhatsApp (links to `mailto:` and `wa.me`).
+- `/track-order` replaces the preview lookup form with a link to Shopify new customer accounts for order status and tracking, plus email/WhatsApp help. `components/site/demo-form.tsx` and the unused `FillIn` placeholder were removed.
+- The Terms grievance contact (section 33) names a role, Customer Support, Chaanavya, at the owner's choice. No highlighted placeholders remain on the policy pages.
+- `/shipping-policy` now shows the owner-supplied Shipping Policy dated 13 October 2026 (30 sections: India-only shipping, 1 to 3 business-day processing, delivery estimates by city tier, charges shown at checkout, COD, tracking, RTO, lost/damaged/missing items, pre-order and made-to-order timing). All four policy pages are now owner-supplied; the unused placeholder `ContactBlock` was removed.
+- `/privacy-policy` now shows the owner-supplied Privacy Policy dated 13 October 2026 (27 sections covering collection, use, Shopify and payment/logistics sharing, cookies, retention, rights, consent withdrawal and grievances). It no longer names Razorpay. Added a shared `PolicySubhead` for in-section sub-headings.
+- The site-wide announcement bar now reads "Free shipping across India / 7-day returns" (was "Complimentary shipping over ₹2,499 / White-glove 10-day returns"). Free domestic shipping was confirmed in Shopify (Domestic zone, Standard rate ₹0) on 14 October 2026; returns match the Return, Exchange & Refund Policy.
+- `/refund-policy` now shows the owner-supplied Return, Exchange & Refund Policy dated 13 October 2026 (28 sections: 7-day return and exchange window, exclusions, reverse pickup, refunds initiated in about 5 to 7 business days, COD refunds, one exchange per order). Support email and phone are shared with `/terms` through `components/site/support.tsx`.
+- `/terms` now shows the owner-supplied Terms & Conditions dated 12 October 2026 (39 sections, Bengaluru jurisdiction, support email and phone). The brand spelling was normalised to Chaanavya and the legal name and grievance contact were taken from the text's own business-information section, both at the owner's request. The grievance contact's name was later set to a role (see above).
+
+### Added
+
+- Project-specific product, design, UX, architecture, data, API, security, coding, testing, agent, environment, failure, deployment, observability, decision, roadmap, and changelog documentation.
+- Root README, documentation index, and root agent entry point.
+- Explicit distinctions between current implementation, launch requirements, proposed work, and unresolved decisions.
+
+Application behavior was not changed by this documentation addition.
+
+## Repository baseline on 13 October 2026
+
+Package version is `2.0.0`; this is not a verified public release date. Recent repository commits establish the following source history:
+
+| Commit | Recorded subject |
+| --- | --- |
+| `3bfb1b0` | Tell Vercel to build the project as Next.js |
+| `29bc34e` | feat: scaffold initial Next.js project with components, layouts, and Shopify catalog integration |
+| `da46cc9` | feat: migrate static HTML site to Next.js with React components and Shopify integration |
+| `7716c4b` | Redesign static storefront in warm editorial style |
+| `ca699c8` | feat: add Shopify integration API, security headers, and update site content and metadata |
+
+Commit subjects summarize repository history, not successful deployment or production validation. Future entries should describe actual added, changed, fixed, and removed behavior and relevant contract changes.

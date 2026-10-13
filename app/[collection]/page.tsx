@@ -24,7 +24,7 @@ export default async function CollectionPage(props: PageProps<"/[collection]">) 
   const collection = getCollection((await props.params).collection)
   if (!collection) notFound()
 
-  const { products } = await getProducts()
+  const { products, unavailable } = await getProducts()
   const items = productsFor(collection, products)
 
   return (
@@ -60,16 +60,17 @@ export default async function CollectionPage(props: PageProps<"/[collection]">) 
       </section>
 
       <div id="collection">
-        {collection.groups.map(group => {
+        {collection.groups.map((group, i) => {
           const groupItems = group.filter ? items.filter(group.filter) : items
-          if (group.filter && groupItems.length === 0) return null
+          // During a store outage show one "unavailable" message under the first group only.
+          if (unavailable ? i > 0 : group.filter && groupItems.length === 0) return null
           return (
             <Reveal key={group.heading} className="page-wrap pb-[clamp(64px,9vw,128px)]">
               <div className="grid items-end gap-[clamp(24px,5vw,80px)] border-t border-line pt-[clamp(40px,5vw,72px)] pb-[clamp(28px,3vw,40px)] md:grid-cols-[5fr_7fr]">
                 <h2 className="text-[clamp(34px,4vw,56px)]">{group.heading}</h2>
                 <p className="max-w-[540px] text-[17px] leading-relaxed text-muted-foreground">{group.intro}</p>
               </div>
-              <ProductGrid products={groupItems} columns={3} actionLabel="Add to bag" />
+              <ProductGrid products={groupItems} columns={3} actionLabel="Add to bag" unavailable={unavailable} />
             </Reveal>
           )
         })}

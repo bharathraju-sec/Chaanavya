@@ -4,7 +4,6 @@ import { ArrowRight, ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProductGrid } from "@/components/product/product-card"
 import { ArrowLink, SectionHead } from "@/components/site/editorial"
-import { NewsletterForm } from "@/components/site/newsletter-form"
 import { Reveal } from "@/components/site/reveal"
 import { cn } from "@/lib/utils"
 import { getProducts } from "@/lib/shopify"
@@ -91,7 +90,7 @@ function Feature({
 }
 
 export default async function HomePage() {
-  const { products } = await getProducts()
+  const { products, unavailable } = await getProducts()
 
   return (
     <>
@@ -137,7 +136,7 @@ export default async function HomePage() {
 
       <Reveal id="new" className="page-wrap section-y">
         <SectionHead eyebrow="Just landed" title="New this week" link={{ href: "/new-arrivals", label: "View the full edit" }} />
-        <ProductGrid products={products.slice(0, 4)} />
+        <ProductGrid products={products.slice(0, 4)} unavailable={unavailable} />
       </Reveal>
 
       <Reveal className="page-wrap pb-[clamp(64px,9vw,128px)]">
@@ -183,8 +182,8 @@ export default async function HomePage() {
         kicker="Chaanavya essentials / 02"
         title={["Soft luxe.", "Every day."]}
         body="Cashmere-soft knits, lace-trim layers and signature eau de parfum. Refined basics that still feel like an occasion."
-        primary={{ href: "/essentials", label: "Shop essentials" }}
-        secondary={{ href: "/essentials", label: "Explore the fragrance edit" }}
+        primary={{ href: "/fragrance", label: "Shop fragrance" }}
+        secondary={{ href: "/fragrance", label: "Explore the fragrance edit" }}
       />
 
       <Reveal className="page-wrap section-y">
@@ -205,16 +204,6 @@ export default async function HomePage() {
             </Link>
           ))}
         </div>
-      </Reveal>
-
-      <Reveal className="page-wrap section-y border-t border-line text-center">
-        <p className="eyebrow">The court letter</p>
-        <h2 className="mt-4 text-[clamp(44px,5.6vw,80px)] leading-[0.98]">
-          First access,
-          <br />
-          always.
-        </h2>
-        <NewsletterForm />
       </Reveal>
     </>
   )

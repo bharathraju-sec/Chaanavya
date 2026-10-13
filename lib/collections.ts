@@ -20,13 +20,12 @@ export type Collection = {
 const hero = (id: string, alt: string) => ({ src: `https://images.unsplash.com/photo-${id}?w=1600&h=1067&q=75&auto=format&fit=crop`, alt })
 const text = (p: Product) => `${p.title} ${p.productType} ${p.tags.join(" ")}`
 const inCollection = (slug: string, pattern: RegExp) => (p: Product) => (p.collections ? p.collections.includes(slug) : pattern.test(text(p)))
-const isFragrance = inCollection("fragrance", /perfume|fragrance|parfum/i)
 
 export const collections: Collection[] = [
   {
     slug: "new-arrivals",
     title: "New Arrivals",
-    description: "Chaanavya new arrivals: the latest dresses, sarees, jewelry and essentials.",
+    description: "Chaanavya new arrivals: the latest dresses, sarees, jewelry and fragrance.",
     eyebrow: "Fresh rotation / This week",
     heading: ["Just", "landed."],
     cta: "Shop collection",
@@ -68,18 +67,16 @@ export const collections: Collection[] = [
     match: inCollection("jewelry", /jewel|necklace|earring|bangle|ring/i),
   },
   {
-    slug: "essentials",
-    title: "Essentials",
-    description: "Chaanavya essentials: everyday knitwear and signature fragrance for women.",
-    eyebrow: "Everyday luxe / Essentials",
-    heading: ["Soft luxe.", "Every day."],
-    cta: "Shop collection",
-    hero: hero("1509319117193-57bab727e09d", "Soft knit and lace-trim layers on a clothing rack"),
-    groups: [
-      { heading: "Wardrobe, refined.", intro: "Cashmere-soft knits and lace-trim layers. Quiet luxury for daily wear.", filter: p => !isFragrance(p) },
-      { heading: "Chaanavya fragrance.", intro: "Three signature eau de parfum blends, bottled in hand-finished glass and gold.", filter: isFragrance },
-    ],
-    match: inCollection("essentials", /essential|knit|perfume|fragrance|parfum/i),
+    // Formerly "Essentials" (/essentials redirects here). Fragrance only, at the owner's request (14 October 2026).
+    slug: "fragrance",
+    title: "Fragrance",
+    description: "Chaanavya fragrance: signature eau de parfum blends.",
+    eyebrow: "Fragrance / Eau de parfum",
+    heading: ["Chaanavya", "fragrance."],
+    cta: "Shop fragrance",
+    hero: { src: "/assets/perfume-royal-oud.png", alt: "Royal Oud eau de parfum bottle" },
+    groups: [{ heading: "The fragrance edit.", intro: "Three signature eau de parfum blends, bottled in hand-finished glass and gold." }],
+    match: inCollection("fragrance", /perfume|fragrance|parfum/i),
   },
 ]
 

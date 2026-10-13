@@ -3,7 +3,7 @@ export const mainNav = [
   { href: "/dresses", label: "Dresses" },
   { href: "/ethnic-festive", label: "Ethnic & Festive" },
   { href: "/jewelry", label: "Jewelry" },
-  { href: "/essentials", label: "Essentials" },
+  { href: "/fragrance", label: "Fragrance" },
   { href: "/contact", label: "Contact" },
 ]
 
@@ -15,7 +15,7 @@ export const footerNav = [
       { href: "/dresses", label: "Dresses" },
       { href: "/ethnic-festive", label: "Sarees & lehengas" },
       { href: "/jewelry", label: "Fine jewelry" },
-      { href: "/essentials", label: "Essentials & fragrance" },
+      { href: "/fragrance", label: "Fragrance" },
     ],
   },
   {

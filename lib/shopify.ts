@@ -93,24 +93,37 @@ const normalize = (raw: RawProduct): Product => ({
   options: (raw.options ?? []).map(o => ({ name: o.name, values: o.optionValues.map(v => v.name) })),
 })
 
-/** Newest products first. Falls back to the built-in catalogue when Shopify is not configured or fails. */
-export async function getProducts(): Promise<{ products: Product[]; live: boolean }> {
-  if (!isStoreLive()) return { products: fallbackProducts, live: false }
+// Demonstration products are for local and preview builds only. On the production deployment a
+// missing or failing Shopify connection shows "store unavailable" instead of placeholder merchandise.
+const demoAllowed = () => process.env.VERCEL_ENV !== "production"
+
+export type Catalog = { products: Product[]; live: boolean; unavailable: boolean }
+
+const offline = (): Catalog => (demoAllowed() ? { products: fallbackProducts, live: false, unavailable: false } : { products: [], live: false, unavailable: true })
+
+/** Newest products first. Without Shopify: demo catalogue outside production, empty and `unavailable` in production. */
+export async function getProducts(): Promise<Catalog> {
+  if (!isStoreLive()) return offline()
   try {
     const data = await storefront<{ products: { nodes: RawProduct[] } }>(
       `query Products($first: Int!) { products(first: $first, sortKey: CREATED_AT, reverse: true) { nodes { ${PRODUCT_FIELDS} } } }`,
       { first: 50 },
       CATALOG_REVALIDATE_SECONDS
     )
-    return { products: data.products.nodes.map(normalize), live: true }
+    return { products: data.products.nodes.map(normalize), live: true, unavailable: false }
   } catch {
-    return { products: fallbackProducts, live: false }
+    return offline()
   }
 }
 
+/** One product. Throws StorefrontError in production when Shopify is unreachable (rendered by app/error.tsx). */
 export async function getProduct(handle: string): Promise<{ product: Product | null; live: boolean }> {
   if (!/^[a-z0-9][a-z0-9-]{0,254}$/i.test(handle)) return { product: null, live: isStoreLive() }
-  if (!isStoreLive()) return { product: fallbackProducts.find(p => p.handle === handle) ?? null, live: false }
+  const demo = () => {
+    if (!demoAllowed()) throw new StorefrontError("Store service unavailable")
+    return { product: fallbackProducts.find(p => p.handle === handle) ?? null, live: false }
+  }
+  if (!isStoreLive()) return demo()
   try {
     const data = await storefront<{ product: RawProduct | null }>(
       `query Product($handle: String!) { product(handle: $handle) { ${PRODUCT_FIELDS} } }`,
@@ -119,6 +132,6 @@ export async function getProduct(handle: string): Promise<{ product: Product | n
     )
     return { product: data.product ? normalize(data.product) : null, live: true }
   } catch {
-    return { product: fallbackProducts.find(p => p.handle === handle) ?? null, live: false }
+    return demo()
   }
 }

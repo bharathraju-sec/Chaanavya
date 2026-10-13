@@ -13,37 +13,41 @@ export function SupportPage({ eyebrow, title, lead, children, policy }: { eyebro
   )
 }
 
-/** Placeholder the owner still has to fill in (legal name, address, dates). */
-export function FillIn({ children }: { children: React.ReactNode }) {
-  return <mark className="bg-[#f6e2b8] px-1 text-ink">{children}</mark>
-}
-
 export function PolicySection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
       <h2 className="mt-12 mb-3 text-3xl">{title}</h2>
-      <div className="max-w-[68ch] space-y-3 leading-[1.75] text-[#2e4544] [&_a]:underline [&_a]:underline-offset-3 [&_li+li]:mt-1.5 [&_ul]:list-disc [&_ul]:pl-5">{children}</div>
+      <div className="max-w-[68ch] space-y-3 leading-[1.75] text-[#2e4544] [&_a]:underline [&_a]:underline-offset-3 [&_li+li]:mt-1.5 [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5">{children}</div>
     </section>
   )
 }
 
-export function ContactBlock() {
+/** Sub-heading inside a PolicySection (for example "Identity information"). */
+export function PolicySubhead({ children }: { children: React.ReactNode }) {
+  return <h3 className="pt-3 font-sans text-[13px] font-semibold tracking-[0.12em] text-ink uppercase">{children}</h3>
+}
+
+export function PolicyList({ items, ordered }: { items: React.ReactNode[]; ordered?: boolean }) {
+  const Tag = ordered ? "ol" : "ul"
   return (
-    <PolicySection title="Contact">
-      <p>
-        <strong>Chaanavya</strong>
-        <br />
-        <FillIn>[Registered business / legal name]</FillIn>
-        <br />
-        <FillIn>[Full business address, City, State, PIN]</FillIn>
-        <br />
-        Email: <FillIn>[support email]</FillIn>
-        <br />
-        Phone: <FillIn>[phone number]</FillIn>
-      </p>
-    </PolicySection>
+    <Tag>
+      {items.map((item, i) => (
+        <li key={i}>{item}</li>
+      ))}
+    </Tag>
   )
 }
+
+// Owner-confirmed support contact (from the Terms and Return & Refund Policy supplied on 13 October 2026).
+export const SUPPORT_EMAIL = "chaanavya@gmail.com"
+const SUPPORT_PHONE = "+919916987935"
+export const SUPPORT_WHATSAPP_URL = "https://wa.me/919916987935"
+// Shopify new customer accounts (shop 76850135126): customers sign in with their checkout email
+// to see order status and tracking. Confirmed through the Admin API on 14 October 2026.
+export const ORDER_ACCOUNT_URL = "https://shopify.com/76850135126/account"
+
+export const SupportEmail = () => <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+export const SupportPhone = () => <a href={`tel:${SUPPORT_PHONE}`}>+91 99169 87935</a>
 
 export function Note({ children }: { children: React.ReactNode }) {
   return <p className="mt-7 border-l-2 border-gold bg-sand px-4 py-3.5 text-sm leading-relaxed">{children}</p>

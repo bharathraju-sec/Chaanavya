@@ -34,6 +34,9 @@ const nextConfig: NextConfig = {
     // Keep links to the old static .html pages working.
     return [
       { source: "/index.html", destination: "/", permanent: true },
+      // Essentials became Fragrance on 14 October 2026.
+      { source: "/essentials", destination: "/fragrance", permanent: true },
+      { source: "/essentials.html", destination: "/fragrance", permanent: true },
       { source: "/:page.html", destination: "/:page", permanent: true },
     ]
   },

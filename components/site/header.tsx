@@ -7,11 +7,11 @@ export function SiteHeader({ searchEntries }: { searchEntries: SearchEntry[] }) 
   return (
     <>
       <div className="bg-ink px-4 py-2.5 text-center text-[11px] leading-normal font-medium tracking-[0.14em] text-on-dark uppercase max-sm:text-[10px] max-sm:tracking-[0.1em]">
-        Complimentary shipping over ₹2,499
+        Free shipping across India
         <span className="px-3 text-gold-on-dark max-sm:hidden" aria-hidden>
           /
         </span>
-        <span className="max-sm:block">White-glove 10-day returns</span>
+        <span className="max-sm:block">7-day returns</span>
       </div>
       <header className="sticky top-0 z-40 border-b border-line bg-paper">
         <div className="mx-auto grid h-16 max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-2 min-[901px]:h-[72px] min-[901px]:px-[clamp(16px,4vw,56px)]">
