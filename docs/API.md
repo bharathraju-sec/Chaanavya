@@ -66,20 +66,16 @@ The in-memory limiter allows 60 requests per IP per 60-second window on each fun
 
 Explicit route errors have `{ "error": "<message>" }`; explicit responses use `Cache-Control: no-store`. Clients must check both HTTP status and mutation user errors.
 
+## Newsletter signup
+
+`POST /api/marketing/subscribe` accepts `{ "email": "...", "marketingConsent": true, "campaign": "welcome-popup-v1", "consentTextVersion": "2026-10" }` from the welcome popup. Same-origin only, 2 KB body cap, 5 requests per minute per IP per function instance. The server trims and lowercases the email, requires explicit consent and the current campaign and consent-text version, then creates a Shopify customer with `emailMarketingConsent` SUBSCRIBED (single opt-in, tags `newsletter` and the campaign) through the Admin API, or updates consent on an existing customer. New and existing addresses get the same `200 { "status": "subscribed" }`. Errors: 400 invalid email/consent/request, 403 origin, 413 size, 415 content type, 429 rate limited (`Retry-After`), 503 when Shopify Admin credentials are not configured, 502 provider failure. Email addresses and provider bodies are never logged.
+
 ## Server-side catalog operations
 
 `lib/shopify.ts` sends POST requests to `https://<configured-domain>/api/<configured-version>/graphql.json` with `X-Shopify-Storefront-Access-Token`. Default version in code and the example is `2026-10`; compatibility has not been verified here.
 
 `getProducts()` requests up to 50 newest products. `getProduct(handle)` validates an alphanumeric/hyphen handle up to 255 characters and fetches one product. Both return `{ products, live }` or `{ product, live }` and fall back on missing configuration or errors. Catalog calls cache for 300 seconds; cart calls do not cache. All upstream fetches have an eight-second timeout.
 
-## Chat endpoint
-
-`POST /api/chat` accepts `{ "messages": [{ "role": "user" | "assistant", "content": "..." }] }` and streams plain UTF-8 text. It requires a same-origin Fetch Metadata header or an Origin matching the request host; missing both is rejected. Message history must alternate user/assistant roles, start and end with a user message, and contain no more than 30 entries; only up to the last 12 are sent upstream. Requests are limited to 16,000 bytes, messages to 1,000 characters, and a 10-request-per-minute in-memory per-IP limit per function instance applies. It uses the live Shopify catalog as context only when available; fallback/demo products are never sent. `AI_GATEWAY_API_KEY` must be explicitly configured before a model request can run; the model defaults to `openai/gpt-5.4-mini` and can be changed with `AI_GATEWAY_MODEL`. The endpoint sends requests to Vercel AI Gateway and streams the model's text response. It does not persist chat history. The upstream request sends `model`, `messages`, `stream` and documented `reasoning: { effort: "low" }`; it leaves sampling and token-cap parameters at provider defaults to avoid model-specific behavior, so answer length is guided by the system prompt.
-
-Questions about an existing order (for example "my order", "track my parcel", "shipment status", or "where is my package") are handled locally with a link to Shopify customer accounts; a bare shipping question (for example "do you ship to Pune?") goes to the assistant instead. The endpoint does not query customer or order records. Common email, phone-like number, and order-reference patterns are redacted from chat history before model submission; this is best-effort filtering, not a guarantee that all sensitive information is removed. Assistant product and help-page links use text markers that the client resolves only against the live product paths and fixed internal page allowlist; arbitrary model URLs are not rendered as links.
-
-Explicit route errors use `{ "error": "..." }` with `Cache-Control: no-store`: 400 invalid messages, 403 origin rejected, 413 body too large, 415 unsupported content type, 429 rate limited, 503 missing gateway credentials, and 502 upstream unavailable. Successful responses use `text/plain; charset=utf-8` and `Cache-Control: no-store, no-transform`.
-
-## Other absent endpoints
+## Absent endpoints
 
 There are no contact delivery, newsletter subscribe, order lookup, customer login, payment capture, webhook, or cache invalidation endpoints. Adding them requires a documented input/output contract, authorization rules, failure behavior, and verification.

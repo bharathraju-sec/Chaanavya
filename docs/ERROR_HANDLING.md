@@ -18,13 +18,8 @@
 | Invalid checkout URL | HTTPS check returns null | Checkout button disabled |
 | Form invalid | Browser required/type validation | Submission prevented |
 | Form valid | Local message only | No server delivery, subscription, or tracking |
-| Chat credentials absent | Chat endpoint returns 503 | Chat displays support/contact fallback |
-| Chat request invalid or too large | 400 or 413; content type and origin checks return 415 or 403 | No model request is made; history must alternate roles and start/end with a user message |
-| Chat rate limit reached | 429 with `Retry-After` | Shopper is asked to wait or contact support |
-| AI Gateway request fails or times out | 502 with a generic message; provider details and prompt are not returned | Chat displays contact fallback and a "Try again" button that resends the last message; failed exchanges are not sent back to the model and any draft in the message box is kept |
-| Order/tracking question | Answer locally with Shopify customer account link | No order record is queried |
 
-Shopify Storefront requests use an eight-second timeout; AI Gateway chat requests use a 25-second timeout. Explicit API status codes and JSON messages are defined in `API.md`. Browser errors are announced through Sonner.
+Upstream requests have an eight-second timeout. Explicit API status codes and JSON messages are defined in `API.md`. Browser errors are announced through Sonner.
 
 ## State and retry rules
 

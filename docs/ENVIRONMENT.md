@@ -10,8 +10,6 @@ Application-controlled variables come from `.env.example` and `lib/shopify.ts`. 
 | `SHOPIFY_STOREFRONT_ACCESS_TOKEN` | For configured Shopify mode | Server-side `X-Shopify-Storefront-Access-Token`; blank in example |
 | `SHOPIFY_STOREFRONT_API_VERSION` | Optional | Defaults to `2026-10`; accepts `YYYY-MM` or `unstable` format |
 | `SHOPIFY_USE_MOCK` | Optional | Exact string `true` selects external mock when `VERCEL_ENV` is not `production`; example is false |
-| `AI_GATEWAY_API_KEY` | Optional | Server-only credential for chat requests; without it, the API returns 503 and the launcher is hidden outside local development |
-| `AI_GATEWAY_MODEL` | Optional | Server-only model name; defaults to `openai/gpt-5.4-mini` |
 | `VERCEL_ENV` | Platform supplied on Vercel | Used by the mock guard; do not forge it to bypass production restrictions |
 | `NODE_ENV` | Runtime supplied | Development-only CSP allowances; not used by the current mock guard |
 
@@ -64,3 +62,11 @@ Define development, preview, and production credentials in their appropriate hos
 ## Unconfigured services
 
 No environment variables or clients exist for contact delivery, newsletter subscriptions, order tracking, analytics, error tracking, a custom database, or a direct Razorpay integration. Add configuration documentation when an integration is actually chosen and implemented.
+
+## Newsletter signup
+
+`SHOPIFY_ADMIN_CLIENT_ID` and `SHOPIFY_ADMIN_CLIENT_SECRET` (server only): credentials of a Shopify Dev Dashboard app with `write_customers` and `read_customers` scopes, installed on this store. The server exchanges them for a 24-hour Admin API token (client credentials grant, `https://<store>.myshopify.com/admin/oauth/access_token`) and reuses it per function instance. `SHOPIFY_ADMIN_ACCESS_TOKEN` is accepted instead for a legacy custom app with a permanent token. Used only by `POST /api/marketing/subscribe`. When none are set, the endpoint returns 503 and the welcome popup is not rendered in production (local development still shows it, and submissions report "not available yet"). Never prefix these with `NEXT_PUBLIC_`.
+
+## Analytics and cookie consent
+
+`NEXT_PUBLIC_GA_MEASUREMENT_ID` (public, inlined at build time): Google Analytics 4 Measurement ID, format `G-XXXXXXXXXX`, from Google Analytics > Admin > Data streams > Web. When set, the cookie banner appears in production, the CSP allows Google Analytics hosts, and GA loads only for visitors who press Accept. When absent, no banner shows in production and no analytics runs (local development still shows the banner for review). Changing it requires a redeploy.

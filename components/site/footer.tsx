@@ -1,8 +1,9 @@
 import Image from "next/image"
 import Link from "next/link"
+import { CookieSettingsButton } from "@/components/consent/cookie-consent"
 import { footerNav } from "./nav"
 
-export function SiteFooter() {
+export function SiteFooter({ cookieSettings = false }: { cookieSettings?: boolean }) {
   return (
     <footer className="border-t border-line bg-sand">
       <div className="page-wrap grid grid-cols-2 gap-x-5 gap-y-8 pt-[clamp(56px,7vw,96px)] pb-12 md:grid-cols-3 lg:grid-cols-[2fr_1fr_1fr_1fr] lg:gap-10">
@@ -28,7 +29,10 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
-      <div className="page-wrap border-t border-line-strong py-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-xs text-muted-foreground">© 2026 Chaanavya</div>
+      <div className="page-wrap flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-line-strong py-5 pb-[calc(20px+env(safe-area-inset-bottom))] text-xs text-muted-foreground">
+        <span>© 2026 Chaanavya</span>
+        {cookieSettings && <CookieSettingsButton className="min-h-11 underline-offset-4 hover:text-ink hover:underline" />}
+      </div>
     </footer>
   )
 }

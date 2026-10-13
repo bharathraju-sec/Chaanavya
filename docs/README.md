@@ -19,7 +19,6 @@ The guide supplied by the owner informed the document structure. Its example pro
 | [ARCHITECTURE.md](ARCHITECTURE.md) | System boundaries, rendering, caching, and project structure |
 | [DATABASE.md](DATABASE.md) | Shopify data model and browser persistence; no local database |
 | [API.md](API.md) | The local cart endpoint and server-side Shopify operations |
-| [CHATBOT_IMPLEMENTATION.md](CHATBOT_IMPLEMENTATION.md) | Chatbot scope, security boundaries, UI behavior, and acceptance criteria |
 | [SECURITY.md](SECURITY.md) | Implemented protections, trust boundaries, and remaining checks |
 | [CODE_STYLE.md](CODE_STYLE.md) | TypeScript, component, styling, and dependency conventions |
 | [TESTING.md](TESTING.md) | Existing checks and reproducible manual acceptance scenarios |

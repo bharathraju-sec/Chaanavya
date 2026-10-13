@@ -10,12 +10,12 @@ The browser is untrusted. Next.js holds the configured Shopify credential and me
 | --- | --- | --- |
 | Browser scripts | Per-request CSP nonce, `strict-dynamic`, no production `unsafe-eval` | Proxy excludes API, assets, static/image routes, and selected prefetch requests |
 | Browser styles | Same-origin with `unsafe-inline` | Inline styles intentionally permitted for UI libraries |
-| Remote resources | Shopify and Unsplash image hosts; fonts and browser connections restricted to self | Changes to integrations may require explicit CSP updates |
+| Remote resources | Shopify and Unsplash image hosts; fonts and browser connections restricted to self. Google Analytics hosts (`*.googletagmanager.com`, `*.google-analytics.com`, `*.analytics.google.com`) are added to `img-src` and `connect-src` only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set | Changes to integrations may require explicit CSP updates |
+| Analytics consent | gtag.js is injected by the bundle only after the visitor accepts the cookie banner (allowed by `strict-dynamic`, no inline script); Reject removes `_ga` cookies | Consent is per browser; no server-side consent log |
 | Framing and headers | Frame denial, nosniff, referrer policy, COOP, restricted permissions | Deployed headers have not been verified here |
 | Cart input | Operation allowlist, clean variable copies, GID and quantity checks | GID validation is not proof of ownership |
 | Request origin | Fetch-site and Origin/Host filtering | Non-browser requests can supply headers; this is not authentication |
 | Abuse control | Per-instance 60-per-minute IP counter | No distributed counter; platform rule unverified |
-| Chat endpoint | Requires same-origin Fetch Metadata or a matching Origin, 16 KB body cap, 1,000 character message cap, alternating user/assistant history, 10 requests/minute per-instance IP counter, common-value redaction, fixed internal link allowlist | IP counters are not shared across instances; pattern redaction can miss sensitive data; client-supplied conversation roles are not authenticated; chat history is sent to the configured AI Gateway/model provider |
 | Checkout URL | Client requires HTTPS before navigation | No hostname allowlist is implemented |
 | Credentials | Server-side environment lookup | `lib/shopify.ts` lacks a compiler-enforced `server-only` import marker |
 
@@ -45,8 +45,6 @@ These are identified checks, not declarations of a verified vulnerability exploi
 ## Future integrations
 
 Contact and newsletter endpoints will need server validation, abuse controls, minimal collection, delivery/error semantics, and a consent/retention decision. Tracking requires an authorization design and safe handling of failed lookups. There are no uploads now; any new upload path needs type, size, storage, and access rules before implementation.
-
-The chat endpoint sends messages to Vercel AI Gateway and its configured model provider. It does not persist transcripts in this app and does not include customer/order records. Pattern-based removal of common emails, phone-like values, and order references is only a precaution, not a privacy boundary. Confirm provider terms, retention behavior, production credentials, platform-wide rate limiting, and an accurate privacy notice before production enablement. Do not request sensitive information in chat.
 
 ## Launch checklist
 

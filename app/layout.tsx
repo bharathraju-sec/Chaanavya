@@ -3,10 +3,13 @@ import { Cormorant, Montserrat } from "next/font/google"
 import { connection } from "next/server"
 import { CartProvider } from "@/components/cart/cart-provider"
 import { CartSheet } from "@/components/cart/cart-sheet"
+import { CookieConsent } from "@/components/consent/cookie-consent"
 import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
-import { ChatAssistant } from "@/components/site/chat-assistant"
+import { WelcomePopup } from "@/components/marketing/welcome-popup"
 import { Toaster } from "@/components/ui/sonner"
+import { isMeasurementId } from "@/lib/consent"
+import { isNewsletterConfigured } from "@/lib/marketing/newsletter"
 import { getProducts } from "@/lib/shopify"
 import "./globals.css"
 
@@ -41,9 +44,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   await connection()
   const { products, live } = await getProducts()
   const searchEntries = products.map(p => ({ label: p.title, href: `/products/${p.handle}` }))
-  // The chat assistant is inactive until AI_GATEWAY_API_KEY is deliberately configured. Local
-  // development shows it anyway (replies then report "not configured") so it can be reviewed.
-  const chatEnabled = Boolean(process.env.AI_GATEWAY_API_KEY) || process.env.NODE_ENV === "development"
+  // Cookie banner: live once a GA4 Measurement ID is configured; always shown in local development for review.
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+  const cookieConsent = isMeasurementId(gaId) || process.env.NODE_ENV === "development"
 
   return (
     <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
@@ -56,16 +59,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <main id="main-content" className="flex-1">
             {children}
           </main>
-          <SiteFooter />
+          <SiteFooter cookieSettings={cookieConsent} />
           <CartSheet />
-          {chatEnabled && (
-            <ChatAssistant
-              products={live ? products.map(product => ({ title: product.title, href: `/products/${product.handle}` })) : []}
-            />
-          )}
         </CartProvider>
-        {/* Toasts sit above the chat launcher when it is shown. */}
-        <Toaster position="bottom-right" offset={chatEnabled ? { bottom: 88 } : undefined} mobileOffset={chatEnabled ? { bottom: 80 } : undefined} />
+        {cookieConsent && <CookieConsent measurementId={gaId} />}
+        {/* Newsletter popup: live only once Shopify Admin credentials are configured; always shown in local development for review. */}
+        <WelcomePopup enabled={isNewsletterConfigured() || process.env.NODE_ENV === "development"} />
+        <Toaster position="bottom-right" />
       </body>
     </html>
   )

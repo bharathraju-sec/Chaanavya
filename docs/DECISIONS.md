@@ -50,12 +50,18 @@ Status: contact and tracking revised 14 October 2026; newsletter removed the sam
 
 Decision: replace the preview contact and tracking forms with direct links. Contact links to the owner-confirmed email and WhatsApp; Track order links to Shopify new customer accounts (`ORDER_ACCOUNT_URL`), where customers sign in with their checkout email. The preview newsletter form was removed at the owner's request until an email service is chosen. Alternatives considered: a custom order lookup by order number and email (rejected: needs Admin API access on the server and risks exposing order data on a guessable reference). Consequence: no customer data passes through this app for support or tracking. Tradeoff: tracking depends on Shopify customer accounts staying enabled; there is no way to subscribe shoppers yet.
 
+## 010 Welcome popup saves signups to Shopify customers
+
+Status: implemented 14 October 2026; inactive in production until Shopify Admin credentials (`SHOPIFY_ADMIN_CLIENT_ID`/`SHOPIFY_ADMIN_CLIENT_SECRET`) are configured. Sources: `components/marketing/welcome-popup.tsx`, `lib/marketing/welcome-popup.ts`, `lib/marketing/newsletter.ts`, `app/api/marketing/subscribe/route.ts`.
+
+Decision: use Shopify itself as the newsletter list (customer email-marketing consent, reachable from Shopify Email) instead of adding a provider. The popup shows 5 seconds after load on home, collection and product pages only, never over another open dialog or sheet, at most once per page load; closing suppresses it for 30 days and a confirmed signup for 180 days (versioned localStorage keys, memory fallback). Copy makes no offer claims because no welcome discount exists. Consent is an unchecked checkbox with versioned wording. Alternatives considered: posting to the Online Store theme's customer form (rejected: no reliable acknowledgement, captcha). Consequence: no new vendor; signups appear in Shopify Customers. Tradeoff: needs Admin API credentials with customer write access on the server; single opt-in is used, so confirm that matches the store's marketing settings.
+
+## 011 Google Analytics loads only after cookie consent
+
+Status: implemented 14 October 2026; inactive in production until `NEXT_PUBLIC_GA_MEASUREMENT_ID` is configured. Sources: `components/consent/cookie-consent.tsx`, `lib/consent.ts`, `proxy.ts`.
+
+Decision: GA4 is the only tracker. A non-modal bottom banner offers Reject and Accept with equal weight; nothing beyond essential storage runs until Accept. The choice is a first-party cookie (`chaanavya_consent`, versioned, 180 days) and can be changed from "Cookie settings" in the footer; Reject also deletes `_ga` cookies. gtag.js is created by the client bundle after consent instead of an inline or always-loaded tag, so the strict nonce CSP needs only host allowances, added when an ID is configured. Ads consent signals stay denied. The welcome popup waits until the banner is answered so the two never stack. Alternatives considered: Google Consent Mode with the tag always loaded (rejected: sends cookieless pings before consent), Shopify's customer privacy banner (rejected: covers the Shopify-hosted pages, not this Next.js storefront). Tradeoff: no measurement for visitors who ignore or reject the banner. Bump `CONSENT_VERSION` in `lib/consent.ts` when adding a tracker or changing the wording.
+
 ## New decision record
-
-## 009 AI shopping assistant boundary
-
-Status: implemented; production enablement requires owner review. Sources: `app/api/chat/route.ts`, `components/site/chat-assistant.tsx`, `.env.example`.
-
-Decision: use Vercel AI Gateway from a same-origin server route for shopping help; provide only live catalog context, and keep chat transcripts out of app persistence. Order-status questions link to Shopify customer accounts; human support links open email or WhatsApp. Consequence: useful discovery and FAQ help without introducing customer authentication or an order-data endpoint. Tradeoff: shopper messages are processed by the configured AI Gateway/model provider, recommendation quality depends on current catalog context, and per-instance rate limiting is not distributed. Confirm provider terms, retention, privacy disclosure, production credentials, and host-wide rate controls before production enablement. Common-value redaction is best-effort only. The launcher is rendered only when `AI_GATEWAY_API_KEY` is set, or in local development (`NODE_ENV=development`) so the UI can be reviewed without a key; production without a key shows no chat at all.
 
 For a significant future change record: date, status, problem, decision, alternatives actually considered, reason, consequences, affected files/contracts, and verification. Use proposed status until the decision is made; do not fabricate owner approval.
