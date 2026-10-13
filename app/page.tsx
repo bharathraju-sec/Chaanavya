@@ -54,7 +54,7 @@ function Feature({
   title: [string, string]
   body: string
   primary: { href: string; label: string }
-  secondary: { href: string; label: string }
+  secondary?: { href: string; label: string }
   tone: "dark" | "sand"
   reverse?: boolean
   id: string
@@ -80,9 +80,11 @@ function Feature({
               <ArrowRight className="transition-transform duration-200 group-hover/button:translate-x-0.5" aria-hidden />
             </Link>
           </Button>
-          <ArrowLink href={secondary.href} className={dark ? "hover:text-gold-on-dark" : undefined}>
-            {secondary.label}
-          </ArrowLink>
+          {secondary && (
+            <ArrowLink href={secondary.href} className={dark ? "hover:text-gold-on-dark" : undefined}>
+              {secondary.label}
+            </ArrowLink>
+          )}
         </div>
       </div>
     </Reveal>
@@ -174,16 +176,15 @@ export default async function HomePage() {
         secondary={{ href: "/contact", label: "Book a styling call" }}
       />
       <Feature
-        id="essentials"
+        id="fragrance"
         tone="sand"
         reverse
-        image={photo("1509319117193-57bab727e09d", 1100)}
-        alt="Soft knit and lace-trim layers on a clothing rack"
-        kicker="Chaanavya essentials / 02"
-        title={["Soft luxe.", "Every day."]}
-        body="Cashmere-soft knits, lace-trim layers and signature eau de parfum. Refined basics that still feel like an occasion."
+        image="/assets/perfume-royal-oud.png"
+        alt="Royal Oud eau de parfum bottle with the Chaanavya logo"
+        kicker="Chaanavya fragrance / 02"
+        title={["The fragrance", "edit."]}
+        body="Three signature eau de parfum blends, bottled in hand-finished glass and gold."
         primary={{ href: "/fragrance", label: "Shop fragrance" }}
-        secondary={{ href: "/fragrance", label: "Explore the fragrance edit" }}
       />
 
       <Reveal className="page-wrap section-y">
