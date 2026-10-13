@@ -179,7 +179,7 @@ export default async function HomePage() {
         id="fragrance"
         tone="sand"
         reverse
-        image="/assets/perfume-royal-oud.png"
+        image="/assets/perfume-royal-oud-classic.png"
         alt="Royal Oud eau de parfum bottle with the Chaanavya logo"
         kicker="Chaanavya fragrance / 02"
         title={["The fragrance", "edit."]}

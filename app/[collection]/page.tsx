@@ -55,7 +55,7 @@ export default async function CollectionPage(props: PageProps<"/[collection]">) 
           </ArrowLink>
         </div>
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-well md:aspect-[3/2] md:max-h-[70svh]">
-          <Image src={collection.hero.src} alt={collection.hero.alt} fill priority sizes="(min-width: 768px) 58vw, 100vw" className="object-cover object-[50%_22%]" />
+          <Image src={collection.hero.src} alt={collection.hero.alt} fill priority sizes="(min-width: 768px) 58vw, 100vw" className="object-cover" style={{ objectPosition: collection.hero.position ?? "50% 22%" }} />
         </div>
       </section>
 

@@ -12,7 +12,8 @@ export type Collection = {
   eyebrow: string
   heading: [string, string]
   cta: string
-  hero: { src: string; alt: string }
+  /** `position` is a CSS object-position for the wide banner crop (default "50% 22%"). */
+  hero: { src: string; alt: string; position?: string }
   groups: CollectionGroup[]
   match: (p: Product) => boolean
 }
@@ -74,7 +75,7 @@ export const collections: Collection[] = [
     eyebrow: "Fragrance / Eau de parfum",
     heading: ["Chaanavya", "fragrance."],
     cta: "Shop fragrance",
-    hero: { src: "/assets/perfume-royal-oud.png", alt: "Royal Oud eau de parfum bottle" },
+    hero: { src: "/assets/perfume-royal-oud-classic.png", alt: "Royal Oud eau de parfum bottle with the Chaanavya logo", position: "50% 42%" },
     groups: [{ heading: "The fragrance edit.", intro: "Three signature eau de parfum blends, bottled in hand-finished glass and gold." }],
     match: inCollection("fragrance", /perfume|fragrance|parfum/i),
   },
