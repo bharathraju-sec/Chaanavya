@@ -47,7 +47,7 @@ export function CookieConsent({ measurementId }: { measurementId?: string }) {
     <section
       data-cookie-banner
       aria-labelledby="cookie-consent-title"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line-strong bg-card shadow-[0_-12px_40px_rgba(7,63,64,0.12)] motion-safe:animate-in motion-safe:slide-in-from-bottom-4 motion-safe:fade-in-0"
+      className="fixed inset-x-0 bottom-0 z-40 in-data-[welcome-popup=open]:hidden border-t border-line-strong bg-card shadow-[0_-12px_40px_rgba(7,63,64,0.12)] motion-safe:animate-in motion-safe:slide-in-from-bottom-4 motion-safe:fade-in-0"
     >
       <div className="page-wrap flex flex-col gap-3 py-4 pb-[calc(16px+env(safe-area-inset-bottom))] md:py-5 md:flex-row md:items-center md:gap-8">
         <div className="min-w-0 flex-1">

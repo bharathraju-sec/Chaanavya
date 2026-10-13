@@ -7,11 +7,14 @@ import { usePathname } from "next/navigation"
 import { LoaderCircle, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog"
+import { CONSENT_CHANGE_EVENT, readConsent } from "@/lib/consent"
 import {
   CONSENT_TEXT,
   CONSENT_TEXT_VERSION,
+  WELCOME_AFTER_CONSENT_MS,
   WELCOME_CAMPAIGN,
   WELCOME_DELAY_MS,
+  WELCOME_RETRY_MS,
   isEligiblePath,
   isLikelyEmail,
   isSuppressed,
@@ -28,7 +31,12 @@ let shownThisLoad = false
 /** True while another dialog, sheet (cart, menu, search) or the cookie banner is showing. */
 const otherOverlayOpen = () => Boolean(document.querySelector('[role="dialog"][data-state="open"], [data-cookie-banner]'))
 
-export function WelcomePopup({ enabled }: { enabled: boolean }) {
+/**
+ * `waitForConsent`: the cookie banner is active, so a first-time visitor answers it before the popup
+ * opens. Checked from the consent cookie rather than the DOM, so the popup cannot win the race
+ * against the banner's first render.
+ */
+export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boolean; waitForConsent?: boolean }) {
   const pathname = usePathname()
   const [open, setOpen] = React.useState(false)
   const [status, setStatus] = React.useState<Status>("idle")
@@ -45,18 +53,45 @@ export function WelcomePopup({ enabled }: { enabled: boolean }) {
     }
     if (isSuppressed()) return
 
-    let timer = window.setTimeout(function attempt() {
+    let timer = 0
+    const attempt = () => {
       // Never stack on top of the cart, menu, search or another dialog; wait until it closes.
       if (otherOverlayOpen()) {
-        timer = window.setTimeout(attempt, 2000)
+        timer = window.setTimeout(attempt, WELCOME_RETRY_MS)
         return
       }
       if (shownThisLoad || isSuppressed()) return
       shownThisLoad = true
       setOpen(true)
-    }, WELCOME_DELAY_MS)
+    }
+
+    // First visit: the cookie banner comes first; the popup follows a few seconds after it is answered.
+    if (waitForConsent && readConsent() === null) {
+      const afterConsent = () => {
+        if (readConsent() === null) return
+        window.removeEventListener(CONSENT_CHANGE_EVENT, afterConsent)
+        timer = window.setTimeout(attempt, WELCOME_AFTER_CONSENT_MS)
+      }
+      window.addEventListener(CONSENT_CHANGE_EVENT, afterConsent)
+      return () => {
+        window.removeEventListener(CONSENT_CHANGE_EVENT, afterConsent)
+        window.clearTimeout(timer)
+      }
+    }
+
+    timer = window.setTimeout(attempt, WELCOME_DELAY_MS)
     return () => window.clearTimeout(timer)
-  }, [enabled, pathname])
+  }, [enabled, waitForConsent, pathname])
+
+  // While the popup is open the cookie banner is hidden (see cookie-consent.tsx), so they never overlap.
+  // Set before paint, and cleared only after the dialog's close animation has finished.
+  React.useLayoutEffect(() => {
+    if (!open) return
+    document.documentElement.dataset.welcomePopup = "open"
+    return () => {
+      window.setTimeout(() => delete document.documentElement.dataset.welcomePopup, 300)
+    }
+  }, [open])
 
   const dismiss = () => {
     if (status !== "success") recordDismissal()

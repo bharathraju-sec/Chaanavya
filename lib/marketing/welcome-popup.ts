@@ -7,7 +7,12 @@ export const WELCOME_CAMPAIGN = "welcome-popup-v1"
 export const CONSENT_TEXT_VERSION = "2026-10"
 export const CONSENT_TEXT = "Yes, send me Chaanavya marketing emails about new arrivals and updates. I can unsubscribe at any time."
 
-export const WELCOME_DELAY_MS = 5000
+/** Returning visitors: 1 second after the page is interactive (deferred while another overlay shows). */
+export const WELCOME_DELAY_MS = 1000
+/** First visit: 1 second after the cookie banner is answered, so the two prompts never overlap. */
+export const WELCOME_AFTER_CONSENT_MS = 1000
+/** How often to re-check while another overlay is open. */
+export const WELCOME_RETRY_MS = 250
 const DAY_MS = 24 * 60 * 60 * 1000
 export const DISMISS_SUPPRESS_MS = 30 * DAY_MS
 export const SUBSCRIBE_SUPPRESS_MS = 180 * DAY_MS

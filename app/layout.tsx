@@ -64,7 +64,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </CartProvider>
         {cookieConsent && <CookieConsent measurementId={gaId} />}
         {/* Newsletter popup: live only once Shopify Admin credentials are configured; always shown in local development for review. */}
-        <WelcomePopup enabled={isNewsletterConfigured() || process.env.NODE_ENV === "development"} />
+        <WelcomePopup enabled={isNewsletterConfigured() || process.env.NODE_ENV === "development"} waitForConsent={cookieConsent} />
         <Toaster position="bottom-right" />
       </body>
     </html>
