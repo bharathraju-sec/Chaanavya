@@ -1,0 +1,158 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Chaanavya warm editorial theme. Source of truth: design-system/chaanavya/MASTER.md.
+   shadcn semantic tokens are mapped onto the brand palette so every ui/ component inherits it. */
+:root {
+  --radius: 0rem;
+  --background: #fbf7f0;
+  --foreground: #073f40;
+  --card: #ffffff;
+  --card-foreground: #073f40;
+  --popover: #fbf7f0;
+  --popover-foreground: #073f40;
+  --primary: #073f40;
+  --primary-foreground: #ffffff;
+  --secondary: #f3ecdf;
+  --secondary-foreground: #073f40;
+  --muted: #ece3d3;
+  --muted-foreground: #56625e;
+  --accent: #f3ecdf;
+  --accent-foreground: #073f40;
+  --destructive: #b42318;
+  --border: #e2d7c5;
+  --input: #c9bba3;
+  --ring: #a8461f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-paper: #fbf7f0;
+  --color-sand: #f3ecdf;
+  --color-well: #ece3d3;
+  --color-ink: #073f40;
+  --color-line: #e2d7c5;
+  --color-line-strong: #c9bba3;
+  --color-gold: #b8893e;
+  --color-gold-text: #8a6420;
+  --color-gold-on-dark: #d9b26a;
+  --color-terra: #a8461f;
+  --color-terra-hover: #8e3a19;
+  --color-on-dark: #f6f0e4;
+  --color-on-dark-muted: #c9d3cf;
+
+  --font-sans: var(--font-montserrat), "Helvetica Neue", Arial, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, "Times New Roman", serif;
+
+  --radius-sm: 0rem;
+  --radius-md: 0rem;
+  --radius-lg: 0rem;
+  --radius-xl: 0rem;
+  --radius-2xl: 0rem;
+
+  --ease-editorial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 8rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background font-sans text-base leading-relaxed text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-serif font-medium tracking-[-0.01em] text-balance;
+    line-height: 1.05;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-terra);
+    outline-offset: 3px;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility page-gutter {
+  padding-inline: clamp(16px, 4vw, 56px);
+}
+@utility page-wrap {
+  margin-inline: auto;
+  max-width: 1440px;
+  padding-inline: clamp(16px, 4vw, 56px);
+}
+@utility section-y {
+  padding-block: clamp(64px, 9vw, 128px);
+}
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-gold-text);
+}
+@utility label-caps {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Scroll reveal: applied by <Reveal> only to sections that start below the fold. */
+.reveal-pending {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.reveal-done {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 500ms var(--ease-editorial),
+    transform 600ms var(--ease-editorial);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+  .reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+}
