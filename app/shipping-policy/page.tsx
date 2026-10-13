@@ -4,7 +4,7 @@ import { PolicyList as List, PolicySection, SupportEmail as Email, SupportPage, 
 
 export const metadata: Metadata = {
   title: "Shipping policy",
-  description: "How Chaanavya processes, ships and delivers orders across India: processing times, delivery estimates, charges, COD, tracking and delivery issues.",
+  description: "How Chaanavya processes, ships and delivers orders across India: processing times, delivery estimates, charges, prepaid payment, tracking and delivery issues.",
 }
 
 // Owner-supplied policy (received and dated 13 October 2026). Formatting only: day ranges
@@ -21,7 +21,7 @@ export default function ShippingPolicyPage() {
       title="Shipping policy."
       lead={
         <>
-          Last updated: <time dateTime="2026-10-13">13 October 2026</time>
+          Last updated: <time dateTime="2026-10-14">14 October 2026</time>
         </>
       }
     >
@@ -85,24 +85,12 @@ export default function ShippingPolicyPage() {
 
       <PolicySection title="5. Free shipping">
         <p>Where free shipping is offered, it may be subject to conditions such as:</p>
-        <List items={["a minimum order value;", "prepaid orders only;", "selected PIN codes;", "promotional periods; or", "specific collections or products."]} />
+        <List items={["a minimum order value;", "selected PIN codes;", "promotional periods; or", "specific collections or products."]} />
         <p>The applicable terms will be displayed on the website or during checkout.</p>
       </PolicySection>
 
       <PolicySection title="6. Cash on Delivery">
-        <p>Cash on Delivery (&ldquo;COD&rdquo;) may be available for selected orders and serviceable PIN codes.</p>
-        <p>COD availability will be shown at checkout.</p>
-        <p>Chaanavya reserves the right to:</p>
-        <List
-          items={[
-            "disable COD for certain locations;",
-            "restrict COD for high-value orders;",
-            "request confirmation before dispatch;",
-            "charge a reasonable COD handling fee where disclosed at checkout; or",
-            "restrict COD for customers with repeated refused, rejected or undelivered orders.",
-          ]}
-        />
-        <p>If a COD order cannot be confirmed, Chaanavya may cancel the order before dispatch.</p>
+        <p>Chaanavya does not currently offer Cash on Delivery (&ldquo;COD&rdquo;). All orders are prepaid at checkout.</p>
       </PolicySection>
 
       <PolicySection title="7. Order confirmation">
@@ -191,9 +179,8 @@ export default function ShippingPolicyPage() {
       </PolicySection>
 
       <PolicySection title="14. Refused COD orders">
-        <p>Customers who repeatedly place Cash on Delivery orders and refuse delivery may have COD access restricted on future purchases.</p>
-        <p>This measure is intended to reduce unnecessary shipping and return-to-origin costs.</p>
-        <p>Customers will still be able to contact Chaanavya regarding any genuine delivery or order issue.</p>
+        <p>Not applicable: Chaanavya does not currently offer Cash on Delivery.</p>
+        <p>Customers can contact Chaanavya regarding any genuine delivery or order issue.</p>
       </PolicySection>
 
       <PolicySection title="15. Delayed shipments">

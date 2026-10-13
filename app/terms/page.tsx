@@ -23,7 +23,7 @@ export default function TermsPage() {
       title="Terms & conditions."
       lead={
         <>
-          Last updated: <time dateTime="2026-10-12">12 October 2026</time>
+          Last updated: <time dateTime="2026-10-14">14 October 2026</time>
         </>
       }
     >
@@ -134,7 +134,7 @@ export default function TermsPage() {
       <PolicySection title="8. Payments">
         <p>We accept the payment methods displayed at checkout, which may include:</p>
         <List
-          items={["UPI;", "credit cards;", "debit cards;", "net banking;", "digital wallets;", "supported payment services; and", "Cash on Delivery, where available."]}
+          items={["UPI;", "credit cards;", "debit cards;", "net banking;", "digital wallets; and", "other supported payment services."]}
         />
         <p>Payment transactions may be processed through authorised third-party payment service providers.</p>
         <p>Chaanavya does not directly control the banking systems, card networks or third-party payment gateways used to process transactions.</p>
@@ -142,18 +142,7 @@ export default function TermsPage() {
       </PolicySection>
 
       <PolicySection title="9. Cash on Delivery">
-        <p>Cash on Delivery (&ldquo;COD&rdquo;) may be available for eligible locations and orders.</p>
-        <p>We reserve the right to:</p>
-        <List
-          items={[
-            "restrict COD for certain PIN codes;",
-            "restrict COD for high-value orders;",
-            "request order confirmation before dispatch;",
-            "disable COD for customers with repeated refused or undelivered orders; or",
-            "introduce a reasonable COD handling charge where clearly disclosed before checkout.",
-          ]}
-        />
-        <p>Any applicable COD terms or charges will be displayed before the customer completes the order.</p>
+        <p>Chaanavya does not currently offer Cash on Delivery (&ldquo;COD&rdquo;). All orders must be paid in full at checkout using one of the payment methods displayed there.</p>
       </PolicySection>
 
       <PolicySection title="10. Shipping and delivery">

@@ -21,7 +21,7 @@ export default function RefundPolicyPage() {
       title="Return, exchange & refund policy."
       lead={
         <>
-          Last updated: <time dateTime="2026-10-13">13 October 2026</time>
+          Last updated: <time dateTime="2026-10-14">14 October 2026</time>
         </>
       }
     >
@@ -253,15 +253,11 @@ export default function RefundPolicyPage() {
       </PolicySection>
 
       <PolicySection title="18. COD refunds">
-        <p>For Cash on Delivery orders, a cash refund may not be possible.</p>
-        <p>Approved COD refunds may instead be processed using a suitable electronic method, such as:</p>
-        <List items={["bank transfer;", "UPI transfer; or", "another agreed digital payment method."]} />
-        <p>Customers may be required to provide accurate refund details.</p>
-        <p>Chaanavya will not be responsible for delays caused by incorrect banking or UPI details supplied by the customer.</p>
+        <p>Not applicable: Chaanavya does not currently offer Cash on Delivery, so all orders are prepaid.</p>
       </PolicySection>
 
       <PolicySection title="19. Shipping charges and refunds">
-        <p>Original shipping or COD charges may not be refundable for discretionary change-of-mind returns where permitted by law.</p>
+        <p>Original shipping charges may not be refundable for discretionary change-of-mind returns where permitted by law.</p>
         <p>Where a return is necessary because of an error by Chaanavya, defective goods or another circumstance requiring a remedy under applicable law, appropriate shipping charges will be handled accordingly.</p>
       </PolicySection>
 
@@ -304,7 +300,6 @@ export default function RefundPolicyPage() {
             "deliberate product damage;",
             "fraudulent claims;",
             "substitution of products;",
-            "misuse of COD;",
             "unusually excessive returns; or",
             "other abusive conduct.",
           ]}

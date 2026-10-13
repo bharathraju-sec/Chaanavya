@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
       title="Privacy policy."
       lead={
         <>
-          Last updated: <time dateTime="2026-10-13">13 October 2026</time>
+          Last updated: <time dateTime="2026-10-14">14 October 2026</time>
         </>
       }
     >
@@ -249,8 +249,7 @@ export default function PrivacyPolicyPage() {
             "customer name;",
             "phone number;",
             "delivery address;",
-            "order reference;",
-            "COD amount where applicable; and",
+            "order reference; and",
             "other information reasonably necessary for delivery.",
           ]}
         />
