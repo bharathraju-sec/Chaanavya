@@ -10,6 +10,8 @@ Application-controlled variables come from `.env.example` and `lib/shopify.ts`. 
 | `SHOPIFY_STOREFRONT_ACCESS_TOKEN` | For configured Shopify mode | Server-side `X-Shopify-Storefront-Access-Token`; blank in example |
 | `SHOPIFY_STOREFRONT_API_VERSION` | Optional | Defaults to `2026-10`; accepts `YYYY-MM` or `unstable` format |
 | `SHOPIFY_USE_MOCK` | Optional | Exact string `true` selects external mock when `VERCEL_ENV` is not `production`; example is false |
+| `AI_GATEWAY_API_KEY` | Optional | Server-only credential for chat requests; without it, the API returns 503 and the launcher is hidden outside local development |
+| `AI_GATEWAY_MODEL` | Optional | Server-only model name; defaults to `openai/gpt-5.4-mini` |
 | `VERCEL_ENV` | Platform supplied on Vercel | Used by the mock guard; do not forge it to bypass production restrictions |
 | `NODE_ENV` | Runtime supplied | Development-only CSP allowances; not used by the current mock guard |
 

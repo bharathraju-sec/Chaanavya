@@ -5,6 +5,7 @@ import { CartProvider } from "@/components/cart/cart-provider"
 import { CartSheet } from "@/components/cart/cart-sheet"
 import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
+import { ChatAssistant } from "@/components/site/chat-assistant"
 import { Toaster } from "@/components/ui/sonner"
 import { getProducts } from "@/lib/shopify"
 import "./globals.css"
@@ -40,6 +41,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   await connection()
   const { products, live } = await getProducts()
   const searchEntries = products.map(p => ({ label: p.title, href: `/products/${p.handle}` }))
+  // The chat assistant is inactive until AI_GATEWAY_API_KEY is deliberately configured. Local
+  // development shows it anyway (replies then report "not configured") so it can be reviewed.
+  const chatEnabled = Boolean(process.env.AI_GATEWAY_API_KEY) || process.env.NODE_ENV === "development"
 
   return (
     <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
@@ -54,8 +58,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <SiteFooter />
           <CartSheet />
+          {chatEnabled && (
+            <ChatAssistant
+              products={live ? products.map(product => ({ title: product.title, href: `/products/${product.handle}` })) : []}
+            />
+          )}
         </CartProvider>
-        <Toaster position="bottom-right" />
+        {/* Toasts sit above the chat launcher when it is shown. */}
+        <Toaster position="bottom-right" offset={chatEnabled ? { bottom: 88 } : undefined} mobileOffset={chatEnabled ? { bottom: 80 } : undefined} />
       </body>
     </html>
   )

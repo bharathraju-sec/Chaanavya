@@ -52,4 +52,10 @@ Decision: replace the preview contact and tracking forms with direct links. Cont
 
 ## New decision record
 
+## 009 AI shopping assistant boundary
+
+Status: implemented; production enablement requires owner review. Sources: `app/api/chat/route.ts`, `components/site/chat-assistant.tsx`, `.env.example`.
+
+Decision: use Vercel AI Gateway from a same-origin server route for shopping help; provide only live catalog context, and keep chat transcripts out of app persistence. Order-status questions link to Shopify customer accounts; human support links open email or WhatsApp. Consequence: useful discovery and FAQ help without introducing customer authentication or an order-data endpoint. Tradeoff: shopper messages are processed by the configured AI Gateway/model provider, recommendation quality depends on current catalog context, and per-instance rate limiting is not distributed. Confirm provider terms, retention, privacy disclosure, production credentials, and host-wide rate controls before production enablement. Common-value redaction is best-effort only. The launcher is rendered only when `AI_GATEWAY_API_KEY` is set, or in local development (`NODE_ENV=development`) so the UI can be reviewed without a key; production without a key shows no chat at all.
+
 For a significant future change record: date, status, problem, decision, alternatives actually considered, reason, consequences, affected files/contracts, and verification. Use proposed status until the decision is made; do not fabricate owner approval.

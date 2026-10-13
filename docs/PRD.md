@@ -32,6 +32,7 @@ These are functional roles, not validated customer personas. No storefront accou
 | Search | Client-side label matching across pages and loaded products | Case-insensitive matching; empty-result message; a result navigates correctly |
 | Wishlist | Local product-handle toggles | Heart state persists in normal browser storage; no account synchronization is implied |
 | Support and policies | Static pages plus frontend-only forms | Form messages accurately describe preview behavior; approved content required for launch |
+| Chat assistant | Site-wide chat drawer for live-catalog product discovery, store information, Shopify account handoff for orders, and direct human contact links | Recommendations use only live catalog data; policy answers link to published policy pages; order requests never query records; email and WhatsApp handoff remain available |
 
 ## Routes
 
@@ -46,8 +47,11 @@ These are functional roles, not validated customer personas. No storefront accou
 - Choose an email service before re-adding a newsletter sign-up (removed 14 October 2026). Do not claim a subscription without a successful backend response. Contact and tracking link to email, WhatsApp and Shopify customer accounts (14 October 2026).
 - Validate responsive layout, keyboard access, focus behavior, contrast, and reduced motion against `DESIGN_SYSTEM.md`.
 - Establish release checks, production monitoring, and a recovery procedure.
+- Before enabling the AI chat in production, confirm the AI Gateway/model provider and update the privacy notice to describe chat processing, providers, and any retention. The current chat does not save a transcript in this app, but message content is sent to the configured AI Gateway.
 
 ## Non goals and unresolved scope
+
+The chat assistant has no authenticated customer context or order lookup. Order status is handed to Shopify customer accounts; support handoff opens email or WhatsApp and does not submit a message from this app.
 
 There is no custom payment processor, local product database, customer account area, order dashboard, standalone wishlist page, full-text search service, discount engine, subscription billing, or admin panel in this repository. Adding any of these is a new scope decision. Do not infer international shipping or confirmed Razorpay configuration from template policy text.
 

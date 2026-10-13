@@ -43,6 +43,11 @@ Do not use fabricated production GIDs as successful test fixtures. Do not place 
 | Checkout handoff | HTTPS destination is the intended Shopify checkout with the intended lines |
 | Contact, tracking | Email, WhatsApp and Shopify account links open the right destinations; no forms or customer data |
 | Missing product image | Stable image well and usable title/action |
+| Chat in local preview without AI key | Launcher is available for review; submit shows a clear configuration fallback and keeps support links usable |
+| Chat with a configured gateway and live catalog | Replies stream; available products link only to loaded product routes; variant options, prices, and availability match catalog data |
+| Chat help pages and order intents | Policy/size markers render only allowlisted internal links; order status and shipment tracking go to Shopify accounts; general shipping questions stay with the assistant |
+| Chat errors, retry, and new conversation | Failure is announced with a retry action; retry excludes the failed turn and preserves draft; new chat clears in-memory history |
+| Chat keyboard and phone layout | Enter sends, Shift+Enter adds a line, focus returns when drawer closes, composer remains usable with mobile keyboard, and no horizontal overflow at 375px |
 
 ## Failure and boundary scenarios
 
