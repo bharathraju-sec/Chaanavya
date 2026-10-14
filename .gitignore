@@ -45,3 +45,6 @@ next-env.d.ts
 
 # project documentation (kept locally, not versioned or deployed)
 /docs/
+
+# Playwright MCP screenshots and page snapshots
+.playwright-mcp/
