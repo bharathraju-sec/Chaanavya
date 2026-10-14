@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ProductGrid } from "@/components/product/product-card"
+import { ProductGallery } from "@/components/product/product-gallery"
 import { ProductPurchase } from "@/components/product/product-purchase"
 import { SectionHead } from "@/components/site/editorial"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -58,15 +58,8 @@ export default async function ProductPage(props: PageProps<"/products/[handle]">
       </div>
 
       <section className="page-wrap grid gap-[clamp(32px,5vw,80px)] pt-6 pb-[clamp(64px,9vw,128px)] md:grid-cols-[7fr_5fr]">
-        {/* Gallery: stacked on desktop, swipeable strip on phones. */}
-        <div className="-mx-[clamp(16px,4vw,56px)] flex snap-x snap-mandatory gap-3 overflow-x-auto px-[clamp(16px,4vw,56px)] md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0">
-          {images.map((image, i) => (
-            <div key={image.url} className={`relative aspect-[4/5] w-[85%] shrink-0 snap-start overflow-hidden bg-well md:w-auto ${i === 0 ? "md:col-span-2" : ""}`}>
-              <Image src={image.url} alt={image.altText || (i === 0 ? product.title : "")} fill priority={i === 0} sizes={i === 0 ? "(min-width: 768px) 58vw, 85vw" : "(min-width: 768px) 29vw, 85vw"} className="object-cover" />
-            </div>
-          ))}
-          {images.length === 0 && <div className="aspect-[4/5] w-full bg-well md:col-span-2" />}
-        </div>
+        {/* Gallery: main slider with a thumbnail strip (swipe, arrows, thumbnails, arrow keys). */}
+        <ProductGallery images={images} title={product.title} />
 
         <div className="md:sticky md:top-[150px] md:self-start">
           {product.productType && <p className="eyebrow">{product.productType}</p>}
