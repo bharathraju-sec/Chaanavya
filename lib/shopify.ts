@@ -6,7 +6,7 @@ import type { Product, Variant } from "./types"
 
 const API_VERSION = process.env.SHOPIFY_STOREFRONT_API_VERSION || "2026-10"
 const SHOPIFY_TIMEOUT_MS = 8000
-const CATALOG_REVALIDATE_SECONDS = 300
+const CATALOG_REVALIDATE_SECONDS = 60
 
 type StoreConfig = { endpoint: string; headers: Record<string, string> }
 
