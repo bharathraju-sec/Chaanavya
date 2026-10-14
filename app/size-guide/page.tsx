@@ -24,7 +24,7 @@ const HOW_TO_MEASURE = [
 
 export default function SizeGuidePage() {
   return (
-    <SupportPage eyebrow="Fit with confidence" title="Size guide." lead="Indian sizes, given as body measurements in inches and centimetres. Between sizes? Size up for gowns and structured trenches, true to size for knits.">
+    <SupportPage eyebrow="Fit with confidence" title="Size guide." lead="Indian sizes, given as body measurements in inches and centimetres.">
       <div className="mt-10 overflow-x-auto border border-line bg-card">
         <table className="w-full border-collapse text-[15px]">
           <caption className="sr-only">Body measurements by size, in inches and centimetres</caption>
