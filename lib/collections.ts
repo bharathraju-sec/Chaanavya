@@ -68,8 +68,6 @@ export const collections: Collection[] = [
     hero: hero("1515562141207-7a88fb7ce338", "Pearl necklace resting in an open jewelry box"),
     groups: [{ heading: "Finishing touches.", intro: "18k gold vermeil, pearl and stone, made to be heirlooms." }],
     match: inCollection("jewelry", /jewel|necklace|earring|bangle|ring/i),
-    // Hidden until the jewelry range is ready (owner's request, 14 October 2026).
-    hidden: true,
   },
   {
     // Formerly "Essentials" (/essentials redirects here). Fragrance only, at the owner's request (14 October 2026).
@@ -82,8 +80,6 @@ export const collections: Collection[] = [
     hero: { src: "/assets/perfume-royal-oud-classic.png", alt: "Royal Oud eau de parfum bottle with the Chaanavya logo", position: "50% 42%" },
     groups: [{ heading: "The fragrance edit.", intro: "Three signature eau de parfum blends, bottled in hand-finished glass and gold." }],
     match: inCollection("fragrance", /perfume|fragrance|parfum/i),
-    // Hidden until the fragrance range is ready (owner's request, 14 October 2026).
-    hidden: true,
   },
 ]
 

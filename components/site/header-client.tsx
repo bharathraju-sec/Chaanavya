@@ -102,7 +102,7 @@ export function SearchDialog({ products }: { products: SearchEntry[] }) {
           autoFocus
           value={query}
           onChange={e => setQuery(e.target.value)}
-          placeholder="Try sarees, gowns or lehengas"
+          placeholder="Try sarees, gowns or jewelry"
           className="mt-5 h-14 w-full border-0 border-b border-ink bg-transparent px-0.5 text-xl outline-none placeholder:text-muted-foreground"
         />
         <ul className="mt-3 max-h-[50vh] overflow-y-auto">
