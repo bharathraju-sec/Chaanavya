@@ -31,6 +31,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
+    locale: "en_IN",
     siteName: "Chaanavya",
     title: "Chaanavya | Organic Cotton Clothing",
     description: "Rooted in nature. Styled for you.",
@@ -52,7 +53,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   const chat = isChatConfigured()
 
   return (
-    <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
+    <html lang="en-IN" className={`${cormorant.variable} ${montserrat.variable}`}>
       <body className="flex min-h-svh flex-col overflow-x-hidden">
         <a href="#main-content" className="fixed -top-20 left-3 z-[300] bg-card px-4 py-3 text-sm focus:top-3">
           Skip to content
