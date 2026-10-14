@@ -93,7 +93,7 @@ export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boo
     }
   }, [open])
 
-  // Closing hides the popup for 1 hour; a confirmed signup hides it for 180 days instead.
+  // Closing hides the popup for the rest of this visit; a confirmed signup hides it for 180 days instead.
   const dismiss = () => {
     if (status !== "success") recordDismissal()
     setOpen(false)
