@@ -14,13 +14,15 @@ export const WELCOME_AFTER_CONSENT_MS = 1000
 /** How often to re-check while another overlay is open. */
 export const WELCOME_RETRY_MS = 250
 const DAY_MS = 24 * 60 * 60 * 1000
+/** Closing hides the popup for 1 hour (owner request); after that it returns on the next page load. */
+export const DISMISS_SUPPRESS_MS = 60 * 60 * 1000
 export const SUBSCRIBE_SUPPRESS_MS = 180 * DAY_MS
 
 const KEYS = {
+  dismissed: `chaanavya:welcome-popup:v2:dismissedUntil`,
   subscribed: `chaanavya:welcome-popup:v1:subscribedUntil`,
 } as const
-/** Retired 30-day dismissal key, cleared so earlier dismissals no longer hide the popup. Closing is not remembered:
- * the popup returns on every page load and every visit (owner request); only a confirmed signup hides it. */
+/** Retired 30-day dismissal key (v1), cleared so old dismissals no longer hide the popup. */
 const LEGACY_DISMISSED = "chaanavya:welcome-popup:v1:dismissedUntil"
 
 /** Browsing pages only: never checkout, account, contact, tracking or policy pages. */
@@ -48,22 +50,26 @@ function writeUntil(kind: keyof typeof KEYS, until: number) {
   }
 }
 
-/** Only subscribers are suppressed (180 days). */
 export function isSuppressed(now = Date.now()) {
   try {
     localStorage.removeItem(LEGACY_DISMISSED)
   } catch {
     /* ignore */
   }
-  return readUntil("subscribed") > now
+  // Cap the stored time so a bad or old value can never hide the popup for longer than intended.
+  const dismissedUntil = Math.min(readUntil("dismissed"), now + DISMISS_SUPPRESS_MS)
+  return dismissedUntil > now || readUntil("subscribed") > now
 }
+export const recordDismissal = (now = Date.now()) => writeUntil("dismissed", now + DISMISS_SUPPRESS_MS)
 export const recordSubscription = (now = Date.now()) => writeUntil("subscribed", now + SUBSCRIBE_SUPPRESS_MS)
 
 /** Development-only reset (see the ?welcome-popup=reset handling in the component). */
 export function resetSuppression() {
+  delete memory.dismissed
   delete memory.subscribed
   try {
     localStorage.removeItem(LEGACY_DISMISSED)
+    localStorage.removeItem(KEYS.dismissed)
     localStorage.removeItem(KEYS.subscribed)
   } catch {
     /* ignore */

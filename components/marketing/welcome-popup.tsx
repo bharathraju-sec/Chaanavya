@@ -18,6 +18,7 @@ import {
   isEligiblePath,
   isLikelyEmail,
   isSuppressed,
+  recordDismissal,
   recordSubscription,
   resetSuppression,
 } from "@/lib/marketing/welcome-popup"
@@ -92,8 +93,11 @@ export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boo
     }
   }, [open])
 
-  // Closing is not remembered: the popup returns on the next page load or visit.
-  const dismiss = () => setOpen(false)
+  // Closing hides the popup for 1 hour; a confirmed signup hides it for 180 days instead.
+  const dismiss = () => {
+    if (status !== "success") recordDismissal()
+    setOpen(false)
+  }
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
