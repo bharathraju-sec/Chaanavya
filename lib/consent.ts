@@ -13,7 +13,10 @@ export const OPEN_CONSENT_EVENT = "chaanavya:open-cookie-settings"
 /** Fired on window after the stored choice changes. */
 export const CONSENT_CHANGE_EVENT = "chaanavya:cookie-consent-changed"
 
-export const isMeasurementId = (id: string | undefined): id is string => Boolean(id && /^G-[A-Z0-9]{4,}$/.test(id))
+/** Hostnames allowed to send data to Google Analytics. */
+export const ANALYTICS_HOSTS = ["chaanavya.in", "www.chaanavya.in"]
+
+export const isMeasurementId =(id: string | undefined): id is string => Boolean(id && /^G-[A-Z0-9]{4,}$/.test(id))
 
 export function readConsent(): ConsentChoice | null {
   try {
@@ -45,6 +48,8 @@ declare global {
  * records client-side navigations from browser history changes.
  */
 export function startAnalytics(id: string) {
+  // Only the live site reports to Google Analytics; localhost and Vercel preview URLs never do.
+  if (!ANALYTICS_HOSTS.includes(location.hostname)) return
   ;(window as unknown as Record<string, unknown>)[`ga-disable-${id}`] = false
   if (window.gtag) {
     window.gtag("consent", "update", { analytics_storage: "granted" })
