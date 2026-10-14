@@ -6,6 +6,8 @@ export const WELCOME_CAMPAIGN = "welcome-popup-v1"
 /** Bump when the consent wording below changes, so stored consent evidence stays traceable. */
 export const CONSENT_TEXT_VERSION = "2026-10"
 export const CONSENT_TEXT = "Yes, send me Chaanavya marketing emails about new arrivals and updates. I can unsubscribe at any time."
+/** Welcome offer shown in the popup. The code itself arrives by email from Shopify, never in the popup. */
+export const WELCOME_OFFER_PERCENT = 10
 
 /** Returning visitors: 1 second after the page is interactive (deferred while another overlay shows). */
 export const WELCOME_DELAY_MS = 1000

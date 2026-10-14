@@ -5,6 +5,9 @@ import { isNewsletterConfigured, NewsletterError, subscribeEmail } from "@/lib/m
 // Newsletter signup from the welcome popup. Request: { email, marketingConsent: true, campaign,
 // consentTextVersion }. Response is the same for new and existing addresses.
 
+// The 10% welcome code is never sent to the browser: Shopify's "Welcome new subscribers" marketing
+// automation emails it when the signup below subscribes the customer (owner's request, 14 October 2026).
+
 const MAX_BODY_BYTES = 2048
 const RATE_WINDOW_MS = 60_000
 const RATE_MAX = 5

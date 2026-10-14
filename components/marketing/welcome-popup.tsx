@@ -14,6 +14,7 @@ import {
   WELCOME_AFTER_CONSENT_MS,
   WELCOME_CAMPAIGN,
   WELCOME_DELAY_MS,
+  WELCOME_OFFER_PERCENT,
   WELCOME_RETRY_MS,
   isEligiblePath,
   isLikelyEmail,
@@ -166,7 +167,7 @@ export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boo
             <span className="font-serif text-[22px] font-semibold tracking-[0.2em]">CHAANAVYA</span>
           </div>
 
-          <DialogTitle className="font-serif text-[clamp(30px,6vw,42px)] leading-[1.05] font-normal tracking-[0.04em] uppercase">
+          <DialogTitle className="font-serif text-[clamp(30px,6vw,42px)] leading-[1.05] font-normal tracking-[0.04em] uppercase lining-nums">
             {success ? (
               <>
                 You&apos;re on
@@ -175,14 +176,16 @@ export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boo
               </>
             ) : (
               <>
-                Be first
+                {WELCOME_OFFER_PERCENT}% off
                 <br />
-                to know
+                your first order
               </>
             )}
           </DialogTitle>
           <DialogDescription className="mx-auto mt-4 max-w-[420px] text-base leading-relaxed text-muted-foreground">
-            {success ? "Thanks for signing up. Keep an eye on your inbox for updates." : "Sign up for updates and the latest arrivals from Chaanavya."}
+            {success
+              ? `Check your inbox: your ${WELCOME_OFFER_PERCENT}% welcome code is on its way. Use it at checkout on your first order.`
+              : `Sign up for Chaanavya updates and the latest arrivals, and get ${WELCOME_OFFER_PERCENT}% off your first order.`}
           </DialogDescription>
 
           {success ? (
@@ -230,7 +233,7 @@ export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boo
                     Signing up…
                   </>
                 ) : (
-                  "Sign up"
+                  `Get ${WELCOME_OFFER_PERCENT}% off`
                 )}
               </Button>
               {status === "error" && <p className="mt-3 text-center text-[13px] text-destructive">{message}</p>}
