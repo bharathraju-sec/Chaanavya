@@ -1,6 +1,6 @@
 # Chaanavya Agent Instructions
 
-Read [docs/AGENTS.md](docs/AGENTS.md) before changing this project. It defines the project context, documentation map, implementation conventions, and validation requirements.
+Project documentation lives in a local `docs/` folder that is not versioned in git or deployed. When it is present, read `docs/AGENTS.md` before changing this project; it defines the project context, documentation map, implementation conventions, and validation requirements.
 
 Use [design-system/chaanavya/MASTER.md](design-system/chaanavya/MASTER.md) as the visual authority. Check for a page override under `design-system/chaanavya/pages/` when working on a specific page.
 
