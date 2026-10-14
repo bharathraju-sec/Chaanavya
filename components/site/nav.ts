@@ -1,3 +1,7 @@
+import { isHiddenPath } from "@/lib/collections"
+
+const visible = (link: { href: string }) => !isHiddenPath(link.href)
+
 export const mainNav = [
   { href: "/new-arrivals", label: "New In" },
   { href: "/dresses", label: "Dresses" },
@@ -5,7 +9,7 @@ export const mainNav = [
   { href: "/jewelry", label: "Jewelry" },
   { href: "/fragrance", label: "Fragrance" },
   { href: "/contact", label: "Contact" },
-]
+].filter(visible)
 
 export const footerNav = [
   {
@@ -16,7 +20,7 @@ export const footerNav = [
       { href: "/ethnic-festive", label: "Sarees & lehengas" },
       { href: "/jewelry", label: "Fine jewelry" },
       { href: "/fragrance", label: "Fragrance" },
-    ],
+    ].filter(visible),
   },
   {
     heading: "Help",

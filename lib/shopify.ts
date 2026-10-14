@@ -1,4 +1,5 @@
 import { fallbackProducts } from "./catalog"
+import { isHiddenProduct } from "./collections"
 import type { Product, Variant } from "./types"
 
 // Server-side Storefront API access. Never import this from a client component:
@@ -99,7 +100,10 @@ const demoAllowed = () => process.env.VERCEL_ENV !== "production"
 
 export type Catalog = { products: Product[]; live: boolean; unavailable: boolean }
 
-const offline = (): Catalog => (demoAllowed() ? { products: fallbackProducts, live: false, unavailable: false } : { products: [], live: false, unavailable: true })
+// Products in a hidden collection (lib/collections.ts) never reach the site.
+const shown = (p: Product | null | undefined) => (p && !isHiddenProduct(p) ? p : null)
+
+const offline = (): Catalog => (demoAllowed() ? { products: fallbackProducts.filter(p => !isHiddenProduct(p)), live: false, unavailable: false } : { products: [], live: false, unavailable: true })
 
 /** Newest products first. Without Shopify: demo catalogue outside production, empty and `unavailable` in production. */
 export async function getProducts(): Promise<Catalog> {
@@ -110,7 +114,7 @@ export async function getProducts(): Promise<Catalog> {
       { first: 50 },
       CATALOG_REVALIDATE_SECONDS
     )
-    return { products: data.products.nodes.map(normalize), live: true, unavailable: false }
+    return { products: data.products.nodes.map(normalize).filter(p => !isHiddenProduct(p)), live: true, unavailable: false }
   } catch {
     return offline()
   }
@@ -121,7 +125,7 @@ export async function getProduct(handle: string): Promise<{ product: Product | n
   if (!/^[a-z0-9][a-z0-9-]{0,254}$/i.test(handle)) return { product: null, live: isStoreLive() }
   const demo = () => {
     if (!demoAllowed()) throw new StorefrontError("Store service unavailable")
-    return { product: fallbackProducts.find(p => p.handle === handle) ?? null, live: false }
+    return { product: shown(fallbackProducts.find(p => p.handle === handle)), live: false }
   }
   if (!isStoreLive()) return demo()
   try {
@@ -130,7 +134,7 @@ export async function getProduct(handle: string): Promise<{ product: Product | n
       { handle },
       CATALOG_REVALIDATE_SECONDS
     )
-    return { product: data.product ? normalize(data.product) : null, live: true }
+    return { product: data.product ? shown(normalize(data.product)) : null, live: true }
   } catch {
     return demo()
   }

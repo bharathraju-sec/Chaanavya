@@ -16,6 +16,8 @@ export type Collection = {
   hero: { src: string; alt: string; position?: string }
   groups: CollectionGroup[]
   match: (p: Product) => boolean
+  /** Not on the site yet: the page, its links and its products stay hidden until the range is ready. */
+  hidden?: boolean
 }
 
 const hero = (id: string, alt: string) => ({ src: `https://images.unsplash.com/photo-${id}?w=1600&h=1067&q=75&auto=format&fit=crop`, alt })
@@ -66,6 +68,8 @@ export const collections: Collection[] = [
     hero: hero("1515562141207-7a88fb7ce338", "Pearl necklace resting in an open jewelry box"),
     groups: [{ heading: "Finishing touches.", intro: "18k gold vermeil, pearl and stone, made to be heirlooms." }],
     match: inCollection("jewelry", /jewel|necklace|earring|bangle|ring/i),
+    // Hidden until the jewelry range is ready (owner's request, 14 October 2026).
+    hidden: true,
   },
   {
     // Formerly "Essentials" (/essentials redirects here). Fragrance only, at the owner's request (14 October 2026).
@@ -78,10 +82,20 @@ export const collections: Collection[] = [
     hero: { src: "/assets/perfume-royal-oud-classic.png", alt: "Royal Oud eau de parfum bottle with the Chaanavya logo", position: "50% 42%" },
     groups: [{ heading: "The fragrance edit.", intro: "Three signature eau de parfum blends, bottled in hand-finished glass and gold." }],
     match: inCollection("fragrance", /perfume|fragrance|parfum/i),
+    // Hidden until the fragrance range is ready (owner's request, 14 October 2026).
+    hidden: true,
   },
 ]
 
-export const getCollection = (slug: string) => collections.find(c => c.slug === slug)
+export const visibleCollections = collections.filter(c => !c.hidden)
+
+export const getCollection = (slug: string) => visibleCollections.find(c => c.slug === slug)
+
+/** Products in a hidden collection are kept off the site entirely: listings, search and their own pages. */
+export const isHiddenProduct = (p: Product) => collections.some(c => c.hidden && c.match(p))
+
+/** True for a link to a hidden collection page, so menus and home sections can drop it. */
+export const isHiddenPath = (href: string) => collections.some(c => c.hidden && href === `/${c.slug}`)
 
 export function productsFor(collection: Collection, products: Product[]) {
   const matched = products.filter(collection.match)

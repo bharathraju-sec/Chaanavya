@@ -5,14 +5,14 @@ import { ProductGrid } from "@/components/product/product-card"
 import { ArrowLink } from "@/components/site/editorial"
 import { Reveal } from "@/components/site/reveal"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { collections, getCollection, productsFor } from "@/lib/collections"
+import { getCollection, productsFor, visibleCollections } from "@/lib/collections"
 import { getProducts } from "@/lib/shopify"
 import Link from "next/link"
 
 export const dynamicParams = false
 
 export function generateStaticParams() {
-  return collections.map(c => ({ collection: c.slug }))
+  return visibleCollections.map(c => ({ collection: c.slug }))
 }
 
 export async function generateMetadata(props: PageProps<"/[collection]">): Promise<Metadata> {

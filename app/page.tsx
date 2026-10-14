@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ProductGrid } from "@/components/product/product-card"
 import { ArrowLink, SectionHead } from "@/components/site/editorial"
 import { Reveal } from "@/components/site/reveal"
+import { isHiddenPath } from "@/lib/collections"
 import { cn } from "@/lib/utils"
 import { getProducts } from "@/lib/shopify"
 
@@ -15,11 +16,14 @@ const photo = (id: string, w: number, h?: number) =>
 
 type Tile = { image: string; kicker: string; title: string; href: string; cta: string }
 
-function Tiles({ tiles, lead }: { tiles: Tile[]; lead?: boolean }) {
+function Tiles({ tiles: all, lead }: { tiles: Tile[]; lead?: boolean }) {
+  // Tiles linking to a hidden collection drop out; two tiles share one row instead of three.
+  const tiles = all.filter(tile => !isHiddenPath(tile.href))
+  const columns = tiles.length === 2 ? (lead ? "lg:grid-cols-[1.5fr_1fr]" : "lg:grid-cols-2") : lead ? "lg:grid-cols-[1.5fr_1fr_1fr]" : "lg:grid-cols-3"
   return (
-    <div className={cn("grid gap-[clamp(16px,2vw,28px)] sm:grid-cols-2", lead ? "lg:grid-cols-[1.5fr_1fr_1fr]" : "lg:grid-cols-3")}>
+    <div className={cn("grid gap-[clamp(16px,2vw,28px)] sm:grid-cols-2", columns)}>
       {tiles.map((tile, i) => (
-        <article key={tile.title} className={cn("group/tile flex min-w-0 flex-col", i === 0 && "sm:col-span-2 lg:col-span-1")}>
+        <article key={tile.title} className={cn("group/tile flex min-w-0 flex-col", i === 0 && tiles.length % 2 === 1 && "sm:col-span-2 lg:col-span-1")}>
           <Link href={tile.href} tabIndex={-1} aria-hidden className="relative block h-[clamp(320px,44vw,640px)] overflow-hidden bg-well">
             <Image src={tile.image} alt="" fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-[50%_20%] transition-transform duration-[600ms] ease-editorial group-hover/tile:scale-[1.03]" />
           </Link>
@@ -164,28 +168,32 @@ export default async function HomePage() {
         />
       </Reveal>
 
-      <Feature
-        id="jewelry"
-        tone="dark"
-        image={photo("1515562141207-7a88fb7ce338", 1100)}
-        alt="Pearl necklace resting in an open jewelry box"
-        kicker="Chaanavya fine jewelry / 01"
-        title={["Crowned", "in gold."]}
-        body="Hand-set pieces in 18k gold vermeil, pearl and stone. Finishing touches worthy of the occasion."
-        primary={{ href: "/jewelry", label: "Shop jewelry" }}
-        secondary={{ href: "/contact", label: "Book a styling call" }}
-      />
-      <Feature
-        id="fragrance"
-        tone="sand"
-        reverse
-        image="/assets/perfume-royal-oud-classic.png"
-        alt="Royal Oud eau de parfum bottle with the Chaanavya logo"
-        kicker="Chaanavya fragrance / 02"
-        title={["The fragrance", "edit."]}
-        body="Three signature eau de parfum blends, bottled in hand-finished glass and gold."
-        primary={{ href: "/fragrance", label: "Shop fragrance" }}
-      />
+      {!isHiddenPath("/jewelry") && (
+        <Feature
+          id="jewelry"
+          tone="dark"
+          image={photo("1515562141207-7a88fb7ce338", 1100)}
+          alt="Pearl necklace resting in an open jewelry box"
+          kicker="Chaanavya fine jewelry / 01"
+          title={["Crowned", "in gold."]}
+          body="Hand-set pieces in 18k gold vermeil, pearl and stone. Finishing touches worthy of the occasion."
+          primary={{ href: "/jewelry", label: "Shop jewelry" }}
+          secondary={{ href: "/contact", label: "Book a styling call" }}
+        />
+      )}
+      {!isHiddenPath("/fragrance") && (
+        <Feature
+          id="fragrance"
+          tone="sand"
+          reverse
+          image="/assets/perfume-royal-oud-classic.png"
+          alt="Royal Oud eau de parfum bottle with the Chaanavya logo"
+          kicker="Chaanavya fragrance / 02"
+          title={["The fragrance", "edit."]}
+          body="Three signature eau de parfum blends, bottled in hand-finished glass and gold."
+          primary={{ href: "/fragrance", label: "Shop fragrance" }}
+        />
+      )}
 
       <Reveal className="page-wrap section-y">
         <SectionHead eyebrow="Find your mood" title="Shop by mood" />
