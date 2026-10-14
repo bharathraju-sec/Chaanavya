@@ -3,3 +3,6 @@
 .env*
 .gitignore
 .vercelignore
+
+# project documentation
+docs
