@@ -14,19 +14,20 @@ export const WELCOME_AFTER_CONSENT_MS = 1000
 /** How often to re-check while another overlay is open. */
 export const WELCOME_RETRY_MS = 250
 const DAY_MS = 24 * 60 * 60 * 1000
-export const DISMISS_SUPPRESS_MS = 30 * DAY_MS
 export const SUBSCRIBE_SUPPRESS_MS = 180 * DAY_MS
 
 const KEYS = {
-  dismissed: `chaanavya:welcome-popup:v1:dismissedUntil`,
   subscribed: `chaanavya:welcome-popup:v1:subscribedUntil`,
 } as const
+/** Retired 30-day dismissal key, cleared so earlier dismissals no longer hide the popup. Closing is not remembered:
+ * the popup returns on every page load and every visit (owner request); only a confirmed signup hides it. */
+const LEGACY_DISMISSED = "chaanavya:welcome-popup:v1:dismissedUntil"
 
 /** Browsing pages only: never checkout, account, contact, tracking or policy pages. */
 const ELIGIBLE = new Set(["/", ...collections.map(c => `/${c.slug}`)])
 export const isEligiblePath = (pathname: string) => ELIGIBLE.has(pathname) || /^\/products\/[^/]+$/.test(pathname)
 
-// In-memory fallback when localStorage is unavailable (private mode, blocked storage).
+// In-memory fallback when storage is unavailable (private mode, blocked storage).
 const memory: Partial<Record<keyof typeof KEYS, number>> = {}
 
 function readUntil(kind: keyof typeof KEYS) {
@@ -47,16 +48,22 @@ function writeUntil(kind: keyof typeof KEYS, until: number) {
   }
 }
 
-export const isSuppressed = (now = Date.now()) => readUntil("dismissed") > now || readUntil("subscribed") > now
-export const recordDismissal = (now = Date.now()) => writeUntil("dismissed", now + DISMISS_SUPPRESS_MS)
+/** Only subscribers are suppressed (180 days). */
+export function isSuppressed(now = Date.now()) {
+  try {
+    localStorage.removeItem(LEGACY_DISMISSED)
+  } catch {
+    /* ignore */
+  }
+  return readUntil("subscribed") > now
+}
 export const recordSubscription = (now = Date.now()) => writeUntil("subscribed", now + SUBSCRIBE_SUPPRESS_MS)
 
 /** Development-only reset (see the ?welcome-popup=reset handling in the component). */
 export function resetSuppression() {
-  delete memory.dismissed
   delete memory.subscribed
   try {
-    localStorage.removeItem(KEYS.dismissed)
+    localStorage.removeItem(LEGACY_DISMISSED)
     localStorage.removeItem(KEYS.subscribed)
   } catch {
     /* ignore */

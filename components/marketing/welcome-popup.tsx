@@ -18,7 +18,6 @@ import {
   isEligiblePath,
   isLikelyEmail,
   isSuppressed,
-  recordDismissal,
   recordSubscription,
   resetSuppression,
 } from "@/lib/marketing/welcome-popup"
@@ -93,10 +92,8 @@ export function WelcomePopup({ enabled, waitForConsent = false }: { enabled: boo
     }
   }, [open])
 
-  const dismiss = () => {
-    if (status !== "success") recordDismissal()
-    setOpen(false)
-  }
+  // Closing is not remembered: the popup returns on the next page load or visit.
+  const dismiss = () => setOpen(false)
 
   async function submit(event: React.FormEvent) {
     event.preventDefault()
