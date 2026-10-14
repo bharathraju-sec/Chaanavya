@@ -48,3 +48,6 @@ next-env.d.ts
 
 # Playwright MCP screenshots and page snapshots
 .playwright-mcp/
+
+# local upgrade workspace (copied back into the main folder when the upgrade is done)
+/backup/

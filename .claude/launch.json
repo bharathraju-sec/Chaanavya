@@ -9,6 +9,12 @@
       "autoPort": true
     },
     {
+      "name": "chaanavya-upgrade",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "F:/Chaanavya/backup/upgrade", "run", "dev", "--", "-p", "5601"],
+      "port": 5601
+    },
+    {
       "name": "chaanavya-attach",
       "url": "http://localhost:5600",
       "port": 5600
