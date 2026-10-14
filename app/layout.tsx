@@ -3,11 +3,13 @@ import { Cormorant, Montserrat } from "next/font/google"
 import { connection } from "next/server"
 import { CartProvider } from "@/components/cart/cart-provider"
 import { CartSheet } from "@/components/cart/cart-sheet"
+import { ChatWidget } from "@/components/chat/chat-widget"
 import { CookieConsent } from "@/components/consent/cookie-consent"
 import { SiteFooter } from "@/components/site/footer"
 import { SiteHeader } from "@/components/site/header"
 import { WelcomePopup } from "@/components/marketing/welcome-popup"
 import { Toaster } from "@/components/ui/sonner"
+import { isChatConfigured } from "@/lib/chat/assistant"
 import { isMeasurementId } from "@/lib/consent"
 import { isNewsletterConfigured } from "@/lib/marketing/newsletter"
 import { getProducts } from "@/lib/shopify"
@@ -47,6 +49,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // Cookie banner: live once a GA4 Measurement ID is configured; always shown in local development for review.
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
   const cookieConsent = isMeasurementId(gaId) || process.env.NODE_ENV === "development"
+  const chat = isChatConfigured()
 
   return (
     <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
@@ -65,7 +68,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         {cookieConsent && <CookieConsent measurementId={gaId} />}
         {/* Newsletter popup: live only once Shopify Admin credentials are configured; always shown in local development for review. */}
         <WelcomePopup enabled={isNewsletterConfigured() || process.env.NODE_ENV === "development"} waitForConsent={cookieConsent} />
-        <Toaster position="bottom-right" />
+        {/* Shop chat: shown only when enabled in lib/chat/assistant.ts and ANTHROPIC_API_KEY is set. */}
+        <ChatWidget enabled={chat} />
+        {/* Raised while the chat button shows, so toasts never cover it. */}
+        <Toaster position="bottom-right" {...(chat && { offset: { bottom: 96 }, mobileOffset: { bottom: 88 } })} />
       </body>
     </html>
   )

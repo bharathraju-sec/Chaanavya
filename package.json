@@ -10,6 +10,7 @@
         "typecheck": "next typegen && tsc --noEmit"
     },
     "dependencies": {
+        "@anthropic-ai/sdk": "^0.133.0",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cn": "^0.4.0",
