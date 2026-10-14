@@ -163,21 +163,21 @@ export default async function HomePage() {
           tiles={[
             { image: photo("1610030469983-98e550d6193c", 1200, 1000), kicker: "Bridal & festive / Zari-bordered silk", title: "Heritage Sarees", href: "/ethnic-festive", cta: "Shop sarees" },
             { image: photo("1617627143750-d86bc21e42bb", 900), kicker: "Occasion wear / Statement drape", title: "Zari Lehengas", href: "/ethnic-festive", cta: "Shop lehengas" },
-            { image: photo("1596944924616-7b38e7cfac36", 900), kicker: "Bridal edit / Hand-set pieces", title: "Bridal Jewellery", href: "/jewelry", cta: "Shop jewellery" },
+            { image: photo("1596944924616-7b38e7cfac36", 900), kicker: "Bridal edit / Hand-set pieces", title: "Bridal Jewellery", href: "/jewellery", cta: "Shop jewellery" },
           ]}
         />
       </Reveal>
 
-      {!isHiddenPath("/jewelry") && (
+      {!isHiddenPath("/jewellery") && (
         <Feature
-          id="jewelry"
+          id="jewellery"
           tone="dark"
           image={photo("1515562141207-7a88fb7ce338", 1100)}
           alt="Pearl necklace resting in an open jewellery box"
           kicker="Chaanavya fine jewellery / 01"
           title={["Crowned", "in gold."]}
           body="Hand-set pieces in 18k gold vermeil, pearl and stone. Finishing touches worthy of the occasion."
-          primary={{ href: "/jewelry", label: "Shop jewellery" }}
+          primary={{ href: "/jewellery", label: "Shop jewellery" }}
           secondary={{ href: "/contact", label: "Book a styling call" }}
         />
       )}

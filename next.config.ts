@@ -37,6 +37,9 @@ const nextConfig: NextConfig = {
       // Essentials became Fragrance on 14 October 2026.
       { source: "/essentials", destination: "/fragrance", permanent: true },
       { source: "/essentials.html", destination: "/fragrance", permanent: true },
+      // Jewellery moved from /jewelry to the Indian English spelling on 15 October 2026.
+      { source: "/jewelry", destination: "/jewellery", permanent: true },
+      { source: "/jewelry.html", destination: "/jewellery", permanent: true },
       { source: "/:page.html", destination: "/:page", permanent: true },
     ]
   },

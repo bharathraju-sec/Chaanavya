@@ -24,7 +24,7 @@ export function QuickAdd({ product, label = "Quick add" }: { product: Product; l
     )
   }
 
-  // Nothing to choose (perfume, jewelry): add straight away.
+  // Nothing to choose (perfume, jewellery): add straight away.
   if (choosableOptions(product).length === 0 && variant) {
     return (
       <Button variant="quiet" className="mt-4 w-full" disabled={busy || !variant.availableForSale} onClick={() => add(product, variant)}>

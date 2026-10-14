@@ -59,7 +59,7 @@ export const collections: Collection[] = [
     match: inCollection("ethnic-festive", /saree|lehenga|ethnic|festive|bridal/i),
   },
   {
-    slug: "jewelry",
+    slug: "jewellery",
     title: "Fine Jewellery",
     description: "Chaanavya jewellery: bangles, pearls and layered necklaces.",
     eyebrow: "Fine jewellery / Hand-set",
@@ -67,7 +67,7 @@ export const collections: Collection[] = [
     cta: "Shop collection",
     hero: hero("1515562141207-7a88fb7ce338", "Pearl necklace resting in an open jewellery box"),
     groups: [{ heading: "Finishing touches.", intro: "18k gold vermeil, pearl and stone, made to be heirlooms." }],
-    match: inCollection("jewelry", /jewel|necklace|earring|bangle|ring/i),
+    match: inCollection("jewellery", /jewel|necklace|earring|bangle|ring/i),
   },
   {
     // Formerly "Essentials" (/essentials redirects here). Fragrance only, at the owner's request (14 October 2026).
