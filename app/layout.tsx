@@ -21,7 +21,7 @@ const montserrat = Montserrat({ subsets: ["latin"], weight: ["400", "500", "600"
 export const metadata: Metadata = {
   metadataBase: new URL("https://chaanavya.in"),
   title: { default: "Chaanavya | Organic Cotton Clothing", template: "%s | Chaanavya" },
-  description: "Chaanavya: regal fashion for women. Sarees, gowns, fine jewelry and everyday luxe.",
+  description: "Chaanavya: regal fashion for women. Sarees, gowns, fine jewellery and everyday luxe.",
   icons: {
     icon: [
       { url: "/assets/favicon-32.png", sizes: "32x32", type: "image/png" },
