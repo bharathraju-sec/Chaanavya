@@ -1,0 +1,17 @@
+(node:31248) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M09 a published product shows its details, both photos, its collection and related products (15003.4789ms)
+✔ CHV-S10-M09 before a choice the price is the first buyable size's and the button asks for a size (62.9312ms)
+✔ CHV-S10-M09 a linked size shows that size's own price, reduced price and stock (184.6223ms)
+✔ CHV-S10-M09 a bad variant link is ignored and reveals nothing (424.0532ms)
+✔ CHV-S10-M09 a fully sold-out product is found, shows its price and cannot be added (51.0307ms)
+✔ CHV-S10-M09 handles keep one canonical spelling; hidden, missing and sample handles are a plain 404 (548.5755ms)
+✔ CHV-S10-M09 when the API is down the page says so, is not indexed and shows no sample or stale product (610.8572ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17233.2751

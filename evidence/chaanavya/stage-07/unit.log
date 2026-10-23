@@ -1,0 +1,112 @@
+
+> chaanavya-storefront@2.0.0 test
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test "tests/contracts/*.test.mjs" "tests/ops/*.test.mjs"
+
+▶ CHV-S02-003 duplicate provider events
+  ✔ classification: new, duplicate, conflicting (0.5819ms)
+  ✔ a duplicated capture has one financial effect (0.6966ms)
+  ✔ out-of-order events never move the status backwards (0.1019ms)
+  ✔ a second event ID for the state we are already in is a no-op (0.0897ms)
+  ✔ same event ID with a different body is a conflict and changes nothing (0.0945ms)
+  ✔ replaying the whole stream gives the same final state (0.9018ms)
+  ✔ events after a terminal state are ignored (0.1089ms)
+✔ CHV-S02-003 duplicate provider events (3.5327ms)
+▶ CHV-S02-002 server-set prices
+  ✔ honest request is priced from the catalogue (0.5649ms)
+  ✔ client-supplied prices, totals and currency are ignored (0.5656ms)
+  ✔ client echo of a lower total is rejected, never adopted (0.1842ms)
+  ✔ invalid quantities, unknown or unsellable variants and duplicates are refused (0.1547ms)
+  ✔ money stays in integer paise (0.117ms)
+✔ CHV-S02-002 server-set prices (2.4024ms)
+▶ no overselling
+  ✔ the last unit can be reserved once (0.2052ms)
+  ✔ a multi-SKU shortage reserves nothing (0.7574ms)
+  ✔ negative or inconsistent balances are refused (0.1274ms)
+✔ no overselling (1.272ms)
+▶ CHV-S02-001 every transition declares a precondition
+  ✔ order: transitions are well formed (1.3987ms)
+  ✔ order: every state is reachable and every non-terminal state has an exit (0.1467ms)
+  ✔ payment: transitions are well formed (0.3174ms)
+  ✔ payment: every state is reachable and every non-terminal state has an exit (0.1077ms)
+  ✔ reservation: transitions are well formed (0.1349ms)
+  ✔ reservation: every state is reachable and every non-terminal state has an exit (0.0949ms)
+  ✔ fulfilment: transitions are well formed (0.1105ms)
+  ✔ fulfilment: every state is reachable and every non-terminal state has an exit (0.0617ms)
+  ✔ shipment: transitions are well formed (0.1482ms)
+  ✔ shipment: every state is reachable and every non-terminal state has an exit (0.2274ms)
+  ✔ return: transitions are well formed (0.2164ms)
+  ✔ return: every state is reachable and every non-terminal state has an exit (0.0889ms)
+  ✔ refund: transitions are well formed (0.1427ms)
+  ✔ refund: every state is reachable and every non-terminal state has an exit (0.0507ms)
+  ✔ illegal and unknown transitions are rejected, replays are no-ops (0.6114ms)
+✔ CHV-S02-001 every transition declares a precondition (5.1196ms)
+▶ commerce invariants encoded as guards
+  ✔ verified payment before confirmation (0.1402ms)
+  ✔ amount mismatch or late capture becomes an exception, never a confirmation (0.0637ms)
+  ✔ no unpaid fulfilment (0.0657ms)
+  ✔ payment alone never ships: handover needs a courier pickup scan with an AWB (0.0496ms)
+  ✔ stock is never released while a capture exists (0.0374ms)
+  ✔ only verified provider facts move payment status (0.0375ms)
+  ✔ order and shipment statuses stay separate (0.0927ms)
+✔ commerce invariants encoded as guards (0.6263ms)
+▶ CHV-S03-002 required secrets per target
+  ✔ development needs nothing: the placeholder catalogue runs with an empty environment (0.6682ms)
+  ✔ production refuses a missing database, auth secret, site URL, admin URL, API URL or API key (1.5802ms)
+  ✔ staging refuses each missing server secret, and payment secrets once a key is set (0.3086ms)
+  ✔ the CLI exits 1 on a missing secret and prints no values (69.8107ms)
+✔ CHV-S03-002 required secrets per target (73.121ms)
+▶ Stage 07 service scopes
+  ✔ each service is checked only for its own settings (0.2409ms)
+  ✔ the web host refuses database and sign-in secrets outside development (0.1073ms)
+  ✔ the API address must be https in production and the internal key long and random (0.098ms)
+✔ Stage 07 service scopes (0.6185ms)
+▶ test and live separation
+  ✔ live payment keys are refused outside production (0.1731ms)
+  ✔ test payment keys are refused in production (0.1159ms)
+  ✔ a test credential hidden in any other setting is still refused in production (0.1453ms)
+  ✔ development and staging cannot point at a production-looking database; production cannot use a local one (0.1236ms)
+  ✔ APP_ENV=production is refused on a Vercel preview deployment (0.0956ms)
+✔ test and live separation (0.82ms)
+▶ secrets never reach the browser
+  ✔ secret-looking NEXT_PUBLIC_ settings are refused (0.2861ms)
+  ✔ a public setting may not carry a server secret's value (0.0736ms)
+  ✔ reports contain names and statuses, never values (0.1114ms)
+✔ secrets never reach the browser (0.5396ms)
+▶ environment resolution and secret classification
+  ✔ VERCEL_ENV maps preview to staging (0.0545ms)
+  ✔ secret names (0.0704ms)
+✔ environment resolution and secret classification (0.1703ms)
+▶ sign-in settings (Stage 05)
+  ✔ the auth secret must be long and the production URL must use https (0.1089ms)
+  ✔ the admin URL must be https in production and on its own host (0.0656ms)
+✔ sign-in settings (Stage 05) (0.2217ms)
+▶ free-text redaction
+  ✔ card numbers (PAN) are removed, other long numbers are kept (0.8148ms)
+  ✔ tokens and provider keys are masked (0.1423ms)
+  ✔ emails and Indian mobile numbers are masked (0.1082ms)
+✔ free-text redaction (1.9944ms)
+▶ structured redaction
+  ✔ secret keys are dropped at any depth (1.5838ms)
+  ✔ street address is removed; city, state and PIN code stay for support (0.1828ms)
+  ✔ email and phone fields are masked, not dropped (0.1779ms)
+  ✔ errors keep name and redacted message, never the stack (0.145ms)
+  ✔ cycles, arrays and primitives are handled (0.1275ms)
+✔ structured redaction (2.4953ms)
+▶ logger
+  ✔ writes one JSON object per line with time, level, event and correlation ID (1.3003ms)
+  ✔ respects the level threshold and routes errors and warnings (0.2106ms)
+  ✔ child loggers keep the correlation ID and add fields (0.1868ms)
+  ✔ nothing sensitive reaches the written line (0.1758ms)
+✔ logger (2.0613ms)
+▶ correlation IDs
+  ✔ reuse a well-formed inbound ID, then Vercel's, else create one (2.5326ms)
+  ✔ a logger without an ID creates a UUID (0.078ms)
+✔ correlation IDs (2.6953ms)
+ℹ tests 70
+ℹ suites 15
+ℹ pass 70
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 209.8489

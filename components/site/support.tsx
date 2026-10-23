@@ -42,9 +42,6 @@ export function PolicyList({ items, ordered }: { items: React.ReactNode[]; order
 export const SUPPORT_EMAIL = "chaanavya@gmail.com"
 const SUPPORT_PHONE = "+919916987935"
 export const SUPPORT_WHATSAPP_URL = "https://wa.me/919916987935"
-// Shopify new customer accounts (shop 76850135126): customers sign in with their checkout email
-// to see order status and tracking. Confirmed through the Admin API on 14 October 2026.
-export const ORDER_ACCOUNT_URL = "https://shopify.com/76850135126/account"
 
 export const SupportEmail = () => <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
 export const SupportPhone = () => <a href={`tel:${SUPPORT_PHONE}`}>+91 99169 87935</a>

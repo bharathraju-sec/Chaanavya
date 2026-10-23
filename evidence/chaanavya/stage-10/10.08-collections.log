@@ -1,0 +1,16 @@
+✔ CHV-S10-M08 every collection page keeps its slug and editorial copy and shows an honest empty state (6869.1278ms)
+(node:45612) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M08 each collection shows exactly its published members, newest first (1500.9229ms)
+✔ CHV-S10-M08 a collection with more than 48 products pages with Show more and no product is lost or repeated (392.1085ms)
+✔ CHV-S10-M08 a forged or malformed cursor is a plain 404, never a leak (98.8241ms)
+✔ CHV-S10-M08 unknown slugs, an owner-hidden collection and the old links behave as before (85.9373ms)
+✔ CHV-S10-M08 when the API is down each collection page says so calmly and shows no sample products (485.3173ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9817.3819

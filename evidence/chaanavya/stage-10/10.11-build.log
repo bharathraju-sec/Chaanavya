@@ -1,0 +1,112 @@
+
+> chaanavya-storefront@2.0.0 build:all
+> npm run build:api && npm run build:worker && npm run build
+
+
+> chaanavya-storefront@2.0.0 build:api
+> npm run --workspace @chaanavya/api build
+
+
+> @chaanavya/api@0.1.0 build
+> prisma generate && tsc -p tsconfig.build.json
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.0) to .\src\db\generated in 192ms
+
+
+> chaanavya-storefront@2.0.0 build:worker
+> npm run --workspace @chaanavya/worker build
+
+
+> @chaanavya/worker@0.1.0 build
+> tsc -p tsconfig.json --noEmit
+
+
+> chaanavya-storefront@2.0.0 build
+> next build
+
+▲ Next.js 16.4.0 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 25ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 1962ms
+  Running TypeScript ...
+  Finished TypeScript in 1963ms ...
+  Collecting page data using 19 workers ...
+  Generating static pages using 19 workers (0/38) ...
+{"time":"2026-10-21T10:29:01.553Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"37eb2056-24ef-40d9-bf3a-a72941adec47","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.554Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"fc304bb7-3b9c-4c50-9a10-82a80d020058","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.554Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"cff65b5b-ea6b-413f-b5de-c7821ca83af4","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.554Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"471820fa-69bd-4c08-8a4d-7aff20621c7d","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.554Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"0ef07c27-7d5a-4db2-b55a-8d3c4823984b","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.555Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"d862bf40-f27c-4819-bf08-56a96ca8adbc","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.555Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"42009824-11cd-4897-9c31-0367f41b9947","path":"/api/v1/catalogue/products","reason":"network"}
+  Generating static pages using 19 workers (9/38) 
+  Generating static pages using 19 workers (18/38) 
+{"time":"2026-10-21T10:29:01.664Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"a06b0038-f927-41c8-8a43-fd33decbb4b1","path":"/api/v1/catalogue/products","reason":"network"}
+  Generating static pages using 19 workers (28/38) 
+{"time":"2026-10-21T10:29:01.688Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"395e76cb-15aa-456f-bc69-7ff848e7a7eb","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.689Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"e876c174-7a83-4bec-a596-578e84e3402a","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.689Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"5e3e4bc3-2580-4bd7-8975-077d2c173c07","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.689Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"a16dae25-23b7-4aba-8494-1a384b8e8dc7","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.689Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"fe01460b-a327-42a9-bab6-a234f96a5c5c","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.689Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"46eb21d8-0fa7-4b6d-ad42-ae379eeeca67","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.690Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"ca37c27e-aea1-4f1f-8ccb-d114129e8246","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.702Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"2622edfa-135c-406a-b500-05f2a87494ce","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T10:29:01.730Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"fcfec944-4242-48af-8b5d-2a23b8764fff","path":"/api/v1/catalogue/products","reason":"network"}
+✓ Generating static pages using 19 workers (38/38) in 291ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /[collection]
+├ ƒ /account
+├ ƒ /account/sign-in
+├ ƒ /admin
+├ ƒ /admin/[...rest]
+├ ƒ /admin/audit
+├ ƒ /admin/customers
+├ ƒ /admin/inventory
+├ ƒ /admin/inventory/[variantId]
+├ ƒ /admin/inventory/stocktakes
+├ ƒ /admin/inventory/stocktakes/[id]
+├ ƒ /admin/login
+├ ƒ /admin/orders
+├ ƒ /admin/payments
+├ ƒ /admin/products
+├ ƒ /admin/products/[id]
+├ ƒ /admin/products/[id]/preview
+├ ƒ /admin/products/collections
+├ ƒ /admin/products/import
+├ ƒ /admin/products/new
+├ ƒ /admin/promotions
+├ ƒ /admin/returns
+├ ƒ /admin/robots.txt
+├ ƒ /admin/settings
+├ ƒ /admin/setup-mfa
+├ ƒ /admin/shipments
+├ ƒ /api/[...path]
+├ ƒ /api/chat
+├ ƒ /api/internal/revalidate
+├ ƒ /contact
+├ ƒ /privacy-policy
+├ ƒ /products/[handle]
+├ ƒ /refund-policy
+├ ○ /robots.txt
+├ ƒ /shipping-policy
+├ ƒ /sitemap.xml
+├ ƒ /size-guide
+├ ƒ /terms
+└ ƒ /track-order
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

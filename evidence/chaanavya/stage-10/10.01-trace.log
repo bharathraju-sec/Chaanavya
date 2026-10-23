@@ -1,0 +1,13 @@
+(node:22440) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M01 a public SKU and variant are the database's rows, with price and availability from their source columns (34237.5715ms)
+✔ CHV-S10-M01 an unpublished item is absent from public reads but traceable to its row by staff (29.373ms)
+✔ CHV-S10-M01 the storefront still reads only the placeholder module, so no demo product reaches the API (18.5582ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 35442.8897

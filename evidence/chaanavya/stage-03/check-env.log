@@ -1,0 +1,45 @@
+# CHV-S03-002 configuration check from the command line, 2026-10-15T09:31:49Z. Synthetic values only; output never contains values.
+
+$ (empty environment) check-env --target development
+  missing  LOG_LEVEL
+Environment check passed.
+exit: 0
+
+$ (domain only) check-env --target production
+ERROR SHOPIFY_STOREFRONT_ACCESS_TOKEN: required in production (shopify backend)
+Environment check failed with 1 error(s).
+exit: 1
+
+$ (chaanavya backend, live key) check-env --target staging
+ERROR PAYMENT_MODE: staging must use test payments
+ERROR RAZORPAY_KEY_ID: staging needs an rzp_test_ key
+ERROR RAZORPAY_KEY_ID: contains a live payment credential, not allowed in staging
+Environment check failed with 3 error(s).
+exit: 1
+
+$ (secret in a NEXT_PUBLIC_ name) check-env --target development
+ERROR NEXT_PUBLIC_RAZORPAY_KEY_SECRET: secret-looking setting exposed to the browser through NEXT_PUBLIC_
+Environment check failed with 1 error(s).
+exit: 1
+
+$ npm run check:env   (this machine's .env.local; names and status only)
+Environment: development   Commerce backend: shopify
+  missing  APP_ENV
+  missing  COMMERCE_BACKEND
+  set      SHOPIFY_STORE_DOMAIN
+  missing  SHOPIFY_STOREFRONT_ACCESS_TOKEN  [secret]
+  set      SHOPIFY_STOREFRONT_API_VERSION
+  missing  SHOPIFY_USE_MOCK
+  set      SHOPIFY_ADMIN_CLIENT_ID
+  set      SHOPIFY_ADMIN_CLIENT_SECRET  [secret]
+  missing  SHOPIFY_ADMIN_ACCESS_TOKEN  [secret]
+  set      NEXT_PUBLIC_GA_MEASUREMENT_ID
+  missing  ANTHROPIC_API_KEY  [secret]
+  missing  DATABASE_URL  [secret]
+  missing  PAYMENT_MODE
+  missing  RAZORPAY_KEY_ID
+  missing  RAZORPAY_KEY_SECRET  [secret]
+  missing  RAZORPAY_WEBHOOK_SECRET  [secret]
+  missing  LOG_LEVEL
+Environment check passed.
+exit: 0

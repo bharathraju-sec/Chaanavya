@@ -1,0 +1,84 @@
+$ npm test
+
+> chaanavya-storefront@2.0.0 test
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test "tests/contracts/*.test.mjs" "tests/ops/*.test.mjs"
+
+▶ CHV-S02-003 duplicate provider events
+  ✔ classification: new, duplicate, conflicting (1.0698ms)
+  ✔ a duplicated capture has one financial effect (1.0572ms)
+  ✔ out-of-order events never move the status backwards (1.2717ms)
+  ✔ a second event ID for the state we are already in is a no-op (0.206ms)
+  ✔ same event ID with a different body is a conflict and changes nothing (0.3902ms)
+  ✔ replaying the whole stream gives the same final state (0.36ms)
+  ✔ events after a terminal state are ignored (0.3025ms)
+✔ CHV-S02-003 duplicate provider events (6.3275ms)
+▶ CHV-S02-002 server-set prices
+  ✔ honest request is priced from the catalogue (3.5739ms)
+  ✔ client-supplied prices, totals and currency are ignored (8.3175ms)
+  ✔ client echo of a lower total is rejected, never adopted (1.3462ms)
+  ✔ invalid quantities, unknown or unsellable variants and duplicates are refused (0.3582ms)
+  ✔ money stays in integer paise (1.1582ms)
+✔ CHV-S02-002 server-set prices (18.956ms)
+▶ no overselling
+  ✔ the last unit can be reserved once (0.5469ms)
+  ✔ a multi-SKU shortage reserves nothing (0.1634ms)
+  ✔ negative or inconsistent balances are refused (0.1356ms)
+✔ no overselling (1.1739ms)
+▶ CHV-S02-001 every transition declares a precondition
+  ✔ order: transitions are well formed (1.8892ms)
+  ✔ order: every state is reachable and every non-terminal state has an exit (0.208ms)
+  ✔ payment: transitions are well formed (0.2017ms)
+  ✔ payment: every state is reachable and every non-terminal state has an exit (0.0975ms)
+  ✔ reservation: transitions are well formed (0.1301ms)
+  ✔ reservation: every state is reachable and every non-terminal state has an exit (0.1141ms)
+  ✔ fulfilment: transitions are well formed (0.3029ms)
+  ✔ fulfilment: every state is reachable and every non-terminal state has an exit (0.0895ms)
+  ✔ shipment: transitions are well formed (0.2389ms)
+  ✔ shipment: every state is reachable and every non-terminal state has an exit (0.1638ms)
+  ✔ return: transitions are well formed (0.1618ms)
+  ✔ return: every state is reachable and every non-terminal state has an exit (0.0508ms)
+  ✔ refund: transitions are well formed (0.0816ms)
+  ✔ refund: every state is reachable and every non-terminal state has an exit (0.0444ms)
+  ✔ illegal and unknown transitions are rejected, replays are no-ops (0.8158ms)
+✔ CHV-S02-001 every transition declares a precondition (6.4076ms)
+▶ commerce invariants encoded as guards
+  ✔ verified payment before confirmation (0.1975ms)
+  ✔ amount mismatch or late capture becomes an exception, never a confirmation (0.0918ms)
+  ✔ no unpaid fulfilment (0.0978ms)
+  ✔ payment alone never ships: handover needs a courier pickup scan with an AWB (0.0559ms)
+  ✔ stock is never released while a capture exists (0.0434ms)
+  ✔ only verified provider facts move payment status (0.0423ms)
+  ✔ order and shipment statuses stay separate (0.0833ms)
+✔ commerce invariants encoded as guards (0.7752ms)
+▶ CHV-S03-002 required secrets per target
+  ✔ development needs nothing: the demo catalogue runs with an empty environment (9.0673ms)
+  ✔ production with the Shopify backend refuses a missing storefront token (3.4174ms)
+  ✔ the Chaanavya backend refuses each missing server secret (0.9607ms)
+  ✔ the CLI exits 1 on a missing secret and prints no values (366.5157ms)
+✔ CHV-S03-002 required secrets per target (382.4ms)
+▶ test and live separation
+  ✔ live payment keys are refused outside production (0.2646ms)
+  ✔ test payment keys are refused in production (0.1232ms)
+  ✔ a test credential hidden in any other setting is still refused in production (0.1062ms)
+  ✔ development and staging cannot point at a production-looking database; production cannot use a local one (0.1196ms)
+  ✔ the Shopify mock can never be enabled in production (0.1199ms)
+  ✔ APP_ENV=production is refused on a Vercel preview deployment (0.2773ms)
+✔ test and live separation (1.3382ms)
+▶ secrets never reach the browser
+  ✔ secret-looking NEXT_PUBLIC_ settings are refused (0.485ms)
+  ✔ a public setting may not carry a server secret's value (0.3399ms)
+  ✔ reports contain names and statuses, never values (0.3105ms)
+✔ secrets never reach the browser (1.3613ms)
+▶ environment resolution and secret classification
+  ✔ VERCEL_ENV maps preview to staging (0.2141ms)
+  ✔ secret names (0.1999ms)
+✔ environment resolution and secret classification (0.5292ms)
+ℹ tests 52
+ℹ suites 9
+ℹ pass 52
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 907.6663
+exit: 0

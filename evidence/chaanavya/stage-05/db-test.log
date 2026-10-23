@@ -1,0 +1,88 @@
+$ npm run test:db
+
+> chaanavya-storefront@2.0.0 test:db
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test --test-concurrency=1 "tests/integration/database/*.test.mjs"
+
+▶ CHV-S04-002 conversions
+  ✔ bigint and number paise convert exactly within the safe range (2.0369ms)
+✔ CHV-S04-002 conversions (2.7633ms)
+▶ CHV-S04-002 storage
+  ✔ extreme amounts round-trip through bigint columns unchanged (993.4913ms)
+  ✔ sums are exact where floats drift (476.511ms)
+  ✔ fractional or negative amounts are refused by the database (1018.4606ms)
+  ✔ order totals must add up in paise (55.2973ms)
+  ✔ order numbers come from the database sequence (19.0728ms)
+✔ CHV-S04-002 storage (2563.6859ms)
+▶ application role
+  ✔ can insert and read rows (883.2912ms)
+  ✔ cannot update or delete audit events, or truncate ledgers (1090.8058ms)
+  ✔ cannot change the schema or read migration history (1117.7008ms)
+✔ application role (3092.4574ms)
+▶ read-only role
+  ✔ can read but not write (669.2745ms)
+✔ read-only role (669.4269ms)
+▶ synthetic seed
+  ✔ loads, and a second run changes nothing (3648.2609ms)
+  ✔ refuses to run against production (180.3058ms)
+✔ synthetic seed (3829.3894ms)
+▶ backup and restore of a migrated database
+  ✔ the restored copy has identical data and an up-to-date migration history (5541.5617ms)
+  ✔ the rollback scripts, newest first, remove the schema, and migrations re-apply cleanly (4396.5358ms)
+✔ backup and restore of a migrated database (9938.4819ms)
+▶ CHV-S04-001 empty database migrates
+  ✔ migrate deploy applies the init migration and status is clean (850.392ms)
+  ✔ the migrated database matches schema.prisma (no drift) (821.4913ms)
+  ✔ all 32 tables exist (428.1996ms)
+  ✔ hand-written constraints, indexes and triggers are present (1243.0316ms)
+✔ CHV-S04-001 empty database migrates (3343.9352ms)
+▶ CHV-S04-001 duplicate active SKUs are rejected
+  ✔ a second active variant with the same SKU fails (162.3252ms)
+  ✔ an archived variant frees its SKU for a replacement, and history keeps the old row (53.0001ms)
+  ✔ product handles and option combinations are unique (45.5415ms)
+  ✔ handles must be URL-safe slugs (10.7724ms)
+✔ CHV-S04-001 duplicate active SKUs are rejected (272.3783ms)
+▶ constraints back the Stage 02 invariants
+  ✔ stock can never go negative or below reservations (30.8126ms)
+  ✔ a cart has exactly one owner and sane quantities (33.823ms)
+  ✔ a promotion is a percentage or a fixed amount, not both (34.4415ms)
+  ✔ provider events are unique per provider and event ID (8.0618ms)
+✔ constraints back the Stage 02 invariants (107.5883ms)
+▶ append-only ledgers
+  ✔ audit events cannot be updated, deleted or truncated (291.3177ms)
+  ✔ inventory movements cannot be updated or deleted (45.1566ms)
+✔ append-only ledgers (336.7769ms)
+▶ one vocabulary: database enums equal the Stage 02 state machines
+  ✔ OrderStatus matches ORDER_STATUSES (1.6524ms)
+  ✔ PaymentStatus matches PAYMENT_STATUSES (0.0579ms)
+  ✔ ReservationStatus matches RESERVATION_STATUSES (0.0496ms)
+  ✔ FulfilmentStatus matches FULFILMENT_STATUSES (0.0723ms)
+  ✔ ShipmentStatus matches SHIPMENT_STATUSES (0.0286ms)
+  ✔ ReturnStatus matches RETURN_STATUSES (0.0313ms)
+  ✔ RefundStatus matches REFUND_STATUSES (0.0228ms)
+✔ one vocabulary: database enums equal the Stage 02 state machines (2.0714ms)
+▶ CHV-S04-003 order item snapshots
+  ✔ renaming, repricing, re-SKUing and archiving the product leaves the order item untouched (165.0315ms)
+  ✔ deleting the variant keeps the snapshot and clears only the link (29.1938ms)
+  ✔ the frozen shipping address is independent of the address book (16.1049ms)
+✔ CHV-S04-003 order item snapshots (211.0425ms)
+▶ CHV-S04-004 rollback
+  ✔ a shortage on the second SKU undoes the order, the reservation and the first SKU's stock (178.0548ms)
+  ✔ a database constraint failure mid-transaction also rolls everything back (30.0829ms)
+  ✔ the happy path commits every write together (44.2747ms)
+✔ CHV-S04-004 rollback (253.1502ms)
+▶ transaction-safe status transitions
+  ✔ a transition and its audit event commit together (15.5294ms)
+  ✔ a stale writer loses: the second transition from the same state is refused (12.3847ms)
+  ✔ an illegal or unproven transition writes nothing (7.3488ms)
+  ✔ if the audit write fails, the status change is rolled back (10.6424ms)
+  ✔ replaying a transition already applied is a no-op (5.7118ms)
+✔ transaction-safe status transitions (52.1139ms)
+ℹ tests 46
+ℹ suites 14
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 61265.7986
+exit: 0

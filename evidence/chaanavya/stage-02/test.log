@@ -1,0 +1,61 @@
+$ npm test
+
+> chaanavya-storefront@2.0.0 test
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test "tests/**/*.test.mjs"
+
+▶ CHV-S02-003 duplicate provider events
+  ✔ classification: new, duplicate, conflicting (0.7102ms)
+  ✔ a duplicated capture has one financial effect (2.2741ms)
+  ✔ out-of-order events never move the status backwards (0.131ms)
+  ✔ a second event ID for the state we are already in is a no-op (0.1346ms)
+  ✔ same event ID with a different body is a conflict and changes nothing (0.1082ms)
+  ✔ replaying the whole stream gives the same final state (0.1723ms)
+  ✔ events after a terminal state are ignored (0.0875ms)
+✔ CHV-S02-003 duplicate provider events (5.0113ms)
+▶ CHV-S02-002 server-set prices
+  ✔ honest request is priced from the catalogue (1.175ms)
+  ✔ client-supplied prices, totals and currency are ignored (1.8159ms)
+  ✔ client echo of a lower total is rejected, never adopted (0.2019ms)
+  ✔ invalid quantities, unknown or unsellable variants and duplicates are refused (0.1526ms)
+  ✔ money stays in integer paise (0.1202ms)
+✔ CHV-S02-002 server-set prices (4.4759ms)
+▶ no overselling
+  ✔ the last unit can be reserved once (0.8226ms)
+  ✔ a multi-SKU shortage reserves nothing (0.1346ms)
+  ✔ negative or inconsistent balances are refused (0.0975ms)
+✔ no overselling (1.2354ms)
+▶ CHV-S02-001 every transition declares a precondition
+  ✔ order: transitions are well formed (1.907ms)
+  ✔ order: every state is reachable and every non-terminal state has an exit (0.1349ms)
+  ✔ payment: transitions are well formed (0.161ms)
+  ✔ payment: every state is reachable and every non-terminal state has an exit (0.0739ms)
+  ✔ reservation: transitions are well formed (0.1111ms)
+  ✔ reservation: every state is reachable and every non-terminal state has an exit (0.0988ms)
+  ✔ fulfilment: transitions are well formed (0.088ms)
+  ✔ fulfilment: every state is reachable and every non-terminal state has an exit (0.0499ms)
+  ✔ shipment: transitions are well formed (0.1079ms)
+  ✔ shipment: every state is reachable and every non-terminal state has an exit (0.1271ms)
+  ✔ return: transitions are well formed (0.1335ms)
+  ✔ return: every state is reachable and every non-terminal state has an exit (0.0718ms)
+  ✔ refund: transitions are well formed (0.0747ms)
+  ✔ refund: every state is reachable and every non-terminal state has an exit (0.0285ms)
+  ✔ illegal and unknown transitions are rejected, replays are no-ops (0.838ms)
+✔ CHV-S02-001 every transition declares a precondition (5.1538ms)
+▶ commerce invariants encoded as guards
+  ✔ verified payment before confirmation (0.1828ms)
+  ✔ amount mismatch or late capture becomes an exception, never a confirmation (0.0722ms)
+  ✔ no unpaid fulfilment (0.0696ms)
+  ✔ payment alone never ships: handover needs a courier pickup scan with an AWB (0.0706ms)
+  ✔ stock is never released while a capture exists (0.0415ms)
+  ✔ only verified provider facts move payment status (0.0385ms)
+  ✔ order and shipment statuses stay separate (0.0692ms)
+✔ commerce invariants encoded as guards (0.6888ms)
+ℹ tests 37
+ℹ suites 5
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 214.5476
+exit: 0

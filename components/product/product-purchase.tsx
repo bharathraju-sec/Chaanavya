@@ -5,18 +5,30 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart } from "@/components/cart/cart-provider"
 import { formatMoney, type Product } from "@/lib/types"
+import { isSoldOut, shownVariant } from "@/lib/variants"
 import { OptionPicker, useVariantSelection } from "./variant-picker"
 import { WishlistButton } from "./wishlist-button"
 
-export function ProductPurchase({ product }: { product: Product }) {
+export function ProductPurchase({ product, initialVariantId }: { product: Product; initialVariantId?: string | null }) {
   const { add, busy } = useCart()
-  const { options, selection, variant, missing, choose } = useVariantSelection(product)
-  const shown = variant ?? product.variants.find(v => v.availableForSale) ?? product.variants[0]
-  const soldOut = !product.variants.some(v => v.availableForSale)
+  const { options, selection, variant, missing, choose } = useVariantSelection(product, initialVariantId)
+  const shown = shownVariant(product, variant)
+  const soldOut = isSoldOut(product)
+  const reduced = shown?.compareAtPrice && Number(shown.compareAtPrice.amount) > Number(shown.price.amount) ? shown.compareAtPrice : null
 
   return (
     <div>
-      {shown && <p className="text-lg font-medium">{formatMoney(shown.price)}</p>}
+      {shown && (
+        <p className="flex items-baseline gap-3 text-lg font-medium" aria-live="polite">
+          <span>{formatMoney(shown.price)}</span>
+          {reduced && (
+            <s className="text-sm font-normal text-muted-foreground">
+              <span className="sr-only">Was </span>
+              {formatMoney(reduced)}
+            </s>
+          )}
+        </p>
+      )}
       {options.length > 0 && (
         <div className="mt-8">
           <div className="mb-1 flex justify-end">

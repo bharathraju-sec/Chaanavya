@@ -1,0 +1,6 @@
+GET /health -> 200 {"status":"ok"}
+GET /ready -> 200 {"status":"ready","jobs":[{"name":"auth-housekeeping","lastStartedAt":"2026-10-16T02:15:53.454Z","lastFinishedAt":"2026-10-16T02:15:53.557Z","lastOutcome":"ok","runs":1}]}
+GET /nope -> 404 {"error":"not_found"}
+exit code after SIGTERM: null
+{"time":"2026-10-16T02:15:53.512Z","level":"info","event":"worker.started","correlationId":"30769f4c-f312-4a56-b798-3d84051141e0","service":"worker","port":5652,"jobs":1}
+{"time":"2026-10-16T02:15:53.555Z","level":"info","event":"worker.job_finished","correlationId":"30769f4c-f312-4a56-b798-3d84051141e0","service":"worker","job":"auth-housekeeping","durationMs":28,"expiredSessions":0,"expiredCodes":0,"idleRateLimits":0}

@@ -1,0 +1,9 @@
+api GET /health -> 200 {"status":"ok"}
+api GET /ready -> 200 {"status":"ready","database":"ok"}
+api GET /api/v1/session without key -> 401 {"error":"unauthenticated"}
+api GET /api/v1/session with key -> 200 {"signedIn":false}
+worker GET /ready -> 200 {"status":"ready","jobs":[{"name":"auth-housekeeping","lastStartedAt":"2026-10-16T02:19:29.379Z","lastFinishedAt":"2026-10-16T02:19:29.601Z","lastOutcome":"ok",
+s07-api health: starting
+s07-api stopped: true
+s07-worker health: healthy
+s07-worker stopped: true

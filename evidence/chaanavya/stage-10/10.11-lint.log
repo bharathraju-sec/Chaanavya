@@ -1,0 +1,13 @@
+
+> chaanavya-storefront@2.0.0 lint
+> eslint
+
+
+F:\Chaanavya\backup\upgrade\tests\e2e\catalogue-gate.test.mjs
+  18:10  warning  'visibleCollections' is defined but never used  @typescript-eslint/no-unused-vars
+
+F:\Chaanavya\backup\upgrade\tests\security\catalogue\refresh.test.mjs
+  55:3  warning  'stock' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 2 problems (0 errors, 2 warnings)
+

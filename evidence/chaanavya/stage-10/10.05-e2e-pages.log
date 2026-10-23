@@ -1,0 +1,39 @@
+
+> chaanavya-storefront@2.0.0 test:e2e
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/e2e/*.test.mjs"
+
+▶ CHV-S06-001 admin pages are blocked for customers and visitors
+  ✔ the shop host never serves the admin (61.9095ms)
+  ✔ signed-out visitors on the admin host are sent to the login page, which is not indexed (194.3254ms)
+  ✔ old /admin/... addresses on the admin host redirect to the short form (2.4686ms)
+  ✔ a signed-in customer gets a plain 404 on every admin page (710.0231ms)
+  ✔ unknown admin addresses are a plain 404 (22.3879ms)
+✔ CHV-S06-001 admin pages are blocked for customers and visitors (6093.6933ms)
+▶ roles and empty states
+  ✔ CHV-S06-004 the overview shows no sales figures, sample rows or currency amounts (54.2537ms)
+  ✔ CHV-S06-004 every planned section says it is not built yet and shows no data (148.4786ms)
+  ✔ the owner sees team and configuration; values never appear (38.3075ms)
+  ✔ STAFF sees no Settings or Audit link, and those pages refuse them (39.4817ms)
+  ✔ CHV-S08 products: an empty catalogue says so; STAFF can look but gets no editing controls (235.8796ms)
+  ✔ CHV-S08 product editor, preview, collections and import pages render from the API (346.668ms)
+  ✔ CHV-S08/S09 a signed-in customer gets a 404 on the product and inventory pages (499.6518ms)
+  ✔ admin pages may load photos and send uploads to the photo store; shop pages may not upload (33.5146ms)
+  ✔ CHV-S09 inventory: stock list, stocktakes; STAFF reads but cannot start a count (185.5794ms)
+  ✔ the audit trail page lists real entries (22.1083ms)
+✔ roles and empty states (3462.6804ms)
+▶ storefront header
+  ✔ the sign-in button opens our sign-in page; signed in, it says Account (501.8613ms)
+  ✔ robots.txt: the shop keeps crawlers out of private paths; the admin host blocks everything (149.9147ms)
+  ✔ no Shopify anywhere in storefront pages (136.9396ms)
+✔ storefront header (789.0317ms)
+▶ static check
+  ✔ admin code has no chart libraries or hard-coded money figures (5.1672ms)
+✔ static check (5.2553ms)
+ℹ tests 19
+ℹ suites 4
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13798.2554

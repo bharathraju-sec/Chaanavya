@@ -1,0 +1,15 @@
+# Mutation check: three invariants deliberately broken in a scratch copy; tests must fail
+# 1 priceLines uses a client unitPricePaise  2 packing allowed without confirmed order  3 duplicate provider events re-applied
+  ✖ replaying the whole stream gives the same final state (0.9011ms)
+✖ CHV-S02-003 duplicate provider events (4.8066ms)
+  ✖ client-supplied prices, totals and currency are ignored (2.1493ms)
+✖ CHV-S02-002 server-set prices (4.9064ms)
+  ✖ no unpaid fulfilment (0.6889ms)
+✖ commerce invariants encoded as guards (1.4429ms)
+ℹ tests 37
+ℹ pass 34
+ℹ fail 3
+✖ failing tests:
+✖ replaying the whole stream gives the same final state (0.9011ms)
+✖ client-supplied prices, totals and currency are ignored (2.1493ms)
+✖ no unpaid fulfilment (0.6889ms)

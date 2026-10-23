@@ -1,0 +1,92 @@
+# Fresh-setup check (CHV-S03-001): clean clone of the workspace, README 'Local setup' steps in order, PowerShell 5.1, 2026-10-15T20:17:16.7889124+11:00
+
+### node -v / npm -v
+v24.21.0
+11.19.0
+exit: 0
+
+### npm ci
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.0) to .\lib\db\generated in 181ms
+
+
+added 811 packages in 1m
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   @prisma/engines@7.10.0 (postinstall: node scripts/postinstall.js)
+npm warn install-scripts   prisma@7.10.0 (preinstall: node scripts/preinstall-entry.js)
+npm warn install-scripts   unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+exit: 0
+
+### copy .env.example to .env.local
+copied: True
+exit: 0
+
+### npm run check:env
+  missing  SHOPIFY_ADMIN_CLIENT_ID
+  missing  SHOPIFY_ADMIN_CLIENT_SECRET  [secret]
+  missing  SHOPIFY_ADMIN_ACCESS_TOKEN  [secret]
+  missing  NEXT_PUBLIC_GA_MEASUREMENT_ID
+  missing  ANTHROPIC_API_KEY  [secret]
+  set      DATABASE_URL  [secret]
+  set      PAYMENT_MODE
+  missing  RAZORPAY_KEY_ID
+  missing  RAZORPAY_KEY_SECRET  [secret]
+  missing  RAZORPAY_WEBHOOK_SECRET  [secret]
+  set      LOG_LEVEL
+Environment check passed.
+exit: 0
+
+### npm run lint
+
+> chaanavya-storefront@2.0.0 lint
+> eslint
+
+exit: 0
+
+### npm run typecheck
+
+> chaanavya-storefront@2.0.0 typecheck
+> next typegen && tsc --noEmit
+
+Generating route types...
+✓ Types generated successfully
+exit: 0
+
+### npm test
+▶ correlation IDs
+  ✔ reuse a well-formed inbound ID, then Vercel's, else create one (3.4249ms)
+  ✔ a logger without an ID creates a UUID (0.0873ms)
+✔ correlation IDs (3.6095ms)
+ℹ tests 66
+ℹ suites 13
+ℹ pass 66
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 306.4127
+exit: 0
+
+### npm run build
+├ ƒ /products/[handle]
+├ ƒ /refund-policy
+├ ƒ /shipping-policy
+├ ƒ /size-guide
+├ ƒ /terms
+└ ƒ /track-order
+
+
+ƒ Proxy (Middleware)
+
+ƒ  (Dynamic)  server-rendered on demand
+
+exit: 0
+
+### npm run start (port 5610), then request pages
+200 /
+200 /jewellery
+200 /products/merlot-wrap-dress
+404 /does-not-exist

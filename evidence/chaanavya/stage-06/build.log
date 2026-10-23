@@ -1,0 +1,72 @@
+
+> chaanavya-storefront@2.0.0 build
+> next build
+
+▲ Next.js 16.4.0 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 104ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 61s
+  Running TypeScript ...
+  Finished TypeScript in 5.4s ...
+  Collecting page data using 19 workers ...
+  Generating static pages using 19 workers (0/40) ...
+  Generating static pages using 19 workers (10/40) 
+  Generating static pages using 19 workers (20/40) 
+  Generating static pages using 19 workers (30/40) 
+✓ Generating static pages using 19 workers (40/40) in 307ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /[collection]
+├ ƒ /account
+├ ƒ /account/sign-in
+├ ƒ /admin
+├ ƒ /admin/[...rest]
+├ ƒ /admin/audit
+├ ƒ /admin/customers
+├ ƒ /admin/inventory
+├ ƒ /admin/login
+├ ƒ /admin/orders
+├ ƒ /admin/payments
+├ ƒ /admin/products
+├ ƒ /admin/promotions
+├ ƒ /admin/returns
+├ ƒ /admin/robots.txt
+├ ƒ /admin/settings
+├ ƒ /admin/setup-mfa
+├ ƒ /admin/shipments
+├ ƒ /api/account/claim-order
+├ ƒ /api/account/orders
+├ ƒ /api/admin/audit
+├ ƒ /api/admin/me
+├ ƒ /api/admin/settings
+├ ƒ /api/admin/staff
+├ ƒ /api/admin/staff/[userId]
+├ ƒ /api/admin/staff/[userId]/deactivate
+├ ƒ /api/admin/staff/[userId]/roles
+├ ƒ /api/admin/staff/[userId]/roles/[role]
+├ ƒ /api/admin/staff/[userId]/sessions
+├ ƒ /api/auth/[...all]
+├ ƒ /api/chat
+├ ƒ /api/orders/[id]
+├ ƒ /contact
+├ ƒ /privacy-policy
+├ ƒ /products/[handle]
+├ ƒ /refund-policy
+├ ○ /robots.txt
+├ ƒ /shipping-policy
+├ ○ /sitemap.xml
+├ ƒ /size-guide
+├ ƒ /terms
+└ ƒ /track-order
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,17 @@
+# Docker build context for docker/services.Dockerfile (Stage 07). Never send secrets, local data or
+# build output into an image.
+.env*
+!.env.example
+**/node_modules
+.next
+apps/*/dist
+apps/api/src/db/generated
+backup
+backups
+evidence
+docs
+.git
+.claude
+.github
+public
+tests

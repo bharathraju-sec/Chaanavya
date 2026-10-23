@@ -1,0 +1,11 @@
+# GET https://chaanavya.in/<collection> on 2026-10-15; product handles linked from each live collection page (public, read-only)
+new-arrivals: merlot-wrap-dress noir-sheer-blouse sovereign-trench-coat zari-silk-saree 
+dresses: amethyst-gown merlot-wrap-dress noir-sheer-blouse silk-tie-neck-blouse 
+ethnic-festive: bridal-jewellery-set heritage-sarees zari-lehengas zari-silk-saree 
+jewellery: aurum-bangles bridal-jewellery-set crescent-layer-set heirloom-pearls 
+fragrance: gilded-rose midnight-court royal-oud 
+pdp aurum-bangles: 200
+pdp demo merlot-wrap-dress: 200
+
+[exited with code 0]
+merlot-wrap-dress on production: 91 cdn.shopify.com refs, 0 unsplash, 4 ProductVariant GIDs, price 3,499 (same as demo seed)

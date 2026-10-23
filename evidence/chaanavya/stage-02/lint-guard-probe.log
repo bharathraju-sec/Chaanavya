@@ -1,0 +1,9 @@
+$ npx eslint components/__lint_probe.tsx  (temporary probe, deleted afterwards)
+
+F:\Chaanavya\backup\upgrade\components\__lint_probe.tsx
+  1:1  error  '@/lib/integrations/contracts/payment-gateway' import is restricted from being used by a pattern. UI must call commerce modules through server routes, not provider ports  no-restricted-imports
+  2:1  error  '@/lib/shopify' import is restricted from being used by a pattern. Server-only module: keep credentials out of client bundles                                              no-restricted-imports
+
+✖ 2 problems (2 errors, 0 warnings)
+
+exit: 1

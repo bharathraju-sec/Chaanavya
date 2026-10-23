@@ -1,0 +1,16 @@
+(node:26632) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M10 a publish and a signed count each announce, and a burst of stock changes is one event (9958.385ms)
+✔ CHV-S10-M10 a signed count that moves no stock still announces, because it can make the product public (1101.3399ms)
+✔ CHV-S10-M10 an unpublish announces, and nothing is announced for a product that is not live (1862.7582ms)
+✔ CHV-S10-M10 the handler makes one key-protected request that carries nothing about the catalogue (37.2343ms)
+✔ CHV-S10-M10 an error answer, an unreachable web host and a missing setting fail the event so it is retried (6.259ms)
+✔ CHV-S10-M10 the delivery job refreshes once for many events, keeps events when the web host is down and delivers them when it is back (1226.1665ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15120.4882

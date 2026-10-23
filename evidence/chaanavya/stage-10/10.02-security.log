@@ -1,0 +1,220 @@
+
+> chaanavya-storefront@2.0.0 test:security
+> npm run build:api && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/security/**/*.test.mjs"
+
+
+> chaanavya-storefront@2.0.0 build:api
+> npm run --workspace @chaanavya/api build
+
+
+> @chaanavya/api@0.1.0 build
+> prisma generate && tsc -p tsconfig.build.json
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.0) to .\src\db\generated in 224ms
+
+▶ CHV-S06-001 customers cannot reach admin APIs
+  ✔ every Stage 06 admin API refuses a signed-in customer and a visitor (104.4761ms)
+✔ CHV-S06-001 customers cannot reach admin APIs (3224.7154ms)
+▶ CHV-S06-002 staff limits
+  ✔ STAFF and ADMIN cannot change roles or deactivate anyone (178.0559ms)
+  ✔ STAFF and ADMIN cannot open owner settings (38.2508ms)
+  ✔ refund approval limits: STAFF none, ADMIN up to the threshold, OWNER any amount (2.5545ms)
+  ✔ an owner cannot change their own access, and the last active owner is protected (209.0666ms)
+✔ CHV-S06-002 staff limits (428.4007ms)
+▶ CHV-S06-003 canonical audit events
+  ✔ granting a role records actor, entity, time, reason and correlation ID from the session (47.2095ms)
+  ✔ revoking a role signs the person out and is audited with the role and session count (35.5033ms)
+  ✔ deactivation and sign-out-everywhere are audited (459.1833ms)
+  ✔ a change without a reason is refused and leaves no trace (17.261ms)
+  ✔ the audit catalogue rejects incomplete events (1.5039ms)
+✔ CHV-S06-003 canonical audit events (561.0921ms)
+▶ API patterns
+  ✔ mutations need the current ETag: missing is 428, stale is 412 (49.3335ms)
+  ✔ bad input gets a structured 400 (39.0568ms)
+  ✔ the audit list pages with a cursor and filters (23.2847ms)
+✔ API patterns (111.9735ms)
+▶ admin on its own host
+  ✔ with ADMIN_URL set, admin APIs answer only on the admin host (8.8417ms)
+  ✔ host helpers (1.2634ms)
+✔ admin on its own host (10.2707ms)
+▶ CHV-S07-001 the API starts on its own; readiness follows the database
+  ✔ liveness and readiness answer without the key and without the web host (73.6518ms)
+  ✔ with the database unreachable the process stays alive but is not ready (503) (1651.2047ms)
+  ✔ outside development it refuses to start with incomplete configuration, naming settings but no values (1127.491ms)
+✔ CHV-S07-001 the API starts on its own; readiness follows the database (4154.5549ms)
+▶ only the web host can call the API
+  ✔ no key, a wrong key or a key of the wrong length: 401 on API and sign-in routes alike (11.8256ms)
+  ✔ the right key opens the API; browsers get no CORS permission (15.0364ms)
+✔ only the web host can call the API (27.1482ms)
+▶ request pipeline
+  ✔ a well-formed correlation ID is echoed; anything else is replaced (4.0758ms)
+  ✔ unknown routes and malformed IDs answer the not-found envelope, without stack traces (3.7961ms)
+  ✔ security headers on every answer, and no framework fingerprint (1.0864ms)
+✔ request pipeline (9.4131ms)
+▶ rate limits
+  ✔ a fourth sign-in code request within a minute from one address is refused (262.3178ms)
+[2m2026-10-17T03:49:26.809Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T03:49:26.897Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T03:49:26.977Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T03:49:27.053Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T03:49:27.130Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+  ✔ password guessing is limited to five tries a minute (513.1731ms)
+  ✔ limits are kept in the database, shared by every server instance (5.37ms)
+✔ rate limits (1248.7354ms)
+▶ enumeration resistance
+  ✔ asking for a code looks the same for known and unknown addresses (82.1757ms)
+[2m2026-10-17T03:49:27.372Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-17T03:49:27.445Z[0m [33mWARN[0m [1m[Better Auth]:[0m User not found
+  ✔ a wrong password and an unknown email get the same answer (218.2097ms)
+  ✔ public password sign-up is closed (13.1429ms)
+✔ enumeration resistance (314.0179ms)
+▶ claiming a guest order
+  ✔ the verified owner of the order's email can claim it, exactly once (112.587ms)
+  ✔ someone else's order, a missing order and a malformed number all look the same (76.6953ms)
+  ✔ an old sign-in must be renewed before claiming (57.7661ms)
+  ✔ a guest without an account cannot claim (5.5333ms)
+✔ claiming a guest order (253.0708ms)
+▶ identity events are auditable
+  ✔ sign-ins, sign-outs, role grants and denials are recorded, without codes or full emails (60.8188ms)
+✔ identity events are auditable (60.995ms)
+▶ cookies over https
+  ✔ an https site gets Secure, __Secure- prefixed session cookies (42.184ms)
+✔ cookies over https (42.3619ms)
+▶ CHV-S05-002 customers cannot reach admin APIs
+  ✔ no session: 401 on every admin route (11.1189ms)
+  ✔ a signed-in customer: 403 on every admin route, and nothing changes (36.4532ms)
+  ✔ denials are audited without personal data (3.4924ms)
+  ✔ a forged cookie or a bearer-style header does not help (3.6949ms)
+✔ CHV-S05-002 customers cannot reach admin APIs (1950.562ms)
+▶ roles limit capabilities
+  ✔ STAFF can read their profile but cannot read the audit log or manage staff (29.5677ms)
+  ✔ ADMIN reads the audit log but cannot manage staff; OWNER can (43.591ms)
+  ✔ staff with orders.read can read any order; a customer only their own (40.0736ms)
+✔ roles limit capabilities (113.6835ms)
+▶ request protections
+  ✔ cross-site writes are refused before any permission check (4.2124ms)
+[2m2026-10-17T03:49:34.415Z[0m [31mERROR[0m [1m[Better Auth]:[0m Invalid origin: https://evil.example
+  ✔ Better Auth refuses sign-in requests from another origin (8.3572ms)
+✔ request protections (12.9487ms)
+▶ static check: privileged routes are always guarded
+  ✔ every API route declares an access rule (the guard refuses routes without one) (2.8661ms)
+  ✔ every admin route requires a staff capability; account routes a signed-in customer (2.0775ms)
+  ✔ the order route decides ownership itself; only the health probes skip every check (1.7127ms)
+  ✔ the web host holds no API logic: only the forwarder and the chat route, no database or sign-in imports (66.4415ms)
+✔ static check: privileged routes are always guarded (73.4026ms)
+▶ CHV-S05-001 guest isolation
+  ✔ a guest reads their own order (22.4303ms)
+  ✔ a guest cannot read another guest's order, and the refusal looks like a missing order (10.8068ms)
+  ✔ no cookie, a made-up token or a malformed token reads nothing (15.3471ms)
+  ✔ the database hash alone is not a working cookie (7.3001ms)
+  ✔ expired or revoked guest sessions read nothing (33.648ms)
+  ✔ guests and customers cannot read each other's orders (38.3095ms)
+  ✔ cart ownership follows the same rule (0.7684ms)
+  ✔ a guest is never staff: admin and account routes refuse a guest cookie (4.1026ms)
+✔ CHV-S05-001 guest isolation (832.8814ms)
+▶ CHV-S05-003 privileged actions require MFA
+  ✔ an ADMIN who has not enrolled two-factor is refused with mfa_required (423.7355ms)
+  ✔ with two-factor enrolled, password sign-in stops at the TOTP challenge and creates no session (576.2969ms)
+  ✔ a staff member signing in with an email code is only a customer, even after entering a TOTP code (470.693ms)
+  ✔ sessions record how they were created (2.0173ms)
+  ✔ disabling two-factor removes admin access (468.149ms)
+[2m2026-10-17T03:49:47.584Z[0m [31mERROR[0m [1m[Better Auth]:[0m Failed to create session
+  ✔ losing the role or being disabled ends access immediately (852.5625ms)
+  ✔ backup codes work once each (572.4857ms)
+✔ CHV-S05-003 privileged actions require MFA (3978.2825ms)
+▶ CHV-S05-004 expired codes and sessions are refused
+  ✔ an expired sign-in code is refused (207.2152ms)
+  ✔ codes expire after five minutes by configuration (18.9654ms)
+  ✔ an expired password-reset code is refused and the password is unchanged (230.3078ms)
+  ✔ a valid reset code works once and signs the user out everywhere (302.9831ms)
+  ✔ a sign-in code works once (44.7825ms)
+  ✔ three wrong attempts burn the code, even for the right value afterwards (73.5701ms)
+  ✔ codes are stored hashed, never as the six digits (10.9483ms)
+  ✔ an expired session is refused (53.6907ms)
+  ✔ signing out ends the session (68.8041ms)
+✔ CHV-S05-004 expired codes and sessions are refused (1628.684ms)
+(node:39044) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ CHV-S08-001 only the right staff can create, edit and publish
+  ✔ visitors get 401 and customers 403 on every catalogue admin route (429.6656ms)
+  ✔ STAFF can read the catalogue but not create, edit, upload, import or publish (362.6791ms)
+  ✔ ADMIN edits drafts but cannot publish, approve photos or change a live product (343.8593ms)
+  ✔ publishing needs a reason, the current ETag and every checklist item (242.4732ms)
+  ✔ publish checks: real description, tax category, approved photo with alt text, shipping restriction, sizes (130.6941ms)
+  ✔ synthetic and placeholder products can never be published (163.2273ms)
+  ✔ once live, the handle is fixed and edits need the owner's reason (277.6233ms)
+✔ CHV-S08-001 only the right staff can create, edit and publish (9652.4847ms)
+▶ CHV-S08-002 SKU and option clashes are refused, with no partial writes
+  ✔ the same SKU or the same options twice in one save is refused (28.9775ms)
+  ✔ a SKU used by another product refuses the whole save: earlier rows are not written (225.9643ms)
+  ✔ variants can swap SKUs, removed variants are archived and their options reused (131.827ms)
+  ✔ a stale ETag is refused: two editors cannot overwrite each other (79.0166ms)
+  ✔ stock is never written by variant saves or imports (195.8945ms)
+✔ CHV-S08-002 SKU and option clashes are refused, with no partial writes (662.2791ms)
+▶ CHV-S08-003 nothing unapproved reaches public reads
+  ✔ drafts, archived products and unknown handles read the same 404; live products are listed (439.604ms)
+  ✔ pending, rejected and removed photos are never public; approved ones are (636.2382ms)
+  ✔ hidden collections and their products stay out of public reads (30.0932ms)
+  ✔ catalogue events: none for draft edits, one per live change, carrying handles only (234.9676ms)
+  ✔ storefront categories keep their URLs (53.9945ms)
+✔ CHV-S08-003 nothing unapproved reaches public reads (1395.3233ms)
+▶ CHV-S08-004 upload abuse is refused
+  ✔ unsupported types, oversized files and malformed checksums are refused before any upload (83.8001ms)
+  ✔ the signed upload fixes type, exact length and checksum, expires in 10 minutes and targets private staging (525.4693ms)
+  ✔ a file that is not the image it claims is refused and deleted, leaving no photo (300.8265ms)
+  ✔ intents belong to their creator, work once and expire (120.5062ms)
+  ✔ approving and rejecting photos needs catalogue.publish; open intents are limited (618.2947ms)
+✔ CHV-S08-004 upload abuse is refused (1691.133ms)
+▶ CHV-S08-005 price edits never change order snapshots
+  ✔ repricing a live variant is audited and leaves earlier order lines untouched (266.3138ms)
+  ✔ the database refuses any change to an order line's snapshot (204.0294ms)
+✔ CHV-S08-005 price edits never change order snapshots (470.578ms)
+▶ CSV import and export
+  ✔ preview reports every error and writes nothing; stock columns are refused (22.1183ms)
+  ✔ a clean file is previewed, then committed in one transaction as drafts; a changed catalogue needs a new preview (118.1774ms)
+  ✔ live products are not imported over; export guards against spreadsheet formulas (194.7376ms)
+✔ CSV import and export (335.3449ms)
+(node:6264) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M02 the public product, variant and photo DTOs hold exactly the contract's fields (7284.5324ms)
+✔ CHV-S10-M02 private columns never leave the API, even though the rows hold them (12.0905ms)
+✔ CHV-S10-M02 drafts, archived variants and unapproved photos are not in the projection (37.3314ms)
+✔ CHV-S10-M02 the published OpenAPI schema is closed and matches the contract's field lists (0.3274ms)
+(node:46680) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M01 a public SKU and variant are the database's rows, with price and availability from their source columns (6482.0987ms)
+✔ CHV-S10-M01 an unpublished item is absent from public reads but traceable to its row by staff (29.1102ms)
+✔ CHV-S10-M01 the storefront still reads only the placeholder module, so no demo product reaches the API (17.9755ms)
+(node:38776) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ permissions and record rules
+  ✔ visitors 401, customers 403, STAFF read only, ADMIN cannot approve stocktakes (449.7197ms)
+  ✔ changes need a reason and the current ETag; an Idempotency-Key makes a retry harmless (299.2347ms)
+✔ permissions and record rules (7629.0643ms)
+▶ CHV-S09-003 stock change, ledger and audit are one unit
+  ✔ receive, adjust and write-off each write one ledger row with the balance after it, and one audit event (351.8232ms)
+  ✔ a change that fails part-way leaves no ledger row, no audit event and the same balance (263.0392ms)
+  ✔ the ledger cannot be edited or deleted, and a signed stocktake cannot change (301.0497ms)
+✔ CHV-S09-003 stock change, ledger and audit are one unit (916.3147ms)
+▶ stocktakes and the public-display gate
+  ✔ a live product stays off the shop until its stock is counted and signed; discrepancies must each be accepted (453.3036ms)
+  ✔ approval needs the statement and a typed name; a count below units held for orders is refused (432.8818ms)
+  ✔ SKU search, never-counted and low-stock filters (293.8994ms)
+✔ stocktakes and the public-display gate (1180.9146ms)
+▶ CHV-S09-004 imports are idempotent and never make demo goods live
+  ✔ the same count file twice returns the same stocktake; approving it twice is impossible (304.7402ms)
+  ✔ a Shopify export is reference only: counts start at zero and differences are reported (193.4769ms)
+  ✔ synthetic, placeholder and unknown SKUs are refused; nothing is created (76.5517ms)
+✔ CHV-S09-004 imports are idempotent and never make demo goods live (575.1222ms)
+ℹ tests 117
+ℹ suites 30
+ℹ pass 117
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94750.1911

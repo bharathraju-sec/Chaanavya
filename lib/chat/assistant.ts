@@ -1,12 +1,11 @@
 // Server-only: the shop's chat assistant (Claude Haiku 5.5 through the Anthropic API). It answers
-// from three sources only: live products (search_products), a customer's own order (track_order,
-// order number plus checkout email) and the site's own policy pages.
+// from two sources only: the catalogue (search_products) and the site's own policy pages. Order
+// lookups return when Chaanavya's own order service exists (Stage 18).
 // Never import this from a client component: it reads ANTHROPIC_API_KEY from the environment.
 import Anthropic from "@anthropic-ai/sdk"
-import { getProducts } from "@/lib/shopify"
+import { getProducts } from "@/lib/catalogue/storefront"
 import { formatMoney, optionLabel, type Product } from "@/lib/types"
 import { SUPPORT_EMAIL, SUPPORT_WHATSAPP_URL } from "@/components/site/support"
-import { lookupOrder } from "./orders"
 import { storePagesText } from "./store-pages"
 
 const MODEL = "claude-haiku-5-5"
@@ -32,7 +31,7 @@ How to answer:
 - Shipping, delivery, returns, exchanges, refunds, cancellations, payments, privacy and sizing come only from the STORE PAGES below. Quote the rule plainly and name the page path (for example /refund-policy). If the pages do not cover a question, say you are not sure and offer the contact options.
 - Never promise anything the pages do not state: no extra discounts, delivery dates, refunds, exceptions or price matches.
 - Newsletter subscribers get a 10% welcome code by email when they sign up through the sign-up popup on the site. Do not reveal or invent any code.
-- For order status or tracking, ask for the order number (like #1001) and the email used at checkout, then call track_order. Never guess either, and never call it with details the customer did not give. Share only what the tool returns: status, items, shipment and tracking. If it finds nothing, say so and suggest checking both details or using /track-order. For changes, cancellations, returns on an order, complaints or a request to speak to a person, give the contact options.
+- For order status or tracking, send the customer to /track-order or give the contact options. You cannot see orders. For changes, cancellations, returns on an order, complaints or a request to speak to a person, give the contact options.
 - Never ask for, accept or repeat card numbers, UPI IDs, bank details, OTPs or passwords. If a customer shares one, tell them not to and continue without it.
 - Contact options: WhatsApp ${SUPPORT_WHATSAPP_URL} and email ${SUPPORT_EMAIL}.
 - Only help with shopping at Chaanavya. Politely decline unrelated requests.
@@ -50,20 +49,6 @@ const SEARCH_TOOL: Anthropic.Tool = {
       in_stock_only: { type: "boolean", description: "Only return products with at least one size in stock." },
     },
     required: ["query"],
-  },
-}
-
-const TRACK_TOOL: Anthropic.Tool = {
-  name: "track_order",
-  description:
-    "Look up the status of one order. Needs both the order number and the email address the customer used at checkout, exactly as the customer gave them. Returns payment and fulfilment status, items, shipment and tracking, or a message that nothing matched.",
-  input_schema: {
-    type: "object",
-    properties: {
-      order_number: { type: "string", description: "Order number from the confirmation email, for example #1001." },
-      email: { type: "string", description: "Email address used at checkout." },
-    },
-    required: ["order_number", "email"],
   },
 }
 
@@ -122,7 +107,7 @@ const toCard = (p: Product): ChatProduct => ({
 let client: Anthropic | null = null
 
 /** Runs one customer turn: the model may search products (up to 4 rounds), then answers. */
-export async function answer(history: ChatTurn[], origin: string, visitor: string): Promise<ChatReply> {
+export async function answer(history: ChatTurn[], origin: string): Promise<ChatReply> {
   if (!isChatConfigured()) throw new ChatUnavailableError("Chat is not configured")
   client ??= new Anthropic()
 
@@ -139,7 +124,7 @@ export async function answer(history: ChatTurn[], origin: string, visitor: strin
       max_tokens: 2048,
       output_config: { effort: "low" },
       system,
-      tools: [SEARCH_TOOL, TRACK_TOOL],
+      tools: [SEARCH_TOOL],
       // On the last round tools are withdrawn so the model has to answer.
       tool_choice: round === MAX_TOOL_ROUNDS ? { type: "none" } : { type: "auto" },
       messages,
@@ -165,10 +150,6 @@ export async function answer(history: ChatTurn[], origin: string, visitor: strin
     messages.push({ role: "assistant", content: response.content })
     const results: Anthropic.ToolResultBlockParam[] = []
     for (const use of toolUses) {
-      if (use.name === TRACK_TOOL.name) {
-        results.push({ type: "tool_result", tool_use_id: use.id, content: await lookupOrder(use.input, visitor) })
-        continue
-      }
       if (use.name !== SEARCH_TOOL.name) {
         results.push({ type: "tool_result", tool_use_id: use.id, content: "Unknown tool.", is_error: true })
         continue

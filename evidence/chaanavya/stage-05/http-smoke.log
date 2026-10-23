@@ -1,0 +1,27 @@
+# Live HTTP check against the production build (next start), 2026-10-15T21:21:19.4675799+11:00
+
+## Run 1: COMMERCE_BACKEND not set (as production today)
+200 GET /
+200 GET /jewellery
+200 GET /products/merlot-wrap-dress
+404 GET /api/admin/me
+404 GET /api/account/orders
+404 GET /api/orders/01a13f03-0000-7000-8000-000000000000
+404 POST /api/auth/sign-in/email
+404 POST /api/auth/email-otp/send-verification-otp
+404 POST /api/account/claim-order
+404 DELETE /api/admin/staff/01a13f03-0000-7000-8000-000000000000/sessions
+
+## Run 2: COMMERCE_BACKEND=chaanavya, fresh database chaanavya_test_http, real HTTP with cookies
+200 POST send sign-in code
+code delivered to the development server log: True
+200 POST sign in with the code
+Set-Cookie: chaanavya.session_token=<redacted>; Max-Age=604800; Path=/; HttpOnly; SameSite=Lax
+200 GET /api/account/orders (signed in)
+403 GET /api/admin/me (customer)
+401 GET /api/admin/me (no session)
+403 POST /api/account/claim-order from https://evil.example
+403 POST /api/auth/sign-out from https://evil.example (Better Auth origin check)
+200 POST /api/auth/sign-out (same origin)
+401 GET /api/account/orders after sign-out
+200 GET / (storefront unchanged)

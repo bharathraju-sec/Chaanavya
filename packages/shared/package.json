@@ -1,0 +1,10 @@
+{
+  "name": "@chaanavya/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Framework-free code used by the web host, the API and the worker: environment contract, logger, admin host rules, staff roles. TypeScript loaded directly (erasable syntax only).",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  }
+}

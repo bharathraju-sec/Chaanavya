@@ -1,0 +1,52 @@
+
+> chaanavya-storefront@2.0.0 test:e2e
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/e2e/*.test.mjs"
+
+▶ CHV-S06-001 admin pages are blocked for customers and visitors
+  ✔ the shop host never serves the admin (59.3028ms)
+  ✔ signed-out visitors on the admin host are sent to the login page, which is not indexed (35.332ms)
+  ✔ old /admin/... addresses on the admin host redirect to the short form (1.972ms)
+  ✔ a signed-in customer gets a plain 404 on every admin page (486.4202ms)
+  ✔ unknown admin addresses are a plain 404 (9.6139ms)
+✔ CHV-S06-001 admin pages are blocked for customers and visitors (2968.2249ms)
+▶ roles and empty states
+  ✔ CHV-S06-004 the overview shows no sales figures, sample rows or currency amounts (34.048ms)
+  ✔ CHV-S06-004 every planned section says it is not built yet and shows no data (86.2944ms)
+  ✔ the owner sees team and configuration; values never appear (30.3825ms)
+  ✔ STAFF sees no Settings or Audit link, and those pages refuse them (38.669ms)
+  ✔ CHV-S08 products: an empty catalogue says so; STAFF can look but gets no editing controls (84.9428ms)
+  ✔ CHV-S08 product editor, preview, collections and import pages render from the API (198.4008ms)
+  ✔ CHV-S08/S09 a signed-in customer gets a 404 on the product and inventory pages (433.9888ms)
+  ✔ admin pages may load photos and send uploads to the photo store; shop pages may not upload (29.0952ms)
+  ✔ CHV-S09 inventory: stock list, stocktakes; STAFF reads but cannot start a count (119.4937ms)
+  ✔ the audit trail page lists real entries (21.6289ms)
+✔ roles and empty states (2713.2702ms)
+▶ storefront header
+  ✔ the sign-in button opens our sign-in page; signed in, it says Account (443.1585ms)
+  ✔ robots.txt: the shop keeps crawlers out of private paths; the admin host blocks everything (31.2016ms)
+  ✔ no Shopify anywhere in storefront pages (65.7878ms)
+✔ storefront header (540.4464ms)
+▶ static check
+  ✔ admin code has no chart libraries or hard-coded money figures (5.2979ms)
+✔ static check (5.3839ms)
+✔ CHV-S10-M08 every collection page keeps its slug and editorial copy and shows an honest empty state (6128.5837ms)
+(node:37896) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M08 each collection shows exactly its published members, newest first (1421.2588ms)
+✔ CHV-S10-M08 a collection with more than 48 products pages with Show more and no product is lost or repeated (372.4597ms)
+✔ CHV-S10-M08 a forged or malformed cursor is a plain 404, never a leak (97.6491ms)
+✔ CHV-S10-M08 unknown slugs, an owner-hidden collection and the old links behave as before (94.3665ms)
+✔ CHV-S10-M08 when the API is down each collection page says so calmly and shows no sample products (496.1443ms)
+✔ CHV-S10-M07 with nothing published the homepage keeps its editorial layout and shows no sample products (6404.5904ms)
+(node:18300) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M07 published, counted products render from the API, newest first, capped at four, without hidden ones (1357.2002ms)
+✔ CHV-S10-M07 when the API is down the homepage says so calmly and still shows no sample products (435.3723ms)
+ℹ tests 28
+ℹ suites 4
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 26384.6665

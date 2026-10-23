@@ -1,0 +1,15 @@
+(node:44628) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M05 a collection returns only its published members, newest first, ties by ID (9526.1565ms)
+✔ CHV-S10-M05 membership is per collection, and a hidden collection is never named (14.5516ms)
+✔ CHV-S10-M05 pages are bounded and walk the members once in order (76.4334ms)
+✔ CHV-S10-M05 query parameters cannot widen the filter or reorder the members (34.5221ms)
+✔ CHV-S10-M05 hidden and unknown collections are the same 404, and the key is required (14.3635ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10454.1659

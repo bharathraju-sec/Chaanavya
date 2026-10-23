@@ -1,0 +1,29 @@
+# Route inventory, local workspace dev server http://localhost:5601 (demo catalogue), 2026-10-15T08:05:32Z
+# status  path  -> redirect target
+200  /  
+200  /new-arrivals  
+200  /dresses  
+200  /ethnic-festive  
+200  /jewellery  
+200  /fragrance  
+200  /products/merlot-wrap-dress  
+200  /products/aurum-bangles  
+404  /products/no-such-product  
+200  /contact  
+200  /track-order  
+200  /size-guide  
+200  /shipping-policy  
+200  /refund-policy  
+200  /privacy-policy  
+200  /terms  
+404  /does-not-exist  
+308  /index.html  /
+308  /essentials  /fragrance
+308  /essentials.html  /fragrance
+308  /jewelry  /jewellery
+308  /jewelry.html  /jewellery
+308  /contact.html  /contact
+# API (GET is not the supported method; expected 405 for /api/shopify)
+405  GET /api/shopify
+405  GET /api/marketing/subscribe
+405  GET /api/chat

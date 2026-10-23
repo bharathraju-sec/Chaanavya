@@ -1,0 +1,13 @@
+# Stage 02 change scope: workspace vs clean export of main 60ea71a, 2026-10-15T08:26:08Z
+# (line endings ignored; node_modules .next .env.local docs evidence excluded)
+modified: README.md
+Only in ./design-system/chaanavya: pages
+modified: eslint.config.mjs
+Only in ./lib: integrations
+Only in ./lib: modules
+modified: next.config.ts
+modified: package.json
+Only in ./scripts: print-state-machines.mjs
+Only in .: tests
+--- runtime wiring check: imports of the new contracts from app/, components/ or existing lib/ files
+none (contracts are not used by the storefront)

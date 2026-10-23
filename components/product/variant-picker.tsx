@@ -2,30 +2,22 @@
 
 import * as React from "react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import type { Product, Variant } from "@/lib/types"
+import type { Product } from "@/lib/types"
+import { choosableOptions, fixedSelection, resolveVariant, selectionFor, valueAvailable, type Selection } from "@/lib/variants"
 
-type Selection = Record<string, string>
-
-/** Options a shopper actually has to choose (Shopify's single-value "Title" option is skipped). */
-export const choosableOptions = (product: Product) => product.options.filter(o => o.values.length > 1)
-
-const matches = (variant: Variant, selection: Selection) =>
-  Object.entries(selection).every(([name, value]) => variant.selectedOptions.some(o => o.name === name && o.value === value))
+export { choosableOptions }
 
 /**
  * Tracks the shopper's choice per option and resolves it to a variant. Single-value options
  * are preselected, so a product with no real choice resolves to its only variant immediately.
+ * `initialVariantId` (a shared link) preselects that variant's options.
  */
-export function useVariantSelection(product: Product) {
-  const fixed = React.useMemo(
-    () => Object.fromEntries(product.options.filter(o => o.values.length === 1).map(o => [o.name, o.values[0]])),
-    [product.options]
-  )
-  const [chosen, setChosen] = React.useState<Selection>({})
+export function useVariantSelection(product: Product, initialVariantId?: string | null) {
+  const fixed = React.useMemo(() => fixedSelection(product), [product])
+  const [chosen, setChosen] = React.useState<Selection>(() => selectionFor(product, initialVariantId))
   const selection = { ...fixed, ...chosen }
   const options = choosableOptions(product)
-  const complete = options.every(o => selection[o.name])
-  const variant = product.variants.length === 1 ? product.variants[0] : complete ? product.variants.find(v => matches(v, selection)) : undefined
+  const variant = resolveVariant(product, selection)
 
   return {
     options,
@@ -41,9 +33,7 @@ export function OptionPicker({ product, selection, onChoose }: { product: Produc
   return (
     <div className="grid gap-6">
       {choosableOptions(product).map(option => {
-        // A value is offered when some available variant has it alongside the other current choices.
-        const others = Object.fromEntries(Object.entries(selection).filter(([name]) => name !== option.name))
-        const isAvailable = (value: string) => product.variants.some(v => v.availableForSale && matches(v, { ...others, [option.name]: value }))
+        const isAvailable = (value: string) => valueAvailable(product, selection, option.name, value)
         return (
           <div key={option.name}>
             <p className="label-caps mb-3 text-[11px]" id={`opt-${product.handle}-${option.name}`}>

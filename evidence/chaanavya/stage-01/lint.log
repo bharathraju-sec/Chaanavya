@@ -1,0 +1,6 @@
+$ npm run lint
+
+> chaanavya-storefront@2.0.0 lint
+> eslint
+
+exit: 0

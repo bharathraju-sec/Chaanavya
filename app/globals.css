@@ -2,6 +2,10 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* No dark mode (design master): shadcn's dark: styles apply only under a .dark class, which the
+   site never sets, instead of following the visitor's system setting. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Chaanavya warm editorial theme. Source of truth: design-system/chaanavya/MASTER.md.
    shadcn semantic tokens are mapped onto the brand palette so every ui/ component inherits it. */
 :root {

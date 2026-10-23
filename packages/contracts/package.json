@@ -1,0 +1,10 @@
+{
+  "name": "@chaanavya/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Commerce contracts (Stage 02), provider ports and the generated API types (Stage 07). TypeScript loaded directly (erasable syntax only).",
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  }
+}

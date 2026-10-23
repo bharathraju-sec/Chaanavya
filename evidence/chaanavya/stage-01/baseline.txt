@@ -1,0 +1,25 @@
+# Baseline captured 2026-10-15T08:02:39Z
+main HEAD: 60ea71a4ee6d9dd83b20bd4f5646e0844949a40b (Ignore the local backup/ upgrade workspace)
+workspace copied from: 734782945709b5bdf6625f78fa470e5e147a7747
+main branch: main; main working tree dirty files: 0
+node: v24.21.0  npm: 11.19.0  os: MINGW64_NT-10.0-26300
+next: 16.4.0
+react: 19.3.0
+react-dom: 19.3.0
+typescript: 5.9.3
+eslint: 9.39.5
+tailwindcss: 4.3.3
+@anthropic-ai/sdk: 0.133.0
+radix-ui: 1.8.1
+--- environment variable names in .env.local (values never read into this file)
+SHOPIFY_STOREFRONT_API_VERSION: set
+SHOPIFY_STORE_DOMAIN: set
+VERCEL_OIDC_TOKEN: set
+NEXT_PUBLIC_GA_MEASUREMENT_ID: set
+SHOPIFY_ADMIN_CLIENT_ID: set
+SHOPIFY_ADMIN_CLIENT_SECRET: set
+SHOPIFY_STOREFRONT_ACCESS_TOKEN: not present
+SHOPIFY_USE_MOCK: not present
+SHOPIFY_ADMIN_ACCESS_TOKEN: not present
+ANTHROPIC_API_KEY: not present
+VERCEL_ENV: not present

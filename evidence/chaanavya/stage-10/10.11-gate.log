@@ -1,0 +1,17 @@
+(node:40596) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M11 the sitemap lists exactly what shoppers can open, and nothing hidden or sample (9682.8036ms)
+✔ CHV-S10-M11 robots.txt keeps private paths out and points at the sitemap (4.1461ms)
+✔ CHV-S10-M11 every listed page opens, is mobile-ready, has a title and its own canonical address, and names no sample product (437.5712ms)
+✔ CHV-S10-M11 an empty collection and the Show more pages are kept out of the index, with one canonical address (73.9146ms)
+✔ CHV-S10-M11 the sitemap follows the catalogue: an unpublish drops the product after the worker delivers it (148.8726ms)
+✔ CHV-S10-M11 checkout stays closed: no checkout, payment, cart or webhook route, page or API, and no payment provider on the pages (177.2248ms)
+✔ CHV-S10-M11 when the API is down the sitemap and robots still work, with fixed pages only and no stale or sample product (433.2863ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11689.4653

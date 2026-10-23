@@ -1,0 +1,37 @@
+✔ CHV-S10-M06 no web host source imports a database driver, Prisma or API code (16.8411ms)
+✔ CHV-S10-M06 the catalogue client and storefront pages never read database settings (3.0767ms)
+✔ CHV-S10-M06 a read is a plain GET to the API with the internal key and nothing about the visitor (17.9378ms)
+{"time":"2026-10-21T02:59:27.046Z","level":"warn","event":"catalogue.client_error_status","correlationId":"1c7a53f2-0488-4583-b978-052228adac6f","path":"/api/v1/catalogue/products","status":500}
+{"time":"2026-10-21T02:59:27.047Z","level":"warn","event":"catalogue.client_error_status","correlationId":"6733b32e-880c-468e-a56e-e841d5be5fd9","path":"/api/v1/catalogue/products/kurta","status":500}
+{"time":"2026-10-21T02:59:27.048Z","level":"warn","event":"catalogue.client_error_status","correlationId":"4abe2fcf-bbbc-4ac1-a9ac-4c8b2882da88","path":"/api/v1/catalogue/collections/ethnic-festive","status":500}
+{"time":"2026-10-21T02:59:27.049Z","level":"warn","event":"catalogue.client_error_status","correlationId":"f45e02b8-9dde-49ce-898f-3dbe8a42aff3","path":"/api/v1/catalogue/collections","status":500}
+{"time":"2026-10-21T02:59:27.050Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"e5799507-388f-402d-a92c-febc14531b0f","path":"/api/v1/catalogue/products"}
+{"time":"2026-10-21T02:59:27.051Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"4b35675a-bc81-4b71-968a-76497ffd3a40","path":"/api/v1/catalogue/products/kurta"}
+{"time":"2026-10-21T02:59:27.052Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"53485ecb-2cdd-4c65-9ac1-e24af7103ca0","path":"/api/v1/catalogue/collections/ethnic-festive"}
+{"time":"2026-10-21T02:59:27.053Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"d25c4eaa-1590-4e8c-805e-0aee3d8e7807","path":"/api/v1/catalogue/collections"}
+{"time":"2026-10-21T02:59:27.054Z","level":"warn","event":"catalogue.client_error_status","correlationId":"043abc99-b046-4b49-bf54-0ab8827c29b0","path":"/api/v1/catalogue/products","status":302}
+{"time":"2026-10-21T02:59:27.054Z","level":"warn","event":"catalogue.client_error_status","correlationId":"fd918336-acef-404d-8083-5cb1aeaf2336","path":"/api/v1/catalogue/products/kurta","status":302}
+{"time":"2026-10-21T02:59:27.055Z","level":"warn","event":"catalogue.client_error_status","correlationId":"3b5535f4-ce49-4eac-90ce-91d19368d50b","path":"/api/v1/catalogue/collections/ethnic-festive","status":302}
+{"time":"2026-10-21T02:59:27.056Z","level":"warn","event":"catalogue.client_error_status","correlationId":"fd01ba58-1430-4a2e-b330-5f1d902c63a5","path":"/api/v1/catalogue/collections","status":302}
+{"time":"2026-10-21T02:59:27.060Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"f9e6f455-e236-4bc7-8cae-e5199d47c420","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T02:59:27.062Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"ebd9e00c-22c2-40c7-b4b9-532ac7ac57d2","path":"/api/v1/catalogue/products/kurta","reason":"network"}
+{"time":"2026-10-21T02:59:27.064Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"54a58769-40fc-4a53-a8a8-e4c311fe6281","path":"/api/v1/catalogue/collections/ethnic-festive","reason":"network"}
+{"time":"2026-10-21T02:59:27.065Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"83486f60-1deb-4bb6-b092-beb22b993762","path":"/api/v1/catalogue/collections","reason":"network"}
+✔ CHV-S10-M06 a missing or hidden answer is not_found; other failures are unavailable, never an exception (26.0606ms)
+{"time":"2026-10-21T02:59:27.320Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"0f766b9f-445e-4322-87b0-22a9d9a56657","path":"/api/v1/catalogue/products","reason":"timeout"}
+{"time":"2026-10-21T02:59:27.321Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"3ab3f221-61e2-40a3-b64f-ea835856eb9c","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-21T02:59:27.322Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"21c551c4-6f42-4592-8871-c5969c3f5bb3","path":"/api/v1/catalogue/collections","reason":"network"}
+✔ CHV-S10-M06 a slow API is cut off at the timeout, and an unreachable one is unavailable (255.7789ms)
+✔ CHV-S10-M06 without an API address outside development the client is unavailable, not a crash (0.6797ms)
+✔ CHV-S10-M06 malformed handles, variants and page options are refused before any request (0.265ms)
+(node:51800) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M06 against the real API, a process with no database settings reads published data and nothing hidden (7231.6635ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7929.536

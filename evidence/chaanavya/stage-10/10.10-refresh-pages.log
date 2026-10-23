@@ -1,0 +1,15 @@
+✔ CHV-S10-M10 the refresh route answers only the worker, and only to POST (9133.3322ms)
+✔ CHV-S10-M10 policy: public reads are cached for a bounded 60 seconds (45.5751ms)
+(node:3020) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M10 a publish becomes visible after the worker delivers it, not before (1992.3888ms)
+✔ CHV-S10-M10 a stock change to sold out becomes visible after the worker delivers it (507.9503ms)
+✔ CHV-S10-M10 an unpublish removes the product after the worker delivers it (396.1796ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12961.0253

@@ -4,13 +4,40 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
+        "dev:api": "npm run --workspace @chaanavya/api dev",
+        "dev:worker": "npm run --workspace @chaanavya/worker dev",
         "build": "next build",
+        "build:api": "npm run --workspace @chaanavya/api build",
+        "build:worker": "npm run --workspace @chaanavya/worker build",
+        "build:all": "npm run build:api && npm run build:worker && npm run build",
         "start": "next start",
+        "start:api": "npm run --workspace @chaanavya/api start",
+        "start:worker": "npm run --workspace @chaanavya/worker start",
         "lint": "eslint",
-        "typecheck": "next typegen && tsc --noEmit"
+        "typecheck": "next typegen && tsc --noEmit && npm run --workspace @chaanavya/api typecheck && npm run --workspace @chaanavya/worker typecheck",
+        "test": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test \"tests/contracts/*.test.mjs\" \"tests/ops/*.test.mjs\" \"tests/catalogue/*.test.mjs\"",
+        "check:env": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=.env.local scripts/check-env.mjs",
+        "scan:secrets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/scan-secrets.mjs",
+        "db:up": "docker compose up -d --wait db media",
+        "db:down": "docker compose down",
+        "db:backup": "node scripts/db.mjs backup",
+        "db:restore": "node scripts/db.mjs restore",
+        "db:restore-check": "node scripts/db.mjs restore-check",
+        "db:generate": "npm run --workspace @chaanavya/api db:generate",
+        "db:migrate": "npm run --workspace @chaanavya/api db:migrate",
+        "db:migrate:status": "npm run --workspace @chaanavya/api db:migrate:status",
+        "db:seed:synthetic": "npm run --workspace @chaanavya/api db:seed:synthetic",
+        "test:db": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test --test-concurrency=1 \"tests/integration/database/*.test.mjs\"",
+        "test:security": "npm run build:api && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 \"tests/security/**/*.test.mjs\"",
+        "test:e2e": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 \"tests/e2e/*.test.mjs\"",
+        "api:openapi": "npm run --workspace @chaanavya/api openapi && openapi-typescript packages/contracts/openapi/api.json --output packages/contracts/src/api/schema.ts",
+        "admin:bootstrap-owner": "npm run --workspace @chaanavya/api admin:bootstrap-owner --",
+        "admin:add-staff": "npm run --workspace @chaanavya/api admin:add-staff --"
     },
     "dependencies": {
         "@anthropic-ai/sdk": "^0.133.0",
+        "@chaanavya/contracts": "*",
+        "@chaanavya/shared": "*",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cn": "^0.4.0",
@@ -32,11 +59,23 @@
         "@types/react-dom": "^19",
         "eslint": "^9",
         "eslint-config-next": "16.4.0",
+        "openapi-typescript": "7.13.0",
         "shadcn": "^4.21.4",
         "tailwindcss": "^4",
         "typescript": "^5"
     },
     "engines": {
-        "node": ">=20.9"
+        "node": ">=22.18",
+        "npm": ">=10"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "allowScripts": {
+        "@prisma/engines@7.10.0": true,
+        "prisma@7.10.0": true,
+        "unrs-resolver@1.12.2": true,
+        "@scarf/scarf": false
     }
 }

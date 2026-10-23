@@ -1,0 +1,15 @@
+# CI workflow checks, 2026-10-15T09:32:57Z. The workflow has not run on GitHub (workspace not pushed).
+YAML parses: yes
+triggers: push, pull_request, workflow_dispatch
+permissions: {"contents":"read"}
+job verify: 9 steps; runs: npm ci | npm run lint | npm run typecheck | npm test | npm run build | npm run check:env -- --target development | npm run scan:secrets -- --process-env .next
+  uses actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 (pinned to commit SHA)
+  uses actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 (pinned to commit SHA)
+job database: 7 steps; runs: npm ci | npm run db:up | npm run db:restore-check | npm run test:db | npm run db:down
+  uses actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 (pinned to commit SHA)
+  uses actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 (pinned to commit SHA)
+job target-config: 3 steps; runs: npm run check:env -- --target ${{ inputs.target }}
+  uses actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 (pinned to commit SHA)
+  uses actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 (pinned to commit SHA)
+npm scripts referenced: lint, typecheck, build, check:env, scan:secrets, db:up, db:restore-check, test:db, db:down | all defined: true
+Node version file: .nvmrc = 24

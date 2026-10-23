@@ -1,0 +1,16 @@
+(node:31024) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M04 a published handle loads with the first variant that can be bought now (9888.2933ms)
+✔ CHV-S10-M04 the shopper's chosen variant is selected, even when it is sold out (7.7625ms)
+✔ CHV-S10-M04 a variant from another or hidden product, or an unknown one, falls back and reveals nothing (36.513ms)
+✔ CHV-S10-M04 a published product with nothing to buy is found and marked unavailable (7.0506ms)
+✔ CHV-S10-M04 hidden handles do not load and read exactly like a missing one (173.9775ms)
+✔ CHV-S10-M04 without the web host's key the details are refused (1.3371ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11031.1682

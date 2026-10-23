@@ -7,7 +7,7 @@ Generated with the ui-ux-pro-max skill (2026-10-13), then corrected by hand to t
 direction the owner approved: **warm editorial**. The skill's automatic pick
 ("Liquid Glass", stone black and gold) was rejected because it does not match the logo.
 
-- **Product:** E-commerce, women's fashion boutique (India, INR, Shopify checkout)
+- **Product:** E-commerce, women's fashion boutique (India, INR)
 - **Dials:** Variance 4/10 (balanced), Motion 3/10 (subtle), Density 3/10 (spacious)
 - **Stack:** Next.js 16 App Router, React 19, Tailwind CSS 4, shadcn/ui, lucide-react
 

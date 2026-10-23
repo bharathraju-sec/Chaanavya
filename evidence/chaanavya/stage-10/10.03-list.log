@@ -1,0 +1,16 @@
+(node:34264) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M03 the API refuses callers without the web host's key (7835.8514ms)
+✔ CHV-S10-M03 called directly, the list holds only published, counted products, newest first (12.4257ms)
+✔ CHV-S10-M03 query parameters cannot widen the publication filter (76.7332ms)
+✔ CHV-S10-M03 paging one at a time visits each public product once and nothing else (30.3115ms)
+✔ CHV-S10-M03 a forged cursor is refused or only moves the position (18.3105ms)
+✔ CHV-S10-M03 a signed-in owner gets the same public list, and hidden handles are a plain 404 (29.969ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8749.2459

@@ -1,0 +1,35 @@
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":429,"cacheControl":null,"etag":false,"body":{"message":"Too many requests. Please try again later."}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":429,"cacheControl":null,"etag":false,"body":{"message":"Too many requests. Please try again later."}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"known.person@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":401,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Invalid email or password"}}
+{"method":"POST","route":"/api/auth/sign-up/email","status":400,"cacheControl":null,"etag":false,"body":{"code":"<token>","message":"Email and password sign up is not enabled"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"claimer@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/account/claim-order","status":200,"cacheControl":"no-store","etag":false,"body":{"status":"claimed"}}
+{"method":"POST","route":"/api/account/claim-order","status":404,"cacheControl":"no-store","etag":false,"body":{"error":"not_found"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"intruder@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/account/claim-order","status":404,"cacheControl":"no-store","etag":false,"body":{"error":"not_found"}}
+{"method":"POST","route":"/api/account/claim-order","status":404,"cacheControl":"no-store","etag":false,"body":{"error":"not_found"}}
+{"method":"POST","route":"/api/account/claim-order","status":404,"cacheControl":"no-store","etag":false,"body":{"error":"not_found"}}
+{"method":"POST","route":"/api/account/claim-order","status":404,"cacheControl":"no-store","etag":false,"body":{"error":"not_found"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"stale.claimer@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/account/claim-order","status":403,"cacheControl":"no-store","etag":false,"body":{"error":"<token>"}}
+{"method":"POST","route":"/api/account/claim-order","status":401,"cacheControl":"no-store","etag":false,"body":{"error":"unauthenticated"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"audited.person@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/auth/sign-out","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}

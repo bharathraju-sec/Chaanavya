@@ -1,0 +1,29 @@
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":400,"cacheControl":null,"etag":false,"body":{"code":"OTP_EXPIRED","message":"OTP expired"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/reset-password","status":400,"cacheControl":null,"etag":false,"body":{"code":"OTP_EXPIRED","message":"OTP expired"}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":200,"cacheControl":null,"etag":false,"body":{"redirect":false,"token":"<token>","user":{"createdAt":"<time>","email":"reset.expired@example.com","emailVerified":false,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/auth/sign-in/email","status":200,"cacheControl":null,"etag":false,"body":{"redirect":false,"token":"<token>","user":{"createdAt":"<time>","email":"reset.valid@example.com","emailVerified":false,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"GET","route":"/api/account/orders","status":200,"cacheControl":"no-store","etag":false,"body":{"orders":[]}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/reset-password","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"GET","route":"/api/account/orders","status":401,"cacheControl":"no-store","etag":false,"body":{"error":"unauthenticated"}}
+{"method":"POST","route":"/api/auth/email-otp/reset-password","status":400,"cacheControl":null,"etag":false,"body":{"code":"INVALID_OTP","message":"Invalid OTP"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"single.use@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":400,"cacheControl":null,"etag":false,"body":{"code":"INVALID_OTP","message":"Invalid OTP"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":400,"cacheControl":null,"etag":false,"body":{"code":"INVALID_OTP","message":"Invalid OTP"}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":400,"cacheControl":null,"etag":false,"body":{"code":"INVALID_OTP","message":"Invalid OTP"}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":400,"cacheControl":null,"etag":false,"body":{"code":"INVALID_OTP","message":"Invalid OTP"}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":403,"cacheControl":null,"etag":false,"body":{"code":"TOO_MANY_ATTEMPTS","message":"Too many attempts"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"expiring.session@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"GET","route":"/api/account/orders","status":200,"cacheControl":"no-store","etag":false,"body":{"orders":[]}}
+{"method":"GET","route":"/api/account/orders","status":401,"cacheControl":"no-store","etag":false,"body":{"error":"unauthenticated"}}
+{"method":"POST","route":"/api/auth/email-otp/send-verification-otp","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"POST","route":"/api/auth/sign-in/email-otp","status":200,"cacheControl":null,"etag":false,"body":{"token":"<token>","user":{"createdAt":"<time>","email":"signing.out@example.com","emailVerified":true,"id":"<uuid>","image":null,"name":"","twoFactorEnabled":false,"updatedAt":"<time>"}}}
+{"method":"POST","route":"/api/auth/sign-out","status":200,"cacheControl":null,"etag":false,"body":{"success":true}}
+{"method":"GET","route":"/api/account/orders","status":401,"cacheControl":"no-store","etag":false,"body":{"error":"unauthenticated"}}

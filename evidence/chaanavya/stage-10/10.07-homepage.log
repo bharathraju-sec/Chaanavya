@@ -1,0 +1,13 @@
+✔ CHV-S10-M07 with nothing published the homepage keeps its editorial layout and shows no sample products (11588.1395ms)
+(node:33336) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M07 published, counted products render from the API, newest first, capped at four, without hidden ones (1500.8885ms)
+✔ CHV-S10-M07 when the API is down the homepage says so calmly and still shows no sample products (432.6446ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14619.0756

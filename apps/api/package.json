@@ -1,0 +1,53 @@
+{
+  "name": "@chaanavya/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chaanavya API (NestJS, Stage 07): owns the database, sign-in, permissions and admin operations.",
+  "type": "module",
+  "exports": {
+    "./db/*": "./src/db/*.ts",
+    "./media/*": "./src/media/*.ts",
+    "./outbox/*": "./src/outbox/*.ts",
+    "./inventory/*": "./src/inventory/*.ts"
+  },
+  "scripts": {
+    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "start": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=../../.env.local dist/main.js",
+    "dev": "node scripts/dev.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "openapi": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON dist/openapi.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:status": "prisma migrate status",
+    "db:seed:synthetic": "prisma db seed",
+    "admin:bootstrap-owner": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=../../.env.local scripts/admin-user.mjs bootstrap-owner",
+    "admin:add-staff": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --env-file-if-exists=../../.env.local scripts/admin-user.mjs add-staff",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1144.0",
+    "@aws-sdk/s3-request-presigner": "3.1144.0",
+    "@chaanavya/contracts": "*",
+    "@chaanavya/shared": "*",
+    "@nestjs/common": "12.1.2",
+    "@nestjs/core": "12.1.2",
+    "@nestjs/platform-express": "12.1.2",
+    "@nestjs/swagger": "12.0.2",
+    "@nestjs/throttler": "6.7.1",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "better-auth": "1.7.7",
+    "image-size": "2.0.4",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2"
+  },
+  "devDependencies": {
+    "@types/express": "5.0.6",
+    "@types/node": "^22",
+    "prisma": "7.10.0",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=22.18"
+  }
+}

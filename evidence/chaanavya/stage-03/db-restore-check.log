@@ -1,0 +1,18 @@
+# CHV-S03-004 backup and restore, 2026-10-15T09:31:24Z, Docker 29.8.2, postgres:17.6-alpine on 127.0.0.1:54329
+$ npm run db:restore-check
+Backup written: backups\chaanavya_restore_source-2026-10-15T09-31-28-436Z.dump
+Restored backups\chaanavya_restore_source-2026-10-15T09-31-28-436Z.dump into chaanavya_restore_check.
+Source   chaanavya_restore_source: 5:e663f28cb62f60f91921aeb936e443b3
+Restored chaanavya_restore_check: 5:e663f28cb62f60f91921aeb936e443b3
+Restore check passed: 5 synthetic rows identical after backup and restore.
+exit: 0
+
+$ npm run db:restore -- backups/chaanavya_restore_source-2026-10-15T09-31-28-436Z.dump --into chaanavya_dev   (must refuse)
+Refusing to overwrite chaanavya_dev; pass --replace-dev to do that on purpose.
+exit: 1
+
+# Negative control: restore the dump, change one amount by 1 paisa, fingerprints must differ
+Restored backups/chaanavya_restore_source-2026-10-15T09-31-28-436Z.dump into chaanavya_restore_neg.
+restored: 5:e663f28cb62f60f91921aeb936e443b3
+modified: 5:4a61452f875e91fcf7cd9a79e23f48da
+scratch database dropped

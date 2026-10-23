@@ -1,0 +1,49 @@
+# Workspace vs clean export of main 60ea71a, 2026-10-15T08:07:27Z
+# excluded: node_modules .next .env.local next-env.d.ts tsconfig.tsbuildinfo docs evidence (local, unversioned)
+Files <main@60ea71a>/.env.example and ./.env.example differ
+Files <main@60ea71a>/.gitignore and ./.gitignore differ
+Files <main@60ea71a>/.vercelignore and ./.vercelignore differ
+Files <main@60ea71a>/AGENTS.md and ./AGENTS.md differ
+Files <main@60ea71a>/README.md and ./README.md differ
+Files <main@60ea71a>/app/api/chat/route.ts and ./app/api/chat/route.ts differ
+Files <main@60ea71a>/app/api/marketing/subscribe/route.ts and ./app/api/marketing/subscribe/route.ts differ
+Files <main@60ea71a>/app/contact/page.tsx and ./app/contact/page.tsx differ
+Files <main@60ea71a>/app/error.tsx and ./app/error.tsx differ
+Files <main@60ea71a>/app/layout.tsx and ./app/layout.tsx differ
+Files <main@60ea71a>/app/privacy-policy/page.tsx and ./app/privacy-policy/page.tsx differ
+Files <main@60ea71a>/app/refund-policy/page.tsx and ./app/refund-policy/page.tsx differ
+Files <main@60ea71a>/app/shipping-policy/page.tsx and ./app/shipping-policy/page.tsx differ
+Files <main@60ea71a>/app/terms/page.tsx and ./app/terms/page.tsx differ
+Files <main@60ea71a>/app/track-order/page.tsx and ./app/track-order/page.tsx differ
+Files <main@60ea71a>/components/chat/chat-widget.tsx and ./components/chat/chat-widget.tsx differ
+Files <main@60ea71a>/components/consent/cookie-consent.tsx and ./components/consent/cookie-consent.tsx differ
+Files <main@60ea71a>/components/marketing/welcome-popup.tsx and ./components/marketing/welcome-popup.tsx differ
+Files <main@60ea71a>/components/product/product-gallery.tsx and ./components/product/product-gallery.tsx differ
+Only in ./design-system/chaanavya: pages
+Files <main@60ea71a>/lib/catalog.ts and ./lib/catalog.ts differ
+Files <main@60ea71a>/lib/chat/assistant.ts and ./lib/chat/assistant.ts differ
+Files <main@60ea71a>/lib/chat/orders.ts and ./lib/chat/orders.ts differ
+Files <main@60ea71a>/lib/chat/store-pages.ts and ./lib/chat/store-pages.ts differ
+Files <main@60ea71a>/lib/consent.ts and ./lib/consent.ts differ
+Files <main@60ea71a>/lib/marketing/newsletter.ts and ./lib/marketing/newsletter.ts differ
+Files <main@60ea71a>/lib/marketing/welcome-popup.ts and ./lib/marketing/welcome-popup.ts differ
+Files <main@60ea71a>/lib/shopify-admin.ts and ./lib/shopify-admin.ts differ
+Files <main@60ea71a>/lib/shopify.ts and ./lib/shopify.ts differ
+Files <main@60ea71a>/next.config.ts and ./next.config.ts differ
+Files <main@60ea71a>/proxy.ts and ./proxy.ts differ
+Files <main@60ea71a>/scripts/perfume-art.mjs and ./scripts/perfume-art.mjs differ
+Files <main@60ea71a>/tsconfig.json and ./tsconfig.json differ
+Files <main@60ea71a>/vercel.json and ./vercel.json differ
+--- content diff
+Only in ./design-system/chaanavya: pages
+diff -r --strip-trailing-cr '--exclude=node_modules' '--exclude=.next' '--exclude=.env.local' '--exclude=next-env.d.ts' '--exclude=tsconfig.tsbuildinfo' '--exclude=docs' '--exclude=evidence' <main@60ea71a>/next.config.ts ./next.config.ts
+15a16,17
+>     // Pin the root to this folder so a copy nested in another checkout uses its own lockfile.
+>     root: __dirname,
+
+# Reading this file
+# - The "Files ... differ" list is line endings only (git archive gives LF, the workspace copy has CRLF);
+#   the --strip-trailing-cr content diff above is the real comparison.
+# - design-system/chaanavya/pages is an empty folder present on disk but untracked by git.
+# - The only content change is the turbopack.root pin in next.config.ts (dev root detection, no runtime effect).
+# Result: no storefront behaviour changed in Stage 01.

@@ -1,0 +1,147 @@
+
+> chaanavya-storefront@2.0.0 test:security
+> npm run build:api && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/security/**/*.test.mjs"
+
+
+> chaanavya-storefront@2.0.0 build:api
+> npm run --workspace @chaanavya/api build
+
+
+> @chaanavya/api@0.1.0 build
+> prisma generate && tsc -p tsconfig.build.json
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.0) to .\src\db\generated in 146ms
+
+▶ CHV-S06-001 customers cannot reach admin APIs
+  ✔ every Stage 06 admin API refuses a signed-in customer and a visitor (80.3158ms)
+✔ CHV-S06-001 customers cannot reach admin APIs (2475.5464ms)
+▶ CHV-S06-002 staff limits
+  ✔ STAFF and ADMIN cannot change roles or deactivate anyone (136.3058ms)
+  ✔ STAFF and ADMIN cannot open owner settings (25.0201ms)
+  ✔ refund approval limits: STAFF none, ADMIN up to the threshold, OWNER any amount (2.0139ms)
+  ✔ an owner cannot change their own access, and the last active owner is protected (176.2762ms)
+✔ CHV-S06-002 staff limits (340.0152ms)
+▶ CHV-S06-003 canonical audit events
+  ✔ granting a role records actor, entity, time, reason and correlation ID from the session (30.1751ms)
+  ✔ revoking a role signs the person out and is audited with the role and session count (26.3262ms)
+  ✔ deactivation and sign-out-everywhere are audited (362.5573ms)
+  ✔ a change without a reason is refused and leaves no trace (16.3488ms)
+  ✔ the audit catalogue rejects incomplete events (1.082ms)
+✔ CHV-S06-003 canonical audit events (436.8597ms)
+▶ API patterns
+  ✔ mutations need the current ETag: missing is 428, stale is 412 (41.1224ms)
+  ✔ bad input gets a structured 400 (33.7311ms)
+  ✔ the audit list pages with a cursor and filters (24.6462ms)
+✔ API patterns (99.7974ms)
+▶ admin on its own host
+  ✔ with ADMIN_URL set, admin APIs answer only on the admin host (7.5281ms)
+  ✔ host helpers (1.1326ms)
+✔ admin on its own host (8.7954ms)
+▶ CHV-S07-001 the API starts on its own; readiness follows the database
+  ✔ liveness and readiness answer without the key and without the web host (81.5497ms)
+  ✔ with the database unreachable the process stays alive but is not ready (503) (1356.9995ms)
+  ✔ outside development it refuses to start with incomplete configuration, naming settings but no values (1180.5493ms)
+✔ CHV-S07-001 the API starts on its own; readiness follows the database (3908.435ms)
+▶ only the web host can call the API
+  ✔ no key, a wrong key or a key of the wrong length: 401 on API and sign-in routes alike (11.2773ms)
+  ✔ the right key opens the API; browsers get no CORS permission (13.3562ms)
+✔ only the web host can call the API (24.9334ms)
+▶ request pipeline
+  ✔ a well-formed correlation ID is echoed; anything else is replaced (3.2815ms)
+  ✔ unknown routes and malformed IDs answer the not-found envelope, without stack traces (2.6168ms)
+  ✔ security headers on every answer, and no framework fingerprint (1.07ms)
+✔ request pipeline (7.3664ms)
+▶ rate limits
+  ✔ a fourth sign-in code request within a minute from one address is refused (198.1565ms)
+[2m2026-10-16T02:22:32.605Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-16T02:22:32.669Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-16T02:22:32.732Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-16T02:22:32.801Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-16T02:22:32.877Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+  ✔ password guessing is limited to five tries a minute (409.6556ms)
+  ✔ limits are kept in the database, shared by every server instance (2.9717ms)
+✔ rate limits (917.9189ms)
+▶ enumeration resistance
+  ✔ asking for a code looks the same for known and unknown addresses (63.5533ms)
+[2m2026-10-16T02:22:33.078Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-16T02:22:33.148Z[0m [33mWARN[0m [1m[Better Auth]:[0m User not found
+  ✔ a wrong password and an unknown email get the same answer (196.1871ms)
+  ✔ public password sign-up is closed (13.4819ms)
+✔ enumeration resistance (273.6209ms)
+▶ claiming a guest order
+  ✔ the verified owner of the order's email can claim it, exactly once (79.7254ms)
+  ✔ someone else's order, a missing order and a malformed number all look the same (63.3354ms)
+  ✔ an old sign-in must be renewed before claiming (47.9448ms)
+  ✔ a guest without an account cannot claim (4.0729ms)
+✔ claiming a guest order (195.4505ms)
+▶ identity events are auditable
+  ✔ sign-ins, sign-outs, role grants and denials are recorded, without codes or full emails (51.7658ms)
+✔ identity events are auditable (51.9155ms)
+▶ cookies over https
+  ✔ an https site gets Secure, __Secure- prefixed session cookies (31.5941ms)
+✔ cookies over https (31.7449ms)
+▶ CHV-S05-002 customers cannot reach admin APIs
+  ✔ no session: 401 on every admin route (7.8316ms)
+  ✔ a signed-in customer: 403 on every admin route, and nothing changes (29.7977ms)
+  ✔ denials are audited without personal data (3.9506ms)
+  ✔ a forged cookie or a bearer-style header does not help (2.5705ms)
+✔ CHV-S05-002 customers cannot reach admin APIs (1547.3643ms)
+▶ roles limit capabilities
+  ✔ STAFF can read their profile but cannot read the audit log or manage staff (22.5825ms)
+  ✔ ADMIN reads the audit log but cannot manage staff; OWNER can (35.0063ms)
+  ✔ staff with orders.read can read any order; a customer only their own (31.0451ms)
+✔ roles limit capabilities (88.9654ms)
+▶ request protections
+  ✔ cross-site writes are refused before any permission check (3.2899ms)
+[2m2026-10-16T02:22:38.952Z[0m [31mERROR[0m [1m[Better Auth]:[0m Invalid origin: https://evil.example
+  ✔ Better Auth refuses sign-in requests from another origin (7.7012ms)
+✔ request protections (11.2263ms)
+▶ static check: privileged routes are always guarded
+  ✔ every API route declares an access rule (the guard refuses routes without one) (2.3153ms)
+  ✔ every admin route requires a staff capability; account routes a signed-in customer (1.4351ms)
+  ✔ the order route decides ownership itself; only the health probes skip every check (1.6138ms)
+  ✔ the web host holds no API logic: only the forwarder and the chat route, no database or sign-in imports (84.5301ms)
+✔ static check: privileged routes are always guarded (90.0978ms)
+▶ CHV-S05-001 guest isolation
+  ✔ a guest reads their own order (16.9628ms)
+  ✔ a guest cannot read another guest's order, and the refusal looks like a missing order (9.8628ms)
+  ✔ no cookie, a made-up token or a malformed token reads nothing (12.3663ms)
+  ✔ the database hash alone is not a working cookie (4.7003ms)
+  ✔ expired or revoked guest sessions read nothing (27.8608ms)
+  ✔ guests and customers cannot read each other's orders (29.849ms)
+  ✔ cart ownership follows the same rule (0.7132ms)
+  ✔ a guest is never staff: admin and account routes refuse a guest cookie (3.3336ms)
+✔ CHV-S05-001 guest isolation (671.1374ms)
+▶ CHV-S05-003 privileged actions require MFA
+  ✔ an ADMIN who has not enrolled two-factor is refused with mfa_required (308.7485ms)
+  ✔ with two-factor enrolled, password sign-in stops at the TOTP challenge and creates no session (524.3001ms)
+  ✔ a staff member signing in with an email code is only a customer, even after entering a TOTP code (429.1267ms)
+  ✔ sessions record how they were created (1.2891ms)
+  ✔ disabling two-factor removes admin access (421.7761ms)
+[2m2026-10-16T02:22:50.227Z[0m [31mERROR[0m [1m[Better Auth]:[0m Failed to create session
+  ✔ losing the role or being disabled ends access immediately (778.0881ms)
+  ✔ backup codes work once each (572.7128ms)
+✔ CHV-S05-003 privileged actions require MFA (3310.0894ms)
+▶ CHV-S05-004 expired codes and sessions are refused
+  ✔ an expired sign-in code is refused (164.5721ms)
+  ✔ codes expire after five minutes by configuration (16.5675ms)
+  ✔ an expired password-reset code is refused and the password is unchanged (176.6057ms)
+  ✔ a valid reset code works once and signs the user out everywhere (257.8342ms)
+  ✔ a sign-in code works once (41.8432ms)
+  ✔ three wrong attempts burn the code, even for the right value afterwards (64.447ms)
+  ✔ codes are stored hashed, never as the six digits (9.3953ms)
+  ✔ an expired session is refused (52.7167ms)
+  ✔ signing out ends the session (48.5645ms)
+✔ CHV-S05-004 expired codes and sessions are refused (1155.7595ms)
+ℹ tests 72
+ℹ suites 20
+ℹ pass 72
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41692.6104

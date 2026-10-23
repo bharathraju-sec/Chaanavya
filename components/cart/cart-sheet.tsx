@@ -11,27 +11,17 @@ import { useCart } from "./cart-provider"
 export function BagButton() {
   const { count, setOpen } = useCart()
   return (
-    <Button variant="ghost" size="icon" className="relative w-auto gap-2 px-2.5" onClick={() => setOpen(true)} aria-label={`Open bag, ${count} ${count === 1 ? "item" : "items"}`}>
+    <Button variant="ghost" size="icon" className="relative w-11 gap-2 px-0 min-[901px]:w-auto min-[901px]:px-2.5" onClick={() => setOpen(true)} aria-label={`Open bag, ${count} ${count === 1 ? "item" : "items"}`}>
       <ShoppingBag className="size-5" strokeWidth={1.5} aria-hidden />
-      <span className="grid h-5 min-w-5 place-items-center rounded-full bg-terra px-1.5 text-[11px] font-semibold tracking-normal text-white" aria-hidden>
+      <span className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-terra px-1 text-[10px] font-semibold tracking-normal text-white min-[901px]:static min-[901px]:h-5 min-[901px]:min-w-5 min-[901px]:px-1.5 min-[901px]:text-[11px]" aria-hidden>
         {count}
       </span>
     </Button>
   )
 }
 
-function safeCheckout(url: string | null) {
-  try {
-    const parsed = new URL(url ?? "")
-    return parsed.protocol === "https:" ? parsed.href : null
-  } catch {
-    return null
-  }
-}
-
 export function CartSheet() {
-  const { lines, subtotal, checkoutUrl, live, open, setOpen, busy, setQuantity } = useCart()
-  const checkout = safeCheckout(checkoutUrl)
+  const { lines, subtotal, open, setOpen, busy, setQuantity } = useCart()
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -92,11 +82,16 @@ export function CartSheet() {
             <strong className="font-semibold">{formatMoney(subtotal)}</strong>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">Shipping and taxes are calculated at checkout.</p>
-          <Button className="mt-4 h-13 w-full" disabled={!checkout || lines.length === 0 || busy} onClick={() => checkout && window.location.assign(checkout)}>
-            Secure checkout
+          {/* Placeholder: online checkout is not built yet (Stages 11 to 14). */}
+          <Button className="mt-4 h-13 w-full" disabled>
+            Checkout opens soon
           </Button>
           <p className="mt-2 text-xs text-muted-foreground">
-            {live ? "Checkout is secured by Shopify." : "Shopify checkout activates when the store connection is configured."}
+            Online checkout is being set up. To order now,{" "}
+            <Link href="/contact" onClick={() => setOpen(false)} className="underline underline-offset-4 hover:text-terra">
+              contact us
+            </Link>
+            .
           </p>
         </SheetFooter>
       </SheetContent>

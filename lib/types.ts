@@ -7,6 +7,8 @@ export type Variant = {
   title: string
   availableForSale: boolean
   price: Money
+  /** The price before a reduction, when the owner set one. */
+  compareAtPrice?: Money | null
   image?: ProductImage | null
   selectedOptions: { name: string; value: string }[]
 }
@@ -23,7 +25,7 @@ export type Product = {
   variants: Variant[]
   /** Options with their values, e.g. Size: S, M, L. Options with a single value are hidden in the UI. */
   options: { name: string; values: string[] }[]
-  /** Only set on the built-in fallback catalogue, which has no Shopify collections. */
+  /** Collection handles for the placeholder catalogue. */
   collections?: string[]
 }
 

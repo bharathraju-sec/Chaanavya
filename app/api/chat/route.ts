@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
   if (!history) return json({ error: "Invalid request" }, 400)
 
   try {
-    return json(await answer(history, request.nextUrl.origin, clientIp(request)), 200)
+    return json(await answer(history, request.nextUrl.origin), 200)
   } catch (error) {
     // Status classes only: never log the key, the conversation or the provider's error body.
     if (error instanceof ChatUnavailableError) return json({ error: "Chat isn't available yet. Please reach us on WhatsApp or by email." }, 503)

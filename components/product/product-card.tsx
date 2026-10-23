@@ -46,7 +46,19 @@ export function ProductCard({ product, actionLabel, tag, priority }: { product: 
   )
 }
 
-export function ProductGrid({ products, columns = 4, actionLabel, unavailable }: { products: Product[]; columns?: 3 | 4; actionLabel?: string; unavailable?: boolean }) {
+export function ProductGrid({
+  products,
+  columns = 4,
+  actionLabel,
+  unavailable,
+  emptyMessage = "No products are available in this collection yet.",
+}: {
+  products: Product[]
+  columns?: 3 | 4
+  actionLabel?: string
+  unavailable?: boolean
+  emptyMessage?: string
+}) {
   if (unavailable) {
     return (
       <p role="status" className="py-16 text-center font-serif text-2xl">
@@ -55,7 +67,7 @@ export function ProductGrid({ products, columns = 4, actionLabel, unavailable }:
     )
   }
   if (products.length === 0) {
-    return <p className="py-16 text-center font-serif text-2xl">No products are available in this collection yet.</p>
+    return <p className="py-16 text-center font-serif text-2xl">{emptyMessage}</p>
   }
   return (
     <div

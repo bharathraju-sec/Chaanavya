@@ -1,8 +1,8 @@
 import type { Product, Variant } from "./types"
 
-// Shown only when the Shopify Storefront API is not configured (local preview, misconfigured env).
-// These are the template products from the original site; prices and names are placeholders until
-// the live catalogue takes over. Checkout stays disabled in this mode.
+// Placeholder catalogue: the template products from the original site. Names, photos and prices are
+// placeholders until real products are entered in the admin (Stage 07) and served from the database
+// (Stage 10). Checkout stays closed meanwhile.
 
 const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}?w=1200&q=75&auto=format&fit=crop`
 

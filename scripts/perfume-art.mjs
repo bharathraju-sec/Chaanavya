@@ -1,7 +1,7 @@
 // Renders the three Chaanavya perfume bottle illustrations (1200x1500 PNG): a classic rectangular
 // bottle with a gold cap and the Chaanavya logo mark as the only label artwork.
 // Usage (from the project root): node scripts/perfume-art.mjs . [outDir]
-// Drawn illustration, not a photo. Edit `scents` to add a fragrance, then re-upload the PNG in Shopify.
+// Drawn illustration, not a photo. Edit `scents` to add a fragrance, then re-upload the PNG with the product.
 import { readFileSync, mkdirSync } from "node:fs"
 import { join, resolve } from "node:path"
 import { createRequire } from "node:module"

@@ -1,0 +1,18 @@
+
+> chaanavya-storefront@2.0.0 lint
+> eslint
+
+
+> chaanavya-storefront@2.0.0 typecheck
+> next typegen && tsc --noEmit && npm run --workspace @chaanavya/api typecheck && npm run --workspace @chaanavya/worker typecheck
+
+Generating route types...
+✓ Types generated successfully
+
+> @chaanavya/api@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @chaanavya/worker@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+

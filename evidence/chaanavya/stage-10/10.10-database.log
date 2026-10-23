@@ -1,0 +1,111 @@
+
+> chaanavya-storefront@2.0.0 test:db
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test --test-concurrency=1 "tests/integration/database/*.test.mjs"
+
+▶ CHV-S09-001 no overselling
+  ✔ 100 concurrent requests for the last unit: exactly one hold succeeds (922.3686ms)
+  ✔ a hold covers every line or none (234.8469ms)
+  ✔ uncounted, draft or archived SKUs are never held; the same key returns the same hold (215.365ms)
+  ✔ the database itself refuses a negative balance (55.3286ms)
+✔ CHV-S09-001 no overselling (1428.9935ms)
+▶ CHV-S09-002 holds end exactly once
+  ✔ an expired hold is released once, even with ten settlers racing (284.4664ms)
+  ✔ a cancelled order's hold is released once; a hold that has not expired stays (331.5967ms)
+  ✔ a captured payment for the full amount allocates the units instead of releasing them (225.7465ms)
+  ✔ a payment still in flight keeps its hold through the grace period, then the hold is released (289.6038ms)
+  ✔ a capture that arrives after release sends the order to review and never grabs stock (465.2744ms)
+✔ CHV-S09-002 holds end exactly once (1597.7001ms)
+▶ CHV-S09-005 worker failure and retry
+  ✔ a crash after settling rolls the settlement back; the retry releases exactly once and the books agree (781.3324ms)
+  ✔ reconciliation reports a balance that disagrees with the ledger, once, and changes nothing (192.4216ms)
+✔ CHV-S09-005 worker failure and retry (974.1424ms)
+▶ CHV-S04-002 conversions
+  ✔ bigint and number paise convert exactly within the safe range (0.8073ms)
+✔ CHV-S04-002 conversions (1.2385ms)
+▶ CHV-S04-002 storage
+  ✔ extreme amounts round-trip through bigint columns unchanged (296.8242ms)
+  ✔ sums are exact where floats drift (122.4965ms)
+  ✔ fractional or negative amounts are refused by the database (403.8722ms)
+  ✔ order totals must add up in paise (63.9613ms)
+  ✔ order numbers come from the database sequence (27.8815ms)
+✔ CHV-S04-002 storage (916.1986ms)
+▶ application role
+  ✔ can insert and read rows (1115.155ms)
+  ✔ cannot update or delete audit events, or truncate ledgers (1769.1978ms)
+  ✔ cannot change the schema or read migration history (1624.8295ms)
+✔ application role (4510.3599ms)
+▶ read-only role
+  ✔ can read but not write (907.9869ms)
+✔ read-only role (908.3111ms)
+▶ synthetic seed
+  ✔ loads, and a second run changes nothing (4441.8404ms)
+  ✔ refuses to run against production (220.9449ms)
+✔ synthetic seed (4664.0035ms)
+▶ backup and restore of a migrated database
+  ✔ the restored copy has identical data and an up-to-date migration history (6295.5001ms)
+  ✔ the rollback scripts, newest first, remove the schema, and migrations re-apply cleanly (6537.2639ms)
+✔ backup and restore of a migrated database (12833.0766ms)
+▶ CHV-S04-001 empty database migrates
+  ✔ migrate deploy applies the init migration and status is clean (1137.9963ms)
+  ✔ the migrated database matches schema.prisma (no drift) (1064.5808ms)
+  ✔ all 36 tables exist (535.5042ms)
+  ✔ hand-written constraints, indexes and triggers are present (1596.1468ms)
+✔ CHV-S04-001 empty database migrates (4335.1471ms)
+▶ CHV-S04-001 duplicate active SKUs are rejected
+  ✔ a second active variant with the same SKU fails (171.3784ms)
+  ✔ an archived variant frees its SKU for a replacement, and history keeps the old row (99.6143ms)
+  ✔ product handles and option combinations are unique (84.9785ms)
+  ✔ handles must be URL-safe slugs (29.9179ms)
+✔ CHV-S04-001 duplicate active SKUs are rejected (386.4948ms)
+▶ constraints back the Stage 02 invariants
+  ✔ stock can never go negative or below reservations (54.0822ms)
+  ✔ a cart has exactly one owner and sane quantities (96.2674ms)
+  ✔ a promotion is a percentage or a fixed amount, not both (76.8578ms)
+  ✔ provider events are unique per provider and event ID (12.066ms)
+✔ constraints back the Stage 02 invariants (239.908ms)
+▶ append-only ledgers
+  ✔ audit events cannot be updated, deleted or truncated (423.6123ms)
+  ✔ inventory movements cannot be updated or deleted (98.0556ms)
+✔ append-only ledgers (522.0432ms)
+▶ one vocabulary: database enums equal the Stage 02 state machines
+  ✔ OrderStatus matches ORDER_STATUSES (0.7082ms)
+  ✔ PaymentStatus matches PAYMENT_STATUSES (0.0502ms)
+  ✔ ReservationStatus matches RESERVATION_STATUSES (0.0554ms)
+  ✔ FulfilmentStatus matches FULFILMENT_STATUSES (0.0378ms)
+  ✔ ShipmentStatus matches SHIPMENT_STATUSES (0.0359ms)
+  ✔ ReturnStatus matches RETURN_STATUSES (0.0546ms)
+  ✔ RefundStatus matches REFUND_STATUSES (0.03ms)
+✔ one vocabulary: database enums equal the Stage 02 state machines (1.1317ms)
+▶ CHV-S04-003 order item snapshots
+  ✔ renaming, repricing, re-SKUing and archiving the product leaves the order item untouched (359.4585ms)
+  ✔ deleting the variant keeps the snapshot and clears only the link (173.315ms)
+  ✔ the frozen shipping address is independent of the address book (41.8442ms)
+✔ CHV-S04-003 order item snapshots (575.5935ms)
+▶ CHV-S04-004 rollback
+  ✔ a shortage on the second SKU undoes the order, the reservation and the first SKU's stock (404.1109ms)
+  ✔ a database constraint failure mid-transaction also rolls everything back (186.7247ms)
+  ✔ the happy path commits every write together (249.5916ms)
+✔ CHV-S04-004 rollback (842.1196ms)
+▶ transaction-safe status transitions
+  ✔ a transition and its audit event commit together (81.247ms)
+  ✔ a stale writer loses: the second transition from the same state is refused (54.129ms)
+  ✔ an illegal or unproven transition writes nothing (32.9268ms)
+  ✔ if the audit write fails, the status change is rolled back (47.8584ms)
+  ✔ replaying a transition already applied is a no-op (14.0547ms)
+✔ transaction-safe status transitions (231.0987ms)
+▶ worker housekeeping
+  ✔ deletes expired sessions, expired codes and idle counters; keeps everything still usable (281.8994ms)
+  ✔ a second instance skips the job while the first holds its lock (208.2307ms)
+✔ worker housekeeping (491.6441ms)
+▶ Stage 08 worker jobs
+  ✔ outbox delivery: delivered once, failures retried later with the error kept (118.1881ms)
+  ✔ media clean-up deletes abandoned uploads and photos removed more than 7 days ago, nothing else (151.4027ms)
+✔ Stage 08 worker jobs (270.1341ms)
+ℹ tests 61
+ℹ suites 19
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 68252.9336

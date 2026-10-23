@@ -1,0 +1,126 @@
+# Continuous integration (Stage 03). Runs on pushes to main and dev, on pull requests, and by hand.
+# The verify job needs no secrets: the storefront builds with its placeholder catalogue.
+# Actions are pinned to commit SHAs (tags noted alongside).
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Environment whose configuration to validate
+        type: choice
+        options: [staging, production]
+        default: staging
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Install, lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+      - name: API builds and its OpenAPI document is current
+        run: |
+          npm run build:api
+          npm run api:openapi
+          git diff --exit-code packages/contracts
+      - name: Development configuration contract
+        run: npm run check:env -- --target development
+      - name: No credentials in build output
+        run: npm run scan:secrets -- --process-env .next
+
+  database:
+    name: Database backup and restore
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:up
+      - run: npm run db:restore-check
+      # Fresh databases, migrated from empty: schema drift, constraints, snapshots, rollback, roles, seed, restore.
+      - run: npm run test:db
+      - if: always()
+        run: npm run db:down
+
+  api:
+    name: API security and page tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run db:up
+      # Builds the API, then runs every guard, session, MFA and admin test through the web forwarder.
+      - run: npm run test:security
+      - run: npm run build
+      - run: npm run test:e2e
+      - name: Service images build
+        run: |
+          docker build -f docker/services.Dockerfile --target api .
+          docker build -f docker/services.Dockerfile --target worker .
+      - if: always()
+        run: npm run db:down
+
+  target-config:
+    name: Validate ${{ inputs.target }} configuration
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Values come from the GitHub environment of the same name; the check prints names only.
+    environment: ${{ inputs.target }}
+    env:
+      APP_ENV: ${{ inputs.target }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      BETTER_AUTH_URL: ${{ vars.BETTER_AUTH_URL }}
+      ADMIN_URL: ${{ vars.ADMIN_URL }}
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: ${{ vars.NEXT_PUBLIC_GA_MEASUREMENT_ID }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      PAYMENT_MODE: ${{ vars.PAYMENT_MODE }}
+      RAZORPAY_KEY_ID: ${{ vars.RAZORPAY_KEY_ID }}
+      RAZORPAY_KEY_SECRET: ${{ secrets.RAZORPAY_KEY_SECRET }}
+      RAZORPAY_WEBHOOK_SECRET: ${{ secrets.RAZORPAY_WEBHOOK_SECRET }}
+      API_URL: ${{ vars.API_URL }}
+      API_INTERNAL_KEY: ${{ secrets.API_INTERNAL_KEY }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+      - run: npm run check:env -- --target ${{ inputs.target }}
+      - name: Each service on its own
+        run: |
+          npm run check:env -- --target ${{ inputs.target }} --service api
+          npm run check:env -- --target ${{ inputs.target }} --service worker

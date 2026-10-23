@@ -1,0 +1,14 @@
+(node:14556) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M02 the public product, variant and photo DTOs hold exactly the contract's fields (7942.6272ms)
+✔ CHV-S10-M02 private columns never leave the API, even though the rows hold them (18.0772ms)
+✔ CHV-S10-M02 drafts, archived variants and unapproved photos are not in the projection (26.4026ms)
+✔ CHV-S10-M02 the published OpenAPI schema is closed and matches the contract's field lists (0.3453ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17137.0277

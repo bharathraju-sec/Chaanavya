@@ -1,0 +1,68 @@
+# Local development services. Development only: the credentials below are not secrets and must
+# never be used for staging or production.
+#   npm run db:up                        the database (Stage 03) and photo storage (Stage 08)
+#   docker compose --profile services up --build -d
+#                                        also the API and worker containers (Stage 07); the web host
+#                                        still runs with `npm run dev`, pointed at the API by API_URL
+name: chaanavya
+
+services:
+  db:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: chaanavya
+      POSTGRES_PASSWORD: chaanavya_dev_only
+      POSTGRES_DB: chaanavya_dev
+    # Bound to this machine only, on 54329 so it does not clash with another local Postgres.
+    ports:
+      - "127.0.0.1:54329:5432"
+    volumes:
+      - chaanavya-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chaanavya -d chaanavya_dev"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  # Product photo storage (Stage 08): S3Mock speaks the S3 API, enforces upload checksums and keeps
+  # files in memory. It does not check signatures or permissions, so it is never a real bucket.
+  media:
+    image: adobe/s3mock:4.10.0
+    environment:
+      COM_ADOBE_TESTING_S3MOCK_STORE_INITIAL_BUCKETS: chaanavya-media
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  api:
+    profiles: [services]
+    build: { context: ., dockerfile: docker/services.Dockerfile, target: api }
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql://chaanavya:chaanavya_dev_only@db:5432/chaanavya_dev
+      BETTER_AUTH_URL: http://localhost:3000
+      # Development fallbacks only; the API refuses to start without real values outside development.
+      BETTER_AUTH_SECRET: development-only-auth-secret-not-for-real-use
+      API_INTERNAL_KEY: development-only-internal-key-not-a-secret
+      # Containers reach the photo store by its service name; browsers still use 127.0.0.1:9090.
+      MEDIA_S3_ENDPOINT: http://media:9090
+      MEDIA_S3_BUCKET: chaanavya-media
+      MEDIA_PUBLIC_BASE_URL: http://127.0.0.1:9090/chaanavya-media/
+    ports:
+      - "127.0.0.1:4000:4000"
+
+  worker:
+    profiles: [services]
+    build: { context: ., dockerfile: docker/services.Dockerfile, target: worker }
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql://chaanavya:chaanavya_dev_only@db:5432/chaanavya_dev
+      MEDIA_S3_ENDPOINT: http://media:9090
+      MEDIA_S3_BUCKET: chaanavya-media
+      MEDIA_PUBLIC_BASE_URL: http://127.0.0.1:9090/chaanavya-media/
+    ports:
+      - "127.0.0.1:4001:4001"
+
+volumes:
+  chaanavya-db:
