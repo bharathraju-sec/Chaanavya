@@ -1,0 +1,26 @@
+▶ CHV-S11-M01 cart ownership
+  ✔ each guest opens their own cart, and opening again returns the same one (10.0006ms)
+  ✔ another guest holding the cart id gets nothing, the same as a cart that does not exist (14.3341ms)
+  ✔ another guest cannot change the cart, even with its exact revision (15.9455ms)
+  ✔ guests and customers never reach each other's carts (9.4503ms)
+  ✔ a signed-in shopper shops as the customer even with a guest cookie still present (1.2071ms)
+  ✔ malformed and made-up cart ids read nothing and never reach the database as a query error (1.4873ms)
+  ✔ a revoked guest session loses its cart, and a fresh session for the same browser starts empty (45.0478ms)
+  ✔ an expired guest session loses its cart even while the cart row is unexpired (25.336ms)
+  ✔ an expired cart reads as missing to its own guest, and opening starts a new one (30.1222ms)
+  ✔ a guest cart never outlives its guest session; a change renews the expiry (26.2867ms)
+  ✔ two writers on the same revision: exactly one wins (replayed change is refused) (38.7337ms)
+  ✔ racing guests opening carts at once each get only their own (114.3098ms)
+  ✔ abandoned is a reporting state only and grants nothing (0.4021ms)
+  ✔ the database refuses a cart with two owners or none (16.6543ms)
+  ✔ the shared ownership rule agrees: a guest record never matches another guest (0.6801ms)
+  ✔ the guest cookie still resolves to its own session only (4.5941ms)
+✔ CHV-S11-M01 cart ownership (1522.5342ms)
+ℹ tests 16
+ℹ suites 1
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10714.4298

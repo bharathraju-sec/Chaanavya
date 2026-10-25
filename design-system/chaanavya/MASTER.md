@@ -8,7 +8,7 @@ direction the owner approved: **warm editorial**. The skill's automatic pick
 ("Liquid Glass", stone black and gold) was rejected because it does not match the logo.
 
 - **Product:** E-commerce, women's fashion boutique (India, INR)
-- **Dials:** Variance 4/10 (balanced), Motion 3/10 (subtle), Density 3/10 (spacious)
+- **Dials:** Variance 4/10 (balanced), Motion 6/10 (standard, approved by the owner on 25 October 2026), Density 3/10 (spacious)
 - **Stack:** Next.js 16 App Router, React 19, Tailwind CSS 4, shadcn/ui, lucide-react
 
 ---
@@ -63,9 +63,21 @@ No dark mode: the brand is ivory-first. No gradients (purple gradients are banne
 
 ## Motion
 
-- Hover: 180ms colour transitions; image zoom 1.03 over 600ms `cubic-bezier(.22,1,.36,1)`.
-- Scroll reveal: opacity 0 to 1 and 14px rise, only for sections below the fold, disabled under `prefers-reduced-motion`.
-- No marquees, parallax, cursor effects or looping animation.
+**2026 redesign, approved by the owner on 25 October 2026 (Motion 13.5.1; the dial moved from 3/10 to 6/10).**
+Shared pieces live in `components/motion/motion.tsx`; the storefront is wrapped in `MotionConfig reducedMotion="user"`.
+
+- One rhythm: arrivals decelerate on `cubic-bezier(.22,1,.36,1)` (0.6 to 0.9s); presses and indicators use a spring (stiffness 380, damping 32).
+- Hero: the display headline rises out of a mask line by line; the hero photo settles from 1.06 and drifts up to 8% slower than the page. The hero photo is never hidden (largest paint).
+- Sections and grids: headings rise 22px into place; grid items stagger about 70ms apart; editorial photos uncover with a bottom-edge wipe. Once only, never on scroll back.
+- Header: slides away while scrolling down past 240px, returns on scroll up and whenever focus enters it. The desktop nav underline glides between items and rests on the current page.
+- Product: the size choice fill and the gallery thumbnail ring slide to the new choice; a second product photo crossfades in on hover (pointer devices only).
+- Information and policy pages: a sand header band (gold-rule eyebrow, title rising out of a mask, lead fading in); policy pages add a sticky "On this page" list on wide screens whose terra marker slides to the section being read; contact and help cards draw their gold rule out on hover.
+- Account, sign-in and 404 use the same header motion; sign-in shows an editorial photo beside the form on wide screens. Bag lines slide out when removed and the rest close up; the bag count pops when it changes.
+- Content at the top of a page (eyebrows, mask headlines, first-paint staggers) animates with CSS keyframes in `app/globals.css`, so it shows on first paint without waiting for JavaScript. Scroll reveals further down use Motion.
+- Hover: colour 180 to 300ms; image zoom 1.04 to 1.05 over 900ms.
+- Transform and opacity only (no layout animation). No marquees, cursor effects or looping animation. Under `prefers-reduced-motion` nothing moves.
+
+Replaced rule (3/10, before 25 October 2026): hover colour 180ms, image zoom 1.03 over 600ms, scroll reveal opacity and 14px rise below the fold only, no parallax.
 
 ## Content rules (from the owner)
 

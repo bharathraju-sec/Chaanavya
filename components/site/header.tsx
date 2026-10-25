@@ -3,7 +3,7 @@ import Link from "next/link"
 import { UserRound } from "lucide-react"
 import { BagButton } from "@/components/cart/cart-sheet"
 import { Button } from "@/components/ui/button"
-import { DesktopNav, MobileNav, SearchDialog, type SearchEntry } from "./header-client"
+import { DesktopNav, HeaderFrame, MobileNav, SearchDialog, type SearchEntry } from "./header-client"
 
 export type HeaderAccount = { href: string; label: "Sign in" | "Account"; external: boolean }
 
@@ -43,7 +43,7 @@ export function SiteHeader({ searchEntries, account }: { searchEntries: SearchEn
         </span>
         <span className="max-sm:block">7-day returns</span>
       </div>
-      <header className="sticky top-0 z-40 border-b border-line bg-paper">
+      <HeaderFrame>
         <div className="mx-auto grid h-16 max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-2 min-[901px]:h-[72px] min-[901px]:px-[clamp(16px,4vw,56px)]">
           <div className="flex items-center min-[901px]:gap-1">
             <MobileNav />
@@ -59,7 +59,7 @@ export function SiteHeader({ searchEntries, account }: { searchEntries: SearchEn
           </div>
         </div>
         <DesktopNav />
-      </header>
+      </HeaderFrame>
     </>
   )
 }

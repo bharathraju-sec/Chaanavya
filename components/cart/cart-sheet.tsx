@@ -3,6 +3,9 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Minus, Plus, ShoppingBag } from "lucide-react"
+import * as React from "react"
+import { AnimatePresence, motion, useAnimate, useReducedMotion } from "motion/react"
+import { EASE, SPRING } from "@/components/motion/motion"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { formatMoney } from "@/lib/types"
@@ -10,10 +13,26 @@ import { useCart } from "./cart-provider"
 
 export function BagButton() {
   const { count, setOpen } = useCart()
+  // The count pops when it changes after the first render, so an added item is noticed. Runs in the
+  // browser only, so the server HTML and the first client render match.
+  const [badge, animate] = useAnimate()
+  const still = useReducedMotion()
+  const first = React.useRef(true)
+  React.useEffect(() => {
+    if (first.current) {
+      first.current = false
+      return
+    }
+    if (!still) animate(badge.current, { scale: [0.6, 1] }, SPRING)
+  }, [count, still, animate, badge])
   return (
     <Button variant="ghost" size="icon" className="relative w-11 gap-2 px-0 min-[901px]:w-auto min-[901px]:px-2.5" onClick={() => setOpen(true)} aria-label={`Open bag, ${count} ${count === 1 ? "item" : "items"}`}>
       <ShoppingBag className="size-5" strokeWidth={1.5} aria-hidden />
-      <span className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-terra px-1 text-[10px] font-semibold tracking-normal text-white min-[901px]:static min-[901px]:h-5 min-[901px]:min-w-5 min-[901px]:px-1.5 min-[901px]:text-[11px]" aria-hidden>
+      <span
+        ref={badge}
+        className="absolute top-1 right-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-terra px-1 text-[10px] font-semibold tracking-normal text-white min-[901px]:static min-[901px]:h-5 min-[901px]:min-w-5 min-[901px]:px-1.5 min-[901px]:text-[11px]"
+        aria-hidden
+      >
         {count}
       </span>
     </Button>
@@ -44,8 +63,18 @@ export function CartSheet() {
             </div>
           ) : (
             <ul>
-              {lines.map(line => (
-                <li key={line.id} className="grid grid-cols-[88px_1fr] gap-4 border-b border-line py-5">
+              {/* A removed line slides out and the rest close the gap (transform only). */}
+              <AnimatePresence initial={false}>
+                {lines.map(line => (
+                  <motion.li
+                    key={line.id}
+                    layout="position"
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 24, transition: { duration: 0.25, ease: EASE } }}
+                    transition={{ duration: 0.4, ease: EASE }}
+                    className="grid grid-cols-[88px_1fr] gap-4 border-b border-line py-5"
+                  >
                   <div className="relative h-[110px] w-[88px] bg-well">
                     {line.image && <Image src={line.image} alt="" fill sizes="88px" className="object-cover" />}
                   </div>
@@ -70,8 +99,9 @@ export function CartSheet() {
                       </Button>
                     </div>
                   </div>
-                </li>
-              ))}
+                  </motion.li>
+                ))}
+              </AnimatePresence>
             </ul>
           )}
         </div>

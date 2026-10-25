@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import type { Product } from "@/lib/types"
 import { formatMoney } from "@/lib/types"
+import { Stagger, StaggerItem } from "@/components/motion/motion"
 import { QuickAdd } from "./quick-add"
 import { WishlistButton } from "./wishlist-button"
 
@@ -10,10 +11,12 @@ import { WishlistButton } from "./wishlist-button"
 export function ProductCard({ product, actionLabel, tag, priority }: { product: Product; actionLabel?: string; tag?: string; priority?: boolean }) {
   const variant = product.variants.find(v => v.availableForSale) ?? product.variants[0]
   const image = product.featuredImage ?? variant?.image ?? null
+  // A second photo, when there is one, crossfades in on hover (pointer devices only).
+  const alternate = product.images.find(i => i.url !== image?.url) ?? null
   const href = `/products/${product.handle}`
 
   return (
-    <article className="group/card flex min-w-0 flex-col">
+    <article className="group/card flex w-full min-w-0 flex-col">
       <div className="relative aspect-[4/5] overflow-hidden bg-well">
         <Link href={href} tabIndex={-1} aria-hidden className="absolute inset-0">
           {image && (
@@ -23,7 +26,16 @@ export function ProductCard({ product, actionLabel, tag, priority }: { product: 
               fill
               priority={priority}
               sizes="(min-width: 1100px) 25vw, (min-width: 600px) 33vw, 50vw"
-              className="object-cover transition-transform duration-[600ms] ease-editorial group-hover/card:scale-[1.03]"
+              className="object-cover transition-transform duration-[900ms] ease-editorial group-hover/card:scale-[1.04]"
+            />
+          )}
+          {alternate && (
+            <Image
+              src={alternate.url}
+              alt=""
+              fill
+              sizes="(min-width: 1100px) 25vw, (min-width: 600px) 33vw, 50vw"
+              className="object-cover opacity-0 transition-opacity duration-500 ease-editorial [@media(hover:hover)]:group-hover/card:opacity-100"
             />
           )}
         </Link>
@@ -70,7 +82,7 @@ export function ProductGrid({
     return <p className="py-16 text-center font-serif text-2xl">{emptyMessage}</p>
   }
   return (
-    <div
+    <Stagger
       className={
         columns === 4
           ? "grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-11"
@@ -78,8 +90,10 @@ export function ProductGrid({
       }
     >
       {products.map((product, i) => (
-        <ProductCard key={product.id} product={product} actionLabel={actionLabel} priority={i < 2} />
+        <StaggerItem key={product.id} className="flex min-w-0">
+          <ProductCard product={product} actionLabel={actionLabel} priority={i < 2} />
+        </StaggerItem>
       ))}
-    </div>
+    </Stagger>
   )
 }

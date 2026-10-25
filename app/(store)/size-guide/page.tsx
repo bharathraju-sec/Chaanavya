@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { Rise } from "@/components/motion/motion"
 import { Note, SupportPage } from "@/components/site/support"
 
 export const metadata: Metadata = { alternates: { canonical: "/size-guide" }, title: "Size guide", description: "Chaanavya size guide: Indian women's body measurements for bust, waist and hip, in inches and centimetres." }
@@ -25,7 +26,7 @@ const HOW_TO_MEASURE = [
 export default function SizeGuidePage() {
   return (
     <SupportPage eyebrow="Fit with confidence" title="Size guide." lead="Indian sizes, given as body measurements in inches and centimetres.">
-      <div className="mt-10 overflow-x-auto border border-line bg-card">
+      <Rise className="mt-10 overflow-x-auto border border-line bg-card">
         <table className="w-full border-collapse text-[15px]">
           <caption className="sr-only">Body measurements by size, in inches and centimetres</caption>
           <thead>
@@ -39,7 +40,7 @@ export default function SizeGuidePage() {
           </thead>
           <tbody>
             {sizes.map(([size, ...measures]) => (
-              <tr key={size} className="border-t border-line">
+              <tr key={size} className="border-t border-line transition-colors duration-200 hover:bg-sand/60">
                 <th scope="row" className="px-3 py-3.5 text-left font-medium sm:px-[18px]">
                   {size}
                 </th>
@@ -52,7 +53,7 @@ export default function SizeGuidePage() {
             ))}
           </tbody>
         </table>
-      </div>
+      </Rise>
       <h2 className="mt-12 mb-3 text-3xl">How to measure</h2>
       <p className="max-w-[68ch] leading-[1.75] text-[#2e4544]">Measure over light clothing with a soft tape, keeping it snug but not tight.</p>
       <dl className="mt-4 max-w-[68ch] space-y-2 leading-[1.75] text-[#2e4544]">

@@ -5,6 +5,7 @@ import { ProductGrid } from "@/components/product/product-card"
 import { ProductGallery } from "@/components/product/product-gallery"
 import { ProductPurchase } from "@/components/product/product-purchase"
 import { SectionHead } from "@/components/site/editorial"
+import { Enter, Rise, Stagger, StaggerItem } from "@/components/motion/motion"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { collections } from "@/lib/collections"
@@ -91,13 +92,28 @@ export default async function ProductPage(props: PageProps<"/products/[handle]">
 
       <section className="page-wrap grid gap-[clamp(32px,5vw,80px)] pt-6 pb-[clamp(64px,9vw,128px)] md:grid-cols-[7fr_5fr]">
         {/* Gallery: main slider with a thumbnail strip (swipe, arrows, thumbnails, arrow keys). */}
-        <ProductGallery images={images} title={product.title} />
+        <Enter>
+          <ProductGallery images={images} title={product.title} />
+        </Enter>
 
-        <div className="md:sticky md:top-[150px] md:self-start">
-          {product.productType && <p className="eyebrow">{product.productType}</p>}
-          <h1 className="mt-3 mb-4 text-[clamp(40px,4.4vw,64px)] leading-[0.98]">{product.title}</h1>
-          <ProductPurchase product={product} initialVariantId={view.selectedBy === "requested" ? view.selectedVariantId : null} />
-          {product.description && <p className="mt-10 text-[15px] leading-relaxed text-muted-foreground">{product.description}</p>}
+        <Stagger immediate className="md:sticky md:top-[150px] md:self-start">
+          {product.productType && (
+            <StaggerItem>
+              <p className="eyebrow">{product.productType}</p>
+            </StaggerItem>
+          )}
+          <StaggerItem>
+            <h1 className="mt-3 mb-4 text-[clamp(40px,4.4vw,64px)] leading-[0.98]">{product.title}</h1>
+          </StaggerItem>
+          <StaggerItem>
+            <ProductPurchase product={product} initialVariantId={view.selectedBy === "requested" ? view.selectedVariantId : null} />
+          </StaggerItem>
+          {product.description && (
+            <StaggerItem>
+              <p className="mt-10 text-[15px] leading-relaxed text-muted-foreground">{product.description}</p>
+            </StaggerItem>
+          )}
+          <StaggerItem>
           <Accordion type="multiple" className="mt-8 border-t border-line">
             {[
               { value: "shipping", title: "Shipping", href: "/shipping-policy", link: "Read the shipping policy" },
@@ -114,12 +130,15 @@ export default async function ProductPage(props: PageProps<"/products/[handle]">
               </AccordionItem>
             ))}
           </Accordion>
-        </div>
+          </StaggerItem>
+        </Stagger>
       </section>
 
       {related.length > 0 && collection && (
         <section className="page-wrap border-t border-line section-y">
-          <SectionHead eyebrow={collection.title} title="You may also like" link={{ href: `/${collection.slug}`, label: "View the collection" }} />
+          <Rise>
+            <SectionHead eyebrow={collection.title} title="You may also like" link={{ href: `/${collection.slug}`, label: "View the collection" }} />
+          </Rise>
           <ProductGrid products={related} />
         </section>
       )}

@@ -5,6 +5,7 @@ import { toDisplayMoney } from "@chaanavya/shared/money-display"
 import { CustomerSignOutButton } from "@/components/account/sign-in-form"
 import { apiGet, currentSession } from "@/lib/api/server"
 import { formatMoney } from "@/lib/types"
+import { Enter, MaskLines, Stagger, StaggerItem } from "@/components/motion/motion"
 
 export const metadata: Metadata = { title: "Your account", robots: { index: false } }
 
@@ -25,26 +26,33 @@ export default async function AccountPage() {
 
   return (
     <div className="page-wrap section-y">
-      <p className="eyebrow">Your account</p>
-      <h1 className="mt-3 mb-3 text-[clamp(44px,6vw,72px)]">Your orders</h1>
-      <p className="mb-10 break-all text-muted-foreground">Signed in as {session.user.email}</p>
+      <Enter>
+        <p className="eyebrow flex items-center gap-3">
+          <span className="h-px w-10 bg-gold" aria-hidden />
+          Your account
+        </p>
+      </Enter>
+      <MaskLines lines={["Your orders"]} className="mt-3 mb-3 text-[clamp(44px,6vw,72px)]" />
+      <Enter delay={0.3}>
+        <p className="mb-10 break-all text-muted-foreground">Signed in as {session.user.email}</p>
+      </Enter>
 
       {orders.length === 0 ? (
-        <div className="max-w-xl border border-line bg-card px-6 py-8">
+        <Enter delay={0.4} className="max-w-xl border border-line bg-card px-6 py-8">
           <p className="font-serif text-2xl">No orders yet</p>
           <p className="mt-2 text-sm text-muted-foreground">Orders you place while signed in will be listed here.</p>
-        </div>
+        </Enter>
       ) : (
-        <ul className="max-w-3xl divide-y divide-line border-y border-line">
+        <Stagger immediate className="max-w-3xl divide-y divide-line border-y border-line">
           {orders.map(o => (
-            <li key={o.id} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+            <StaggerItem key={o.id} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
               <span className="font-serif text-xl">{o.number}</span>
               <span className="text-sm text-muted-foreground">{date.format(new Date(o.createdAt))}</span>
               <span className="text-sm">{STATUS[o.status] ?? o.status}</span>
               <span className="text-sm">{formatMoney(toDisplayMoney(o.grandTotal.amountPaise, o.grandTotal.currency))}</span>
-            </li>
+            </StaggerItem>
           ))}
-        </ul>
+        </Stagger>
       )}
 
       <p className="mt-8 max-w-xl text-sm text-muted-foreground">

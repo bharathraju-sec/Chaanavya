@@ -4,6 +4,8 @@ import * as React from "react"
 import Image from "next/image"
 import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { motion } from "motion/react"
+import { SPRING } from "@/components/motion/motion"
 import { cn } from "@/lib/utils"
 
 type GalleryImage = { url: string; altText?: string | null }
@@ -124,7 +126,7 @@ export function ProductGallery({ images, title }: { images: GalleryImage[]; titl
               )}
             >
               <Image src={image.url} alt="" fill sizes="120px" className="object-cover" />
-              {i === selected && <span aria-hidden className="absolute inset-0 border border-ink" />}
+              {i === selected && <motion.span layoutId={`thumb-ring-${title}`} transition={SPRING} aria-hidden className="absolute inset-0 border border-ink" />}
             </button>
           ))}
         </div>

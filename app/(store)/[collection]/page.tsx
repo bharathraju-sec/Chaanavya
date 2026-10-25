@@ -3,7 +3,7 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { ProductGrid } from "@/components/product/product-card"
 import { ArrowLink } from "@/components/site/editorial"
-import { Reveal } from "@/components/site/reveal"
+import { Enter, HeroImage, MaskLines, Rise } from "@/components/motion/motion"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { getCollection, visibleCollections } from "@/lib/collections"
 import { getCollectionProducts } from "@/lib/catalogue/storefront"
@@ -61,19 +61,19 @@ export default async function CollectionPage(props: PageProps<"/[collection]">) 
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
-          <p className="eyebrow">{collection.eyebrow}</p>
-          <h1 className="mt-4 mb-7 text-[clamp(56px,7vw,112px)] leading-[0.92] tracking-[-0.02em]">
-            {collection.heading[0]}
-            <br />
-            {collection.heading[1]}
-          </h1>
-          <ArrowLink href="#collection" down>
-            {collection.cta}
-          </ArrowLink>
+          <Enter>
+            <p className="eyebrow">{collection.eyebrow}</p>
+          </Enter>
+          <MaskLines lines={[...collection.heading]} className="mt-4 mb-7 text-[clamp(56px,7vw,112px)] leading-[0.92] tracking-[-0.02em]" />
+          <Enter delay={0.4}>
+            <ArrowLink href="#collection" down>
+              {collection.cta}
+            </ArrowLink>
+          </Enter>
         </div>
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-well md:aspect-[3/2] md:max-h-[70svh]">
+        <HeroImage className="aspect-[4/3] w-full bg-well md:aspect-[3/2] md:max-h-[70svh]">
           <Image src={collection.hero.src} alt={collection.hero.alt} fill priority sizes="(min-width: 768px) 58vw, 100vw" className="object-cover" style={{ objectPosition: collection.hero.position ?? "50% 22%" }} />
-        </div>
+        </HeroImage>
       </section>
 
       <div id="collection">
@@ -82,13 +82,13 @@ export default async function CollectionPage(props: PageProps<"/[collection]">) 
           // During a store outage show one "unavailable" message under the first group only.
           if (unavailable ? i > 0 : group.filter && groupItems.length === 0) return null
           return (
-            <Reveal key={group.heading} className="page-wrap pb-[clamp(64px,9vw,128px)]">
-              <div className="grid items-end gap-[clamp(24px,5vw,80px)] border-t border-line pt-[clamp(40px,5vw,72px)] pb-[clamp(28px,3vw,40px)] md:grid-cols-[5fr_7fr]">
+            <section key={group.heading} className="page-wrap pb-[clamp(64px,9vw,128px)]">
+              <Rise className="grid items-end gap-[clamp(24px,5vw,80px)] border-t border-line pt-[clamp(40px,5vw,72px)] pb-[clamp(28px,3vw,40px)] md:grid-cols-[5fr_7fr]">
                 <h2 className="text-[clamp(34px,4vw,56px)]">{group.heading}</h2>
                 <p className="max-w-[540px] text-[17px] leading-relaxed text-muted-foreground">{group.intro}</p>
-              </div>
+              </Rise>
               <ProductGrid products={groupItems} columns={3} actionLabel="Add to bag" unavailable={unavailable} />
-            </Reveal>
+            </section>
           )
         })}
         {nextCursor && (

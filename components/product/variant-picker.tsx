@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { motion } from "motion/react"
+import { SPRING } from "@/components/motion/motion"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { Product } from "@/lib/types"
 import { choosableOptions, fixedSelection, resolveVariant, selectionFor, valueAvailable, type Selection } from "@/lib/variants"
@@ -54,9 +56,11 @@ export function OptionPicker({ product, selection, onChoose }: { product: Produc
                   value={value}
                   disabled={!isAvailable(value)}
                   variant="outline"
-                  className="h-12 w-full rounded-none border-line-strong bg-card px-2 text-sm font-normal whitespace-normal hover:border-ink hover:bg-card data-[state=on]:border-ink data-[state=on]:bg-ink data-[state=on]:text-white disabled:line-through"
+                  className="relative h-12 w-full overflow-hidden rounded-none border-line-strong bg-card px-2 text-sm font-normal whitespace-normal transition-colors duration-200 hover:border-ink hover:bg-card data-[state=on]:border-ink data-[state=on]:bg-card data-[state=on]:text-white disabled:line-through"
                 >
-                  {value}
+                  {/* The dark fill slides from the previous choice to the new one. */}
+                  {selection[option.name] === value && <motion.span layoutId={`option-fill-${product.handle}-${option.name}`} className="absolute inset-0 bg-ink" transition={SPRING} aria-hidden />}
+                  <span className="relative">{value}</span>
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>
