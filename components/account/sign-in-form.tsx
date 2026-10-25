@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { useCart } from "@/components/cart/cart-provider"
 
 const field = "h-12 w-full border border-line-strong bg-paper px-3.5 text-base outline-none transition-colors placeholder:text-muted-foreground focus:border-ink"
 const post = (path: string, body: object) => fetch(`/api/auth${path}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) })
@@ -13,6 +14,7 @@ const post = (path: string, body: object) => fetch(`/api/auth${path}`, { method:
 // successful code creates the account. No passwords.
 export function CustomerSignInForm() {
   const router = useRouter()
+  const { refresh: refreshBag } = useCart()
   const [email, setEmail] = useState("")
   const [code, setCode] = useState("")
   const [sent, setSent] = useState(false)
@@ -42,6 +44,8 @@ export function CustomerSignInForm() {
       const res = await post("/sign-in/email-otp", { email: email.trim(), otp: code.trim() })
       if (res.status === 429) return setError("Too many attempts. Wait a minute, then try again.")
       if (!res.ok) return setError("That code is not right or has expired. Codes last 5 minutes; you can ask for a new one.")
+      // Signing in merges the guest bag into the account (API); show the account's bag now.
+      refreshBag()
       router.replace("/account")
       router.refresh()
     } finally {
@@ -96,6 +100,7 @@ export function CustomerSignInForm() {
 
 export function CustomerSignOutButton() {
   const router = useRouter()
+  const { refresh: refreshBag } = useCart()
   const [busy, setBusy] = useState(false)
   return (
     <Button
@@ -106,6 +111,7 @@ export function CustomerSignOutButton() {
         try {
           await post("/sign-out", {})
         } finally {
+          refreshBag()
           router.replace("/")
           router.refresh()
         }

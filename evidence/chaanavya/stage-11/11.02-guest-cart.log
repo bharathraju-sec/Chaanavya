@@ -1,0 +1,24 @@
+▶ CHV-S11-M02 guest cart persistence
+  ✔ browsing never starts a guest session: an empty bag is null and sets no cookie (37.0323ms)
+  ✔ the first add starts a guest session with a secure, unguessable cookie (77.1898ms)
+  ✔ over https the guest cookie is Secure (31.8665ms)
+  ✔ the bag survives a reload: the same cookie reads back the same cart and lines (70.1661ms)
+  ✔ nothing in a cart response names the shopper (42.9075ms)
+  ✔ another browser sees no bag, and another guest cannot read or change this one (104.8488ms)
+  ✔ a made-up, revoked or expired guest cookie reads no bag and is cleared (94.7388ms)
+  ✔ prices come from the catalogue: a price sent by the browser is ignored (35.329ms)
+  ✔ only what the shop is selling can be added, in sensible quantities, and a refusal starts no session (21.8752ms)
+  ✔ a cross-site request cannot add to a shopper's bag (37.1982ms)
+  ✔ quantities change, cap at the limit, and 0 removes; a replayed change is harmless (111.1415ms)
+  ✔ concurrent adds to one bag all land, one after another (155.1121ms)
+  ✔ a product taken down after it was added stays in the bag, flagged and not charged (88.6069ms)
+  ✔ a signed-in customer's bag is theirs, with no guest cookie (110.5484ms)
+✔ CHV-S11-M02 guest cart persistence (1613.15ms)
+ℹ tests 14
+ℹ suites 1
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6842.2636

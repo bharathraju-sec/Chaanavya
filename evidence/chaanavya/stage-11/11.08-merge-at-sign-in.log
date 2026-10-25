@@ -1,0 +1,21 @@
+▶ CHV-S11-M08 transactional cart merge
+  ✔ signing in merges the guest bag into the account, empties it, ends the guest session and retires the cookie (378.4087ms)
+  ✔ repeating the merge does not duplicate quantities: a second sign-in with the same guest cookie adds nothing (249.4384ms)
+  ✔ the same guest bag merged many times at once is merged exactly once (200.9816ms)
+  ✔ two different guest bags merged into one account at once give one cart with the larger quantities (272.7556ms)
+  ✔ an existing account bag keeps its items, and the same item keeps the larger quantity (361.2163ms)
+  ✔ a guest bag never passes to the next user of the same browser (286.3631ms)
+  ✔ after signing out, an anonymous add starts a brand-new guest, not the old one (153.4303ms)
+  ✔ an unverified or disabled account merges nothing and the guest keeps its bag (110.3908ms)
+  ✔ a made-up guest cookie at sign-in merges nothing, is cleared, and sign-in still works (63.23ms)
+  ✔ an emptied guest bag ends the session without creating an account bag (134.4829ms)
+  ✔ over the line limit, account lines stay and the rest are reported as left behind (1735.1482ms)
+✔ CHV-S11-M08 transactional cart merge (4759.2021ms)
+ℹ tests 11
+ℹ suites 1
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10450.5217

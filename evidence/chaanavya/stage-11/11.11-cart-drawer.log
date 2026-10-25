@@ -1,0 +1,15 @@
+▶ CHV-S11-M11 bag drawer on the shop's own cart API
+  ✔ add, change, remove and clear work through the web host, with totals from the API (457.252ms)
+  ✔ the bag survives a reload through the web host and is never cached (65.1438ms)
+  ✔ errors from the API reach the drawer as the API sent them (110.1263ms)
+  ✔ the drawer calls only the shop's cart API, and the shop's code holds no Shopify cart or browser-only bag (23.4569ms)
+  ✔ adding to the bag reserves no stock (50.1306ms)
+✔ CHV-S11-M11 bag drawer on the shop's own cart API (2675.6831ms)
+ℹ tests 5
+ℹ suites 1
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9890.5904

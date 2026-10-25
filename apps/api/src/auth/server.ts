@@ -17,8 +17,10 @@ import { emailOTP, twoFactor } from "better-auth/plugins"
 import { adminUrl } from "@chaanavya/shared/admin/host"
 import { readEnv, resolveEnvironment } from "@chaanavya/shared/config/env"
 import { db, type Db } from "../db/client.ts"
-import { correlationIdFrom } from "@chaanavya/shared/observability/logger"
+import { correlationIdFrom, createLogger } from "@chaanavya/shared/observability/logger"
+import { mergeGuestCart } from "../cart/merge-apply.ts"
 import { recordIdentityEvent } from "./audit.ts"
+import { GUEST_COOKIE, readGuestToken } from "./guest.ts"
 import { deliverOtp, type OtpMessage } from "./otp-delivery.ts"
 
 export const AUTH_BASE_PATH = "/api/auth"
@@ -145,6 +147,21 @@ export function createAuth({ db: database, secret, baseURL, sendOtp, secureCooki
     },
     hooks: {
       after: createAuthMiddleware(async ctx => {
+        // Stage 11.08: a new session in a browser that still carries a guest cookie merges the guest
+        // bag into the account (src/cart/merge-apply.ts) and retires the guest cookie, so the next
+        // anonymous visit in this browser starts a fresh guest. A failed merge never blocks sign-in:
+        // the guest bag and cookie stay, and the next sign-in tries again.
+        const created = ctx.context.newSession
+        const guestToken = created && ctx.headers ? readGuestToken(ctx.headers) : null
+        if (created && guestToken) {
+          const correlationId = correlationIdFrom(ctx.headers)
+          try {
+            const outcome = await mergeGuestCart(database, { userId: created.user.id, guestToken, correlationId })
+            if (outcome.status !== "skipped") ctx.setCookie(GUEST_COOKIE, "", { path: "/", maxAge: 0, httpOnly: true, sameSite: "lax", secure: secureCookies })
+          } catch (error) {
+            createLogger({ correlationId }).warn("cart.merge_failed", { error: error instanceof Error ? error.message : "unknown" })
+          }
+        }
         const action = AUDITED_PATHS[ctx.path]
         const returned = ctx.context.returned as { status?: number } | undefined
         if (!action || returned instanceof Error || (returned?.status ?? 200) >= 400) return

@@ -14,6 +14,7 @@ export type IdentityAction =
   | "identity.password_reset"
   | "identity.access_denied"
   | "order.claimed"
+  | "cart.merged"
 
 export type IdentityEvent = {
   action: IdentityAction

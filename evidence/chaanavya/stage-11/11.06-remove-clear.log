@@ -1,0 +1,21 @@
+▶ CHV-S11-M06 remove and clear
+  ✔ removing a line takes out only that line and recomputes the subtotal (219.4693ms)
+  ✔ removing the same line again, several times, changes nothing and leaves the bag intact (199.3918ms)
+  ✔ the same removal sent many times at once applies once and corrupts nothing (217.1319ms)
+  ✔ removing never reaches another shopper's line: the caller's own bag comes back unchanged (375.7538ms)
+  ✔ a malformed line id is 404; a shopper with no bag gets null and no guest session (120.5956ms)
+  ✔ clearing empties the bag but keeps it; clearing again changes nothing (197.3642ms)
+  ✔ clearing touches only the caller's bag (198.2026ms)
+  ✔ an add replayed after a clear is not applied again, while a new add works (97.8153ms)
+  ✔ clears, removals and adds racing on one bag leave it consistent (243.3952ms)
+  ✔ a cross-site request cannot remove or clear (89.2314ms)
+  ✔ after a removal the line is gone for every route: changing it is 404, removing it again is harmless (150.8252ms)
+✔ CHV-S11-M06 remove and clear (2686.4008ms)
+ℹ tests 11
+ℹ suites 1
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7849.9852

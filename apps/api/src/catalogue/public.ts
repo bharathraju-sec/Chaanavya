@@ -13,7 +13,7 @@ import { productOptions } from "./products.ts"
 
 // The publication filter, applied inside every public query (Stage 10.03): live and published by an
 // owner (publishedAt is set by the publish action), with every active variant counted.
-const PUBLIC_PRODUCT = {
+export const PUBLIC_PRODUCT = {
   status: "active",
   publishedAt: { not: null },
   variants: { some: { archivedAt: null }, every: { OR: [{ archivedAt: { not: null } }, { balance: { lastCountedAt: { not: null } } }] } },

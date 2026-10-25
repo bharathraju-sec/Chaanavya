@@ -1,0 +1,21 @@
+▶ CHV-S11-M07 guest-to-customer merge policy
+  ✔ the same item keeps the larger quantity, from whichever side (1.2196ms)
+  ✔ quantities stay within 1 to the per-line limit (0.1685ms)
+  ✔ guest items for new variants are added after the account's, newest first (0.1508ms)
+  ✔ unavailable guest items are brought over like any other line (the bag flags them) (0.1057ms)
+  ✔ under the line limit, every account line stays and the newest guest items fill the room (0.3383ms)
+  ✔ a full account bag keeps all its lines and leaves every new guest item behind (0.1231ms)
+  ✔ an empty guest bag, or one already covered, changes nothing (0.139ms)
+  ✔ merging the same guest bag twice gives the same bag (no doubling) (0.1086ms)
+  ✔ deterministic: the input order never changes the result, and creation-time ties fall back to the line id (0.7341ms)
+  ✔ the plan says nothing about owners, carts or prices: only variants and quantities move (0.2094ms)
+  ✔ 300 seeded random bags: every rule holds every time (19.9785ms)
+✔ CHV-S11-M07 guest-to-customer merge policy (102.875ms)
+ℹ tests 11
+ℹ suites 1
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 394.4667

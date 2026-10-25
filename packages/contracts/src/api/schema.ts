@@ -809,6 +809,94 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cart": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The shopper's bag, or null when they have none */
+        get: operations["CartController_current"];
+        put?: never;
+        post?: never;
+        /** Empty the bag. Idempotent: an empty or missing bag changes nothing; never starts a guest session */
+        delete: operations["CartController_clear"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/{cartId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One of the shopper's own carts by id; any other id is the same 404 */
+        get: operations["CartController_one"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add a variant to the bag; starts a guest session for an anonymous shopper. Prices come from the catalogue, never the request */
+        post: operations["CartController_add"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/lines/{lineId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove one line. Idempotent: a line not in the shopper's bag (already removed) changes nothing and the bag comes back as it is */
+        delete: operations["CartController_remove"];
+        options?: never;
+        head?: never;
+        /** Set a line's quantity (0 to 10); 0 removes it. Raising needs the item on sale and enough free stock; lowering always works */
+        patch: operations["CartController_update"];
+        trace?: never;
+    };
+    "/api/v1/cart/promotion": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Apply a promo code to the bag. One code per bag: a valid new code replaces the current one; a code that does not apply is refused (400, fields.code = the reason) and the bag keeps its code */
+        post: operations["CartController_applyCode"];
+        /** Remove the promo code from the bag. Idempotent */
+        delete: operations["CartController_removeCode"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4259,6 +4347,551 @@ export interface operations {
                             title: string;
                             hidden: boolean;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    CartController_current: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    CartController_clear: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    CartController_one: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                cartId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    CartController_add: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _: a retry with the same key changes nothing */
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    CartController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    CartController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    CartController_applyCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    CartController_removeCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            revision: number;
+                            lines: {
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                variantId: string;
+                                quantity: number;
+                                title: string;
+                                variantTitle: string;
+                                handle: string;
+                                imageUrl: string | null;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                            }[];
+                            subtotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            promotion: {
+                                code: string;
+                                applied: boolean;
+                                reason?: string;
+                            } | null;
+                            discount: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            total: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            issues: {
+                                /** @enum {string} */
+                                kind: "unavailable";
+                                /** Format: uuid */
+                                lineId: string;
+                            }[];
+                            /** Format: date-time */
+                            expiresAt: string;
+                        } | null;
                     };
                 };
             };

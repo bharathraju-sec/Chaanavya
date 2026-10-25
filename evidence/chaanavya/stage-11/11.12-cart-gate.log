@@ -1,0 +1,16 @@
+▶ CHV-S11-M12 Stage 11 gate
+  ✔ a guest shops, reloads, signs in, changes quantities and signs out: the bag follows every step, and no stock moves (943.7349ms)
+  ✔ prices and availability are always the catalogue's current ones (283.426ms)
+  ✔ an unreachable API is a clean, uncached error for the bag, and nothing is half-done (14.6872ms)
+  ✔ no shopper sees another's bag, account or session, on any cart route (428.7631ms)
+  ✔ checkout stays closed: no checkout, payment, quote or webhook route, page or API, and the bag's checkout button is disabled (207.0552ms)
+  ✔ the bag never reserves stock, whatever is done to it (264.6106ms)
+✔ CHV-S11-M12 Stage 11 gate (4224.1716ms)
+ℹ tests 6
+ℹ suites 1
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10980.3107

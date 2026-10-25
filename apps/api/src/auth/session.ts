@@ -126,10 +126,10 @@ export async function requirePermission(headers: Headers, facts: RequestFacts, c
   return { ...signedIn, capabilities }
 }
 
-/** Who is shopping: a signed-in customer, a guest session, or neither. */
+/** Who is shopping: a signed-in customer, a guest session, or neither. `emailVerified` is the signed-in user's. */
 export async function resolveShopper(headers: Headers) {
   const [signedIn, guest] = await Promise.all([getSignedIn(headers), findGuestSession(db(), headers)])
-  return { userId: signedIn?.userId ?? null, guestSessionId: guest?.id ?? null }
+  return { userId: signedIn?.userId ?? null, emailVerified: signedIn?.emailVerified ?? false, guestSessionId: guest?.id ?? null }
 }
 
 /** True only when the record belongs to this shopper. A guest never matches a customer's record. */

@@ -1,0 +1,19 @@
+▶ CHV-S11-M09 promotion validity
+  ✔ an expired code is rejected, from the exact end time on (1.0193ms)
+  ✔ a code that has not started is rejected until its start time (0.15ms)
+  ✔ a switched-off or unknown code reads as not found (0.0834ms)
+  ✔ ineligible shoppers and bags are rejected (0.2427ms)
+  ✔ the discount is computed on the server in whole paise and never exceeds the subtotal (1.1467ms)
+  ✔ codes are normalised; anything that cannot be a code is not found (0.3198ms)
+  ✔ database path: real codes are found case-insensitively and the same rules apply (208.5295ms)
+  ✔ database path: a per-customer limit counts the shopper's orders with the code (by account, or by guest session), except cancelled ones (99.1093ms)
+  ✔ the database refuses promotion rows the engine could not price safely (69.6389ms)
+✔ CHV-S11-M09 promotion validity (1005.5413ms)
+ℹ tests 9
+ℹ suites 1
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7853.1096

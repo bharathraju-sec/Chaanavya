@@ -39,8 +39,72 @@ export function BagButton() {
   )
 }
 
+/** One promo code per bag: a field to apply it, or the applied code with its state and a remove link. */
+function PromoCode() {
+  const { promotion, applyCode, removeCode, busy } = useCart()
+  const [code, setCode] = React.useState("")
+  const [error, setError] = React.useState<string | null>(null)
+  const errorId = React.useId()
+
+  if (promotion) {
+    return (
+      <div className="mb-4 flex items-start justify-between gap-3 border-b border-line pb-4 text-sm">
+        <div>
+          <p>
+            Code <strong className="font-semibold tracking-[0.08em]">{promotion.code}</strong> {promotion.applied ? "applied" : "added"}
+          </p>
+          {!promotion.applied && <p className="mt-1 text-xs text-terra">{promotion.message}</p>}
+        </div>
+        <Button variant="link" size="sm" className="text-[11px] text-muted-foreground" disabled={busy} onClick={() => removeCode()}>
+          Remove
+        </Button>
+      </div>
+    )
+  }
+  return (
+    <form
+      className="mb-4 border-b border-line pb-4"
+      onSubmit={async event => {
+        event.preventDefault()
+        if (!code.trim()) return
+        const refused = await applyCode(code)
+        setError(refused)
+        if (!refused) setCode("")
+      }}
+    >
+      <label htmlFor="promo-code" className="text-xs font-semibold tracking-[0.14em] uppercase">
+        Promo code
+      </label>
+      <div className="mt-2 flex gap-2">
+        <input
+          id="promo-code"
+          value={code}
+          onChange={event => (setCode(event.target.value), setError(null))}
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          maxLength={32}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
+          className="h-11 min-w-0 flex-1 border border-line-strong bg-paper px-3 text-sm uppercase outline-none transition-colors placeholder:normal-case placeholder:text-muted-foreground focus:border-ink"
+          placeholder="Enter a code"
+        />
+        <Button type="submit" variant="outline" className="h-11" disabled={busy || !code.trim()}>
+          Apply
+        </Button>
+      </div>
+      {error && (
+        <p id={errorId} role="alert" className="mt-2 text-xs text-terra">
+          {error}
+        </p>
+      )}
+    </form>
+  )
+}
+
 export function CartSheet() {
-  const { lines, subtotal, open, setOpen, busy, setQuantity } = useCart()
+  const { lines, subtotal, discount, total, promotion, open, setOpen, busy, setQuantity } = useCart()
+  const discounted = promotion?.applied && Number(discount.amount) > 0
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -91,7 +155,7 @@ export function CartSheet() {
                       <span className="min-w-8 text-center text-sm" aria-label="Quantity">
                         {line.quantity}
                       </span>
-                      <Button variant="quiet" size="icon" className="size-9" disabled={busy} onClick={() => setQuantity(line.id, line.quantity + 1)} aria-label={`Increase quantity of ${line.title}`}>
+                      <Button variant="quiet" size="icon" className="size-9" disabled={busy || line.quantity >= 10} onClick={() => setQuantity(line.id, line.quantity + 1)} aria-label={`Increase quantity of ${line.title}`}>
                         <Plus aria-hidden />
                       </Button>
                       <Button variant="link" size="sm" className="ml-auto text-[11px] text-muted-foreground" disabled={busy} onClick={() => setQuantity(line.id, 0)}>
@@ -107,10 +171,27 @@ export function CartSheet() {
         </div>
 
         <SheetFooter className="gap-0 border-t border-line bg-card px-6 pt-5 pb-[calc(20px+env(safe-area-inset-bottom))]">
+          {lines.length > 0 && <PromoCode />}
           <div className="flex justify-between text-base">
             <span>Subtotal</span>
             <strong className="font-semibold">{formatMoney(subtotal)}</strong>
           </div>
+          {discounted && (
+            <>
+              <div className="mt-2 flex justify-between text-sm">
+                <span>Discount ({promotion.code})</span>
+                <span>
+                  <span className="sr-only">minus </span>
+                  <span aria-hidden>−</span>
+                  {formatMoney(discount)}
+                </span>
+              </div>
+              <div className="mt-2 flex justify-between border-t border-line pt-2 text-base">
+                <span>Total</span>
+                <strong className="font-semibold">{formatMoney(total)}</strong>
+              </div>
+            </>
+          )}
           <p className="mt-1 text-xs text-muted-foreground">Shipping and taxes are calculated at checkout.</p>
           {/* Placeholder: online checkout is not built yet (Stages 11 to 14). */}
           <Button className="mt-4 h-13 w-full" disabled>

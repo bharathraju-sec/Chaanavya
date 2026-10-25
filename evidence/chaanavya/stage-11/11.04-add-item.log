@@ -1,0 +1,20 @@
+▶ CHV-S11-M04 add cart item
+  ✔ a price, total, currency, title or cart id sent by the browser is ignored (118.1175ms)
+  ✔ the bag shows the catalogue's current price, not the price when it was added (95.8967ms)
+  ✔ the variant ID and quantity are validated, and a refused add starts no guest session (68.1903ms)
+  ✔ only variants on sale now can be added: drafts, unpublished, uncounted and withdrawn sizes read as missing (34.6167ms)
+  ✔ availability is read on the server at the moment of the add, after stock held for orders (92.3705ms)
+  ✔ an add needs an Idempotency-Key; a missing or malformed one changes nothing (10.881ms)
+  ✔ a retried add with the same key counts once and returns the same bag (123.8605ms)
+  ✔ the same key sent several times at once is applied exactly once (166.8575ms)
+  ✔ a key belongs to its own bag: another shopper using the same key value is unaffected (93.7867ms)
+  ✔ racing adds never put more in one bag than the shop has free (156.61ms)
+✔ CHV-S11-M04 add cart item (1700.8169ms)
+ℹ tests 10
+ℹ suites 1
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7295.3364

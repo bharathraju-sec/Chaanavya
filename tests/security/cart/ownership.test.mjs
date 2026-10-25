@@ -59,10 +59,10 @@ describe("CHV-S11-M01 cart ownership", () => {
   })
 
   test("a signed-in shopper shops as the customer even with a guest cookie still present", () => {
-    const owner = cart.cartOwnerOf({ userId: customer.owner.customerId, guestSessionId: guests.a.session.id })
+    const owner = cart.cartOwnerOf({ userId: customer.owner.customerId, emailVerified: true, guestSessionId: guests.a.session.id })
     assert.deepEqual(owner, customer.owner)
-    assert.deepEqual(cart.cartOwnerOf({ userId: null, guestSessionId: guests.a.session.id }), guests.a.owner)
-    assert.equal(cart.cartOwnerOf({ userId: null, guestSessionId: null }), null, "no session, no cart")
+    assert.deepEqual(cart.cartOwnerOf({ userId: null, emailVerified: false, guestSessionId: guests.a.session.id }), guests.a.owner)
+    assert.equal(cart.cartOwnerOf({ userId: null, emailVerified: false, guestSessionId: null }), null, "no session, no cart")
   })
 
   test("malformed and made-up cart ids read nothing and never reach the database as a query error", async () => {

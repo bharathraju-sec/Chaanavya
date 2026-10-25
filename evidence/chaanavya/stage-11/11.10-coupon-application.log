@@ -1,0 +1,25 @@
+▶ CHV-S11-M10 coupon application
+  ✔ a percentage code: discount and total come from the server, rounded down to the paisa (215.921ms)
+  ✔ a fixed-amount code never takes off more than the subtotal, and the total is never negative (162.2925ms)
+  ✔ totals are recomputed on every change and read, and the same bag always gives the same totals (515.0775ms)
+  ✔ reduced items are discounted too (owner decision) (71.2593ms)
+  ✔ expired, not started, switched-off and unknown codes are refused and the bag is unchanged (232.3907ms)
+  ✔ one code per bag: a valid new code replaces the old one, and discounts never stack (165.3631ms)
+  ✔ a bag below a code's minimum spend cannot take it (55.199ms)
+  ✔ a qualifying bag keeps a minimum-spend code while it qualifies and loses only the discount when it does not (139.4355ms)
+  ✔ items no longer on sale are left out of the discount base (118.2809ms)
+  ✔ a per-customer limit is enforced through the bag, for guests by guest session (191.6901ms)
+  ✔ a discount or total sent by the browser is ignored (71.8186ms)
+  ✔ removing the code is idempotent and restores the full total (116.4893ms)
+  ✔ a code is applied only to the caller's own bag; no bag means 404 and no guest session (124.5048ms)
+  ✔ guessing codes is rate limited: the 11th try in a minute from one address is refused (216.6441ms)
+  ✔ over many random bags, the discount is whole paise, never above the subtotal, and total = subtotal - discount (1772.7867ms)
+✔ CHV-S11-M10 coupon application (4880.9921ms)
+ℹ tests 15
+ℹ suites 1
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9968.9489

@@ -1,0 +1,19 @@
+▶ CHV-S11-M05 update quantity
+  ✔ an invalid quantity is refused and nothing is stored: the line and the revision stay as they were (217.8971ms)
+  ✔ the database refuses an out-of-range quantity even if the API were bypassed (87.9615ms)
+  ✔ valid quantities from 1 to 10 are stored, and the bag's totals are recomputed on the server (184.2437ms)
+  ✔ 0 removes the line, and the subtotal drops with it (95.6992ms)
+  ✔ only the owner can change a line: another guest, another account or no session gets 404 (257.9344ms)
+  ✔ raising needs free stock now; lowering always works (133.0172ms)
+  ✔ an item taken off sale can be lowered or removed, but not raised (106.976ms)
+  ✔ setting the same quantity again changes nothing; a change to a removed line stays refused (120.1185ms)
+  ✔ concurrent changes apply one after another and never pass the free stock (158.7588ms)
+✔ CHV-S11-M05 update quantity (2003.3459ms)
+ℹ tests 9
+ℹ suites 1
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7827.9369

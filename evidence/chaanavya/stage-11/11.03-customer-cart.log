@@ -1,0 +1,19 @@
+▶ CHV-S11-M03 authenticated cart persistence
+  ✔ a customer's bag is attached to their account, not to a guest session (6.7594ms)
+  ✔ another account cannot read the bag by its id: the same 404 as a made-up id (135.9128ms)
+  ✔ a guest or anonymous visitor holding the id gets the same 404 (52.2784ms)
+  ✔ another account cannot change the bag's lines, even with the exact line id (39.4652ms)
+  ✔ the bag follows the account: a new sign-in on another device sees the same bag (59.7835ms)
+  ✔ two devices of one customer changing the bag at once both land in the one bag (138.0619ms)
+  ✔ an account whose email is not verified does not own a bag: it shops as a guest (89.4044ms)
+  ✔ a customer bag becomes unreachable once the account is unverified or disabled, even by its id (113.939ms)
+  ✔ a customer never reaches the guest bag the same browser had before signing in (merge is a later step) (96.8887ms)
+✔ CHV-S11-M03 authenticated cart persistence (1853.1376ms)
+ℹ tests 9
+ℹ suites 1
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8655.8597

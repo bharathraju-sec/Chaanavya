@@ -695,18 +695,36 @@ model Cart {
   userId         String?  @map("user_id") @db.Uuid
   guestSessionId String?  @map("guest_session_id") @db.Uuid
   revision       Int      @default(0)
+  /// The promo code applied to the bag (Stage 11.10): one at a time, checked again on every read.
+  promotionId    String?  @map("promotion_id") @db.Uuid
   expiresAt      DateTime @map("expires_at") @db.Timestamptz(3)
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   guestSession GuestSession? @relation(fields: [guestSessionId], references: [id], onDelete: Cascade)
+  promotion    Promotion?    @relation(fields: [promotionId], references: [id], onDelete: SetNull)
   lines        CartLine[]
+  requests     CartRequest[]
 
   @@index([userId])
   @@index([guestSessionId])
   @@index([expiresAt])
   @@map("cart")
+}
+
+/// Idempotency-Key of each add to a cart (Stage 11.04): a retry with the same key changes nothing
+/// and gets the bag back; the same key with a different request is refused. Deleted with the cart.
+model CartRequest {
+  cartId        String   @map("cart_id") @db.Uuid
+  key           String
+  requestSha256 String   @map("request_sha256")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@id([cartId, key])
+  @@map("cart_request")
 }
 
 /// No price column: prices are read from the catalogue on every display and at quote time.
@@ -743,6 +761,7 @@ model Promotion {
   updatedAt          DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   orders Order[]
+  carts  Cart[]
 
   @@map("promotion")
 }

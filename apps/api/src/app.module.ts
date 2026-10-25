@@ -11,12 +11,13 @@ import { HealthController } from "./modules/health.controller.ts"
 import { InventoryController } from "./modules/inventory.controller.ts"
 import { OrdersController } from "./modules/orders.controller.ts"
 import { SessionController } from "./modules/session.controller.ts"
+import { CartController } from "./modules/cart.controller.ts"
 import { StorefrontCatalogueController } from "./modules/storefront.controller.ts"
 
 // Guards run in this order on every route: the per-IP limit, then the route's access rule.
 @Module({
   imports: [ThrottlerModule.forRoot([API_RATE_LIMIT])],
-  controllers: [HealthController, SessionController, AccountController, OrdersController, AdminController, CatalogueAdminController, InventoryController, StorefrontCatalogueController],
+  controllers: [HealthController, SessionController, AccountController, OrdersController, AdminController, CatalogueAdminController, InventoryController, StorefrontCatalogueController, CartController],
   providers: [
     { provide: APP_GUARD, useClass: ClientIpThrottlerGuard },
     { provide: APP_GUARD, useClass: AccessGuard },

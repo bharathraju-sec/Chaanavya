@@ -3,6 +3,9 @@
 // Owner     exactly one: a signed-in customer (user id) or a live guest session (CHECK
 //           cart_single_owner). A signed-in shopper always shops as the customer, even if the
 //           browser still carries a guest cookie; that guest cart is merged at sign-in (11.0x).
+//           Only a verified, enabled account owns a cart (11.03): a signed-in user whose email is
+//           not verified shops as a guest, and a disabled account's carts are unreachable. Both
+//           are checked in the database filter too, not only when the owner is worked out.
 //           The owner comes from the session or the hashed guest cookie, never from the request.
 // Access    a cart is found only by its id AND its owner. A different guest, a customer, a staff
 //           member, a made-up id, an expired cart or a cart whose guest session expired or was
@@ -25,16 +28,16 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
 export type CartState = "active" | "abandoned" | "expired"
 
-/** The cart owner for a resolved shopper (see resolveShopper): the customer wins over a guest cookie. */
-export function cartOwnerOf(shopper: { userId: string | null; guestSessionId: string | null }): Shopper | null {
-  if (shopper.userId) return { kind: "customer", customerId: shopper.userId as CustomerId }
+/** The cart owner for a resolved shopper (see resolveShopper): a verified customer wins over a guest cookie. */
+export function cartOwnerOf(shopper: { userId: string | null; emailVerified: boolean; guestSessionId: string | null }): Shopper | null {
+  if (shopper.userId && shopper.emailVerified === true) return { kind: "customer", customerId: shopper.userId as CustomerId }
   if (shopper.guestSessionId) return { kind: "guest", guestSessionId: shopper.guestSessionId as GuestSessionId }
   return null
 }
 
 /** Database filter for "carts this owner may touch". A guest's session must still be live. */
 export function ownedBy(owner: Shopper, now = new Date()) {
-  if (owner.kind === "customer") return { userId: owner.customerId, guestSessionId: null }
+  if (owner.kind === "customer") return { userId: owner.customerId, guestSessionId: null, user: { emailVerified: true, disabledAt: null } }
   return { guestSessionId: owner.guestSessionId, userId: null, guestSession: { revokedAt: null, expiresAt: { gt: now } } }
 }
 
@@ -50,7 +53,7 @@ export function cartState(cart: { expiresAt: Date; updatedAt: Date; lineCount: n
   return cart.lineCount > 0 && idleMs >= CART_LIFETIME.abandonedAfterHours * 60 * 60 * 1000 ? "abandoned" : "active"
 }
 
-const CART_FIELDS = { id: true, userId: true, guestSessionId: true, revision: true, expiresAt: true, createdAt: true, updatedAt: true } as const
+const CART_FIELDS = { id: true, userId: true, guestSessionId: true, revision: true, promotionId: true, expiresAt: true, createdAt: true, updatedAt: true } as const
 
 /** The owner's live cart with this id, or null. Null for every refusal, so callers answer not_found. */
 export async function findOwnedCart(db: Db | Tx, owner: Shopper, cartId: string, now = new Date()) {
@@ -64,7 +67,7 @@ export async function findCurrentCart(db: Db | Tx, owner: Shopper, now = new Dat
 }
 
 /** The owner's current cart, created empty when there is none. A guest needs a live session. */
-export async function openCart(db: Db, owner: Shopper, now = new Date()) {
+export async function openCart(db: Db | Tx, owner: Shopper, now = new Date()) {
   const current = await findCurrentCart(db, owner, now)
   if (current) return current
   if (owner.kind === "customer") return db.cart.create({ data: { userId: owner.customerId, expiresAt: cartExpiry(now) }, select: CART_FIELDS })

@@ -182,7 +182,9 @@ test("CHV-S10-M11 the sitemap follows the catalogue: an unpublish drops the prod
   assert.equal((await get(`/products/${made.e2.handle}`)).status, 404)
 })
 
-test("CHV-S10-M11 checkout stays closed: no checkout, payment, cart or webhook route, page or API, and no payment provider on the pages", async () => {
+// Since Stage 11.02 the bag has an API (/api/cart: read, add, change a quantity); checkout, payment,
+// webhooks and quotes stay closed until their own stages.
+test("CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, page or API, and no payment provider on the pages", async () => {
   for (const path of ["/checkout", "/cart", "/payment", "/payments", "/order", "/orders", "/api/checkout", "/api/payments", "/api/cart", "/api/webhooks/razorpay", "/api/orders"]) {
     const res = await get(path, { method: path.startsWith("/api") ? "POST" : "GET", body: path.startsWith("/api") ? "{}" : undefined })
     assert.ok([401, 404, 405].includes(res.status), `${path} answered ${res.status}`)
@@ -193,7 +195,7 @@ test("CHV-S10-M11 checkout stays closed: no checkout, payment, cart or webhook r
     for (const provider of ["razorpay", "phonepe", "shiprocket", "cdn.shopify", "myshopify"]) assert.ok(!html.includes(provider), `${path} loads no ${provider}`)
   }
   const api = JSON.parse(readFileSync(join(ROOT, "packages/contracts/openapi/api.json"), "utf8"))
-  assert.deepEqual(Object.keys(api.paths).filter(p => /checkout|payment|webhook|cart|quote/i.test(p)), [], "the API has no checkout or payment path")
+  assert.deepEqual(Object.keys(api.paths).filter(p => /checkout|payment|webhook|quote/i.test(p)), [], "the API has no checkout or payment path")
   // The bag's checkout button is a disabled placeholder, and nothing in the shop links to a checkout page.
   const sheet = readFileSync(join(ROOT, "components/cart/cart-sheet.tsx"), "utf8")
   assert.match(sheet, /Checkout opens soon/)
