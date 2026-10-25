@@ -20,7 +20,7 @@ import { db, type Db } from "../db/client.ts"
 import { correlationIdFrom, createLogger } from "@chaanavya/shared/observability/logger"
 import { mergeGuestCart } from "../cart/merge-apply.ts"
 import { recordIdentityEvent } from "./audit.ts"
-import { GUEST_COOKIE, readGuestToken } from "./guest.ts"
+import { GUEST_COOKIE, hasGuestCookie, readGuestToken } from "./guest.ts"
 import { deliverOtp, type OtpMessage } from "./otp-delivery.ts"
 
 export const AUTH_BASE_PATH = "/api/auth"
@@ -153,11 +153,14 @@ export function createAuth({ db: database, secret, baseURL, sendOtp, secureCooki
         // the guest bag and cookie stay, and the next sign-in tries again.
         const created = ctx.context.newSession
         const guestToken = created && ctx.headers ? readGuestToken(ctx.headers) : null
+        const clearGuest = () => ctx.setCookie(GUEST_COOKIE, "", { path: "/", maxAge: 0, httpOnly: true, sameSite: "lax", secure: secureCookies })
+        // A guest cookie that is not a token at all (malformed) names no guest: just clear it (F04).
+        if (created && !guestToken && ctx.headers && hasGuestCookie(ctx.headers)) clearGuest()
         if (created && guestToken) {
           const correlationId = correlationIdFrom(ctx.headers)
           try {
             const outcome = await mergeGuestCart(database, { userId: created.user.id, guestToken, correlationId })
-            if (outcome.status !== "skipped") ctx.setCookie(GUEST_COOKIE, "", { path: "/", maxAge: 0, httpOnly: true, sameSite: "lax", secure: secureCookies })
+            if (outcome.status !== "skipped") clearGuest()
           } catch (error) {
             createLogger({ correlationId }).warn("cart.merge_failed", { error: error instanceof Error ? error.message : "unknown" })
           }

@@ -152,18 +152,46 @@ export function addKeyOf(value: unknown) {
 
 const available = (b: { onHand: number; reserved: number; allocated: number } | null) => (b ? b.onHand - b.reserved - b.allocated : 0)
 
-/**
- * Checks an add before anything is written (so a refused add starts no guest session): a variant
- * the shop is selling now, in stock, and a quantity within the limit. Anything not on sale is missing.
- */
-export async function lineToAdd(db: Db, body: Record<string, unknown>): Promise<LineToAdd> {
+/** The add's shape only (no database): a variant id and a quantity within the per-line limit. */
+export function parseLineToAdd(body: Record<string, unknown>): LineToAdd {
   const variantId = typeof body.variantId === "string" && UUID.test(body.variantId) ? body.variantId : null
   if (!variantId) throw new ApiError(400, "invalid_request", "variantId must be a variant ID", { variantId: "invalid" })
   const quantity = quantityOf(body.quantity === undefined ? 1 : body.quantity, { allowZero: false })
-  const variant = await db.productVariant.findFirst({ where: { id: variantId, archivedAt: null, product: PUBLIC_PRODUCT }, select: { balance: { select: { onHand: true, reserved: true, allocated: true } } } })
+  return { variantId, quantity }
+}
+
+/** The canonical form of an add, stored with its Idempotency-Key ("quantity" missing means 1). */
+const requestHash = ({ variantId, quantity }: LineToAdd) => createHash("sha256").update(JSON.stringify({ variantId, quantity })).digest("hex")
+
+/**
+ * Whether this add already happened (pre-Stage-12 fix F02): the same Idempotency-Key on the owner's
+ * current cart. The same key and body returns the bag as it is now, without writing and without
+ * checking stock or publication again (an add that succeeded stays a success when retried, even if
+ * the item has since sold out or been taken down); the same key with a different body is refused.
+ * Null when the key is new. Keys belong to their cart: once a cart expires, a retry starts afresh.
+ */
+export async function findAddReplay(db: Db, owner: Shopper | null, key: string, line: LineToAdd) {
+  if (!owner) return null
+  const cart = await findCurrentCart(db, owner)
+  if (!cart) return null
+  const earlier = await db.cartRequest.findUnique({ where: { cartId_key: { cartId: cart.id, key } }, select: { requestSha256: true } })
+  if (!earlier) return null
+  if (earlier.requestSha256 !== requestHash(line)) throw new ApiError(409, "conflict", "this Idempotency-Key was already used for a different add", { "Idempotency-Key": "reused" })
+  return readCart(db, owner)
+}
+
+const onSale = (db: Db | Tx, variantId: string) =>
+  db.productVariant.findFirst({ where: { id: variantId, archivedAt: null, product: PUBLIC_PRODUCT }, select: { balance: { select: { onHand: true, reserved: true, allocated: true } } } })
+
+/**
+ * Checks a new add before anything is written, so a refused add starts no guest session: a variant
+ * the shop is selling now, and in stock. Anything not on sale is missing. addLine checks both again
+ * inside its transaction, so this early check can never let a stale answer through.
+ */
+export async function checkAddable(db: Db, { variantId }: LineToAdd) {
+  const variant = await onSale(db, variantId)
   if (!variant) throw notFound()
   if (available(variant.balance) <= 0) throw new ApiError(409, "conflict", "this item is sold out", { variantId: "sold_out" })
-  return { variantId, quantity }
 }
 
 /**
@@ -172,8 +200,9 @@ export async function lineToAdd(db: Db, body: Record<string, unknown>): Promise<
  * change, so it is current). The Idempotency-Key is recorded with the change: the same key again
  * returns the bag unchanged, and the same key with a different request is refused.
  */
-export async function addLine(db: Db, owner: Shopper, { variantId, quantity }: LineToAdd, key: string) {
-  const requestSha256 = createHash("sha256").update(JSON.stringify({ variantId, quantity })).digest("hex")
+export async function addLine(db: Db, owner: Shopper, line: LineToAdd, key: string) {
+  const { variantId, quantity } = line
+  const requestSha256 = requestHash(line)
   return changeCart(
     db,
     owner,
@@ -184,10 +213,9 @@ export async function addLine(db: Db, owner: Shopper, { variantId, quantity }: L
         return "unchanged"
       }
       await tx.cartRequest.create({ data: { cartId, key, requestSha256 } })
-      const [existing, variant] = await Promise.all([
-        tx.cartLine.findUnique({ where: { cartId_variantId: { cartId, variantId } }, select: { id: true, quantity: true } }),
-        tx.productVariant.findUnique({ where: { id: variantId }, select: { balance: { select: { onHand: true, reserved: true, allocated: true } } } }),
-      ])
+      // A new key: every current rule applies, read inside the locked change (on sale, stock, limits).
+      const [existing, variant] = await Promise.all([tx.cartLine.findUnique({ where: { cartId_variantId: { cartId, variantId } }, select: { id: true, quantity: true } }), onSale(tx, variantId)])
+      if (!variant) throw notFound()
       const total = Math.min(CART_LIMITS.maxQuantity, (existing?.quantity ?? 0) + quantity)
       const free = available(variant?.balance ?? null)
       if (total > free) throw new ApiError(409, "conflict", free <= 0 ? "this item is sold out" : `only ${free} available`, { quantity: "exceeds_stock" })

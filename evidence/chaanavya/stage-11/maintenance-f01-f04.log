@@ -1,0 +1,31 @@
+▶ CHV-S11-F01 one live cart per owner
+  ✔ F01-A: parallel first adds for one verified account leave exactly one live cart holding every add (332.6626ms)
+  ✔ F01-A: the same for a guest session: parallel first adds with one cookie give one cart (163.1774ms)
+  ✔ F01-B: guest adds racing the sign-in merge, and account adds racing it, leave one account cart and no deadlock (208.4471ms)
+✔ CHV-S11-F01 one live cart per owner (1658.7983ms)
+▶ CHV-S11-F02 idempotent add replays
+  ✔ F02-A: an add retried with the same key and body after stock runs out is a successful no-op (72.8592ms)
+  ✔ F02-B: the same retry after the product is unpublished or archived is a no-op; a fresh key still fails (139.3739ms)
+  ✔ F02-C: the same key with a different body is 409, and parallel identical requests apply once (190.2151ms)
+  ✔ F02: a replay never creates a guest session or a cart, and a body missing quantity matches quantity 1 (56.5421ms)
+✔ CHV-S11-F02 idempotent add replays (459.5188ms)
+▶ CHV-S11-F03 promo code through sign-in
+  ✔ F03-A: a guest-only code survives sign-in and is checked as the account (160.5532ms)
+  ✔ F03-A: a carried code the account may not use shows with its reason and gives no discount (223.2319ms)
+  ✔ F03-B: the account's own code wins over the guest's, and codes never stack (240.1853ms)
+  ✔ F03-B: an expired carried code never discounts (130.1331ms)
+  ✔ F03-C: repeated and concurrent merges carry the code once and duplicate no lines (185.8182ms)
+  ✔ F03: carrying only a code still bumps the account revision (266.3123ms)
+✔ CHV-S11-F03 promo code through sign-in (1206.8054ms)
+▶ CHV-S11-F04 malformed guest cookies
+  ✔ F04-A: malformed, truncated or arbitrary guest cookies give normal anonymous behaviour, never a 500 (309.5677ms)
+  ✔ F04-B: a valid guest cookie still finds its own cart (41.0601ms)
+✔ CHV-S11-F04 malformed guest cookies (350.8769ms)
+ℹ tests 15
+ℹ suites 4
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27503.0313

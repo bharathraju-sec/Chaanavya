@@ -61,7 +61,7 @@ describe("CHV-S11-M08 transactional cart merge", () => {
     assert.equal(await ctx.db.cartLine.count({ where: { cartId: guest.cart.id } }), 0, "emptied")
     assert.ok((await ctx.db.guestSession.findUniqueOrThrow({ where: { id: guest.cart.guestSessionId } })).revokedAt, "guest session ended")
     const event = await ctx.db.auditEvent.findFirstOrThrow({ where: { action: "cart.merged", actorId: user.id } })
-    assert.deepEqual(event.after, { added: 2, raised: 0, leftBehind: 0 })
+    assert.deepEqual(event.after, { added: 2, raised: 0, leftBehind: 0, promotion: "none" })
     assert.ok(!JSON.stringify(event).includes(guest.token), "the audit holds no guest token")
   })
 
@@ -192,6 +192,6 @@ describe("CHV-S11-M08 transactional cart merge", () => {
     for (const id of extra.slice(0, 29)) assert.ok(account.lines.some(l => l.variantId === id))
     const user = await ctx.db.user.findUniqueOrThrow({ where: { email: address } })
     const event = await ctx.db.auditEvent.findFirstOrThrow({ where: { action: "cart.merged", actorId: user.id } })
-    assert.deepEqual(event.after, { added: 1, raised: 0, leftBehind: 2 })
+    assert.deepEqual(event.after, { added: 1, raised: 0, leftBehind: 2, promotion: "none" })
   })
 })

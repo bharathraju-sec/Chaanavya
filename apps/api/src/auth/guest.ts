@@ -22,17 +22,28 @@ export async function createGuestSession(db: Db): Promise<{ session: GuestSessio
   return { session, token }
 }
 
-/** Reads the guest cookie from a Cookie header. Malformed values are ignored. */
-export function readGuestToken(headers: Headers): string | null {
+/** The raw value of the guest cookie, as sent (not decoded), or null when there is none. */
+const rawGuestCookie = (headers: Headers) => {
   for (const part of (headers.get("cookie") ?? "").split(";")) {
     const [name, ...rest] = part.trim().split("=")
-    if (name === GUEST_COOKIE) {
-      const value = decodeURIComponent(rest.join("="))
-      return TOKEN.test(value) ? value : null
-    }
+    if (name === GUEST_COOKIE) return rest.join("=")
   }
   return null
 }
+
+/**
+ * Reads the guest token from a Cookie header. Malformed values are ignored. The shop's own tokens
+ * are base64url, which never needs percent-decoding, so the value is checked as sent: a value such
+ * as `%`, `%ZZ`, a truncated token or any other text is simply not a token (pre-Stage-12 fix F04:
+ * decoding it used to throw), and it is never looked up in the database.
+ */
+export function readGuestToken(headers: Headers): string | null {
+  const value = rawGuestCookie(headers)
+  return value !== null && TOKEN.test(value) ? value : null
+}
+
+/** True when the request carries a guest cookie at all, valid or not (so a bad one can be cleared). */
+export const hasGuestCookie = (headers: Headers) => rawGuestCookie(headers) !== null
 
 /** The live guest session for this request, or null if missing, unknown, expired or revoked. */
 export async function findGuestSession(db: Db, headers: Headers): Promise<GuestSessionRef | null> {

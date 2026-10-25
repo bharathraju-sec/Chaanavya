@@ -66,14 +66,34 @@ export async function findCurrentCart(db: Db | Tx, owner: Shopper, now = new Dat
   return db.cart.findFirst({ where: { ...ownedBy(owner, now), expiresAt: { gt: now } }, orderBy: { updatedAt: "desc" }, select: CART_FIELDS })
 }
 
-/** The owner's current cart, created empty when there is none. A guest needs a live session. */
+/**
+ * The owner's current cart, created empty when there is none. A customer must be verified and
+ * enabled; a guest needs a live session; otherwise null.
+ *
+ * At most one live cart per owner (pre-Stage-12 fix F01): the owner's own row (the user, or the
+ * guest session) is locked FOR UPDATE before looking for a cart, so two first adds at once queue
+ * and the second finds the cart the first created. A lock on the cart row cannot do this, because
+ * there is no cart row yet. Must run inside a transaction for the lock to hold; every writer
+ * (changeCart, mergeGuestCart) does, and takes the owner lock first, so the lock order is
+ * owner, then cart. Expired carts are left as they are (history; the purge job removes them) and a
+ * new one is created beside them; only live carts count.
+ */
 export async function openCart(db: Db | Tx, owner: Shopper, now = new Date()) {
+  let guestExpiresAt: Date | undefined
+  if (owner.kind === "customer") {
+    const [user] = await db.$queryRaw<{ ok: boolean }[]>`
+      SELECT (email_verified AND disabled_at IS NULL) AS ok FROM "user" WHERE id = ${owner.customerId}::uuid FOR UPDATE`
+    if (!user?.ok) return null
+  } else {
+    const [session] = await db.$queryRaw<{ expires_at: Date }[]>`
+      SELECT expires_at FROM guest_session WHERE id = ${owner.guestSessionId}::uuid AND revoked_at IS NULL AND expires_at > ${now} FOR UPDATE`
+    if (!session) return null
+    guestExpiresAt = session.expires_at
+  }
   const current = await findCurrentCart(db, owner, now)
   if (current) return current
   if (owner.kind === "customer") return db.cart.create({ data: { userId: owner.customerId, expiresAt: cartExpiry(now) }, select: CART_FIELDS })
-  const session = await db.guestSession.findFirst({ where: { id: owner.guestSessionId, revokedAt: null, expiresAt: { gt: now } }, select: { expiresAt: true } })
-  if (!session) return null
-  return db.cart.create({ data: { guestSessionId: owner.guestSessionId, expiresAt: cartExpiry(now, session.expiresAt) }, select: CART_FIELDS })
+  return db.cart.create({ data: { guestSessionId: owner.guestSessionId, expiresAt: cartExpiry(now, guestExpiresAt) }, select: CART_FIELDS })
 }
 
 /**

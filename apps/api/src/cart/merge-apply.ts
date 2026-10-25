@@ -8,6 +8,9 @@
 // row lock every cart change takes). The guest session is revoked in the same transaction, so a
 // repeated or concurrent merge finds nothing left and quantities are never counted twice.
 //
+// Promo code (F03): the account bag's own code wins; otherwise the guest bag's code moves over and is
+// checked again on every read as the customer. Codes never stack and nothing is counted here.
+//
 // Ownership stays distinct: lines are copied (variant and quantity only), the guest cart keeps its
 // guest owner and is emptied, and the account must be verified and enabled (11.03); otherwise
 // nothing is merged and the browser keeps shopping as the guest.
@@ -24,7 +27,7 @@ export type MergeOutcome =
   /** The account is not verified or is disabled: nothing merged, the guest keeps its bag. */
   | { status: "skipped" }
   /** The guest session was ended; `added` new lines, `raised` existing ones, `leftBehind` did not fit. */
-  | { status: "merged"; added: number; raised: number; leftBehind: number }
+  | { status: "merged"; added: number; raised: number; leftBehind: number; promotion: "none" | "carried" | "account_kept" }
 
 const LINE = { id: true, variantId: true, quantity: true, createdAt: true } as const
 
@@ -52,32 +55,56 @@ export async function mergeGuestCart(db: Db, input: { userId: string; guestToken
     let added = 0
     let raised = 0
     let leftBehind = 0
+    let promotion: "none" | "carried" | "account_kept" = "none"
     let accountCartId: string | null = null
-    if (guestLines.length > 0) {
-      const account = await openCart(tx, customer, now)
-      if (!account) throw new Error("cart merge: no account cart")
+    // Guest lines need an account bag (created if missing); a guest code alone only moves into an
+    // account bag that already exists, since an empty new bag would have nothing to discount.
+    const account = guestLines.length > 0 ? await openCart(tx, customer, now) : guestCart?.promotionId ? await findCurrentCart(tx, customer, now) : null
+    if (guestLines.length > 0 && !account) throw new Error("cart merge: no account cart")
+    if (account) {
       accountCartId = account.id
       const revision = await lockCart(tx, account.id)
       if (revision === null) throw new Error("cart merge: account cart vanished")
-      const accountLines = await tx.cartLine.findMany({ where: { cartId: account.id }, select: LINE })
-      const plan = planMerge(accountLines, guestLines)
-      const existing = new Map(accountLines.map(l => [l.variantId, l]))
-      for (const line of plan.lines) {
-        const current = existing.get(line.variantId)
-        if (!current) {
-          await tx.cartLine.create({ data: { cartId: account.id, variantId: line.variantId, quantity: line.quantity } })
-          added++
-        } else if (current.quantity !== line.quantity) {
-          await tx.cartLine.update({ where: { id: current.id }, data: { quantity: line.quantity } })
-          raised++
+      let changed = false
+      if (guestLines.length > 0) {
+        const accountLines = await tx.cartLine.findMany({ where: { cartId: account.id }, select: LINE })
+        const plan = planMerge(accountLines, guestLines)
+        const existing = new Map(accountLines.map(l => [l.variantId, l]))
+        for (const line of plan.lines) {
+          const current = existing.get(line.variantId)
+          if (!current) {
+            await tx.cartLine.create({ data: { cartId: account.id, variantId: line.variantId, quantity: line.quantity } })
+            added++
+          } else if (current.quantity !== line.quantity) {
+            await tx.cartLine.update({ where: { id: current.id }, data: { quantity: line.quantity } })
+            raised++
+          }
+        }
+        leftBehind = plan.leftBehind.length
+        changed = plan.changesAccount
+      }
+      // Promo code (pre-Stage-12 fix F03): one code per bag and the account's own code wins;
+      // otherwise the guest's code moves over. Nothing is checked or counted here: every read checks
+      // the code again as the signed-in customer (their account usage, never the guest session's),
+      // so an ineligible code shows with its reason and gives no discount. Read under the lock.
+      const { promotionId } = await tx.cart.findUniqueOrThrow({ where: { id: account.id }, select: { promotionId: true } })
+      if (guestCart?.promotionId) {
+        if (promotionId) promotion = "account_kept"
+        else {
+          await tx.cart.update({ where: { id: account.id }, data: { promotionId: guestCart.promotionId } })
+          promotion = "carried"
+          changed = true
         }
       }
-      leftBehind = plan.leftBehind.length
-      if (plan.changesAccount && !(await renewCart(tx, customer, account.id, revision, now))) throw new Error("cart merge: account cart changed under the lock")
+      // A carried code alone is a change too, so a quote bound to the old revision goes stale.
+      if (changed && !(await renewCart(tx, customer, account.id, revision, now))) throw new Error("cart merge: account cart changed under the lock")
     }
 
     // The guest bag is emptied and its session ended in the same transaction: nothing can be merged twice.
-    if (guestCart) await tx.cartLine.deleteMany({ where: { cartId: guestCart.id } })
+    if (guestCart) {
+      await tx.cartLine.deleteMany({ where: { cartId: guestCart.id } })
+      if (guestCart.promotionId) await tx.cart.update({ where: { id: guestCart.id }, data: { promotionId: null } })
+    }
     await tx.guestSession.update({ where: { id: guest.id }, data: { revokedAt: now } })
     await recordIdentityEvent(tx, {
       action: "cart.merged",
@@ -85,8 +112,8 @@ export async function mergeGuestCart(db: Db, input: { userId: string; guestToken
       entity: { type: "cart", id: accountCartId ?? "none" },
       reason: "sign_in",
       correlationId: input.correlationId,
-      after: { added, raised, leftBehind },
+      after: { added, raised, leftBehind, promotion },
     })
-    return { status: "merged", added, raised, leftBehind }
+    return { status: "merged", added, raised, leftBehind, promotion }
   })
 }

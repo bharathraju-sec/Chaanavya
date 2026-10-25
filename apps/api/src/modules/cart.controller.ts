@@ -10,9 +10,9 @@ import { ApiHeader, ApiOkResponse, ApiOperation, ApiTags } from "@nestjs/swagger
 import { Throttle } from "@nestjs/throttler"
 import type { Response } from "express"
 import { ApiError, readJson } from "../admin/api.ts"
-import { createGuestSession, GUEST_COOKIE, guestCookieHeader, readGuestToken } from "../auth/guest.ts"
+import { createGuestSession, GUEST_COOKIE, guestCookieHeader, hasGuestCookie } from "../auth/guest.ts"
 import { resolveShopper } from "../auth/session.ts"
-import { addKeyOf, addLine, applyPromotion, clearCart, lineToAdd, readCart, readOwnedCart, removeLine, removePromotion, setLineQuantity } from "../cart/cart.ts"
+import { addKeyOf, addLine, applyPromotion, checkAddable, clearCart, findAddReplay, parseLineToAdd, readCart, readOwnedCart, removeLine, removePromotion, setLineQuantity } from "../cart/cart.ts"
 import { cartOwnerOf } from "../cart/ownership.ts"
 import { db } from "../db/client.ts"
 import { Access } from "../http/access.ts"
@@ -64,8 +64,8 @@ async function ownerFor(req: ApiRequest, res: Response, { start }: { start: bool
   const headers = headersOf(req)
   const owner = cartOwnerOf(await resolveShopper(headers))
   if (owner || !start) {
-    // A guest cookie the shop no longer honours (expired, revoked or made up) is cleared.
-    if (!owner && readGuestToken(headers)) res.setHeader("set-cookie", clearGuestCookie(req))
+    // A guest cookie the shop no longer honours (expired, revoked, made up or malformed) is cleared.
+    if (!owner && hasGuestCookie(headers)) res.setHeader("set-cookie", clearGuestCookie(req))
     return owner
   }
   const { session, token } = await createGuestSession(db())
@@ -107,8 +107,20 @@ export class CartController {
   async add(@Req() req: ApiRequest, @Res({ passthrough: true }) res: Response) {
     res.setHeader("cache-control", "no-store")
     const key = addKeyOf(req.headers["idempotency-key"])
-    const line = await lineToAdd(db(), readJson(req.chaanavya.body))
-    const owner = (await ownerFor(req, res, { start: true }))!
+    const line = parseLineToAdd(readJson(req.chaanavya.body))
+    // A retried add is answered before the stock and publication checks (F02): it already succeeded.
+    const existing = await ownerFor(req, res, { start: false })
+    const replay = await findAddReplay(db(), existing, key, line)
+    if (replay) return { data: replay }
+    try {
+      await checkAddable(db(), line)
+    } catch (refusal) {
+      // The same add may have just landed from a parallel retry; that is still a success.
+      const late = await findAddReplay(db(), existing, key, line)
+      if (late) return { data: late }
+      throw refusal
+    }
+    const owner = existing ?? (await ownerFor(req, res, { start: true }))!
     return { data: await addLine(db(), owner, line, key) }
   }
 
