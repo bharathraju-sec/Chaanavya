@@ -93,10 +93,24 @@ describe("CHV-S12-M07 only real offers that fit the parcel survive", () => {
     const perfume = request([line({ sku: "OUD-50", restriction: "fragrance_liquid" })])
     const quote = rates.acceptQuote(perfume, available([offer({ serviceRef: "air", mode: "air" }), offer({ serviceRef: "surface-ok", acceptsRestrictions: ["fragrance_liquid"] })]), NOW)
     assert.deepEqual(quote.options.map(o => o.serviceRef), ["surface-ok"])
-    assert.deepEqual(rates.acceptQuote(perfume, available([offer({ mode: "air" }), offer()]), NOW), { status: "unavailable", reason: "category_restricted", options: [], quotedAt: NOW.toISOString() })
+    assert.deepEqual(rates.acceptQuote(perfume, available([offer({ mode: "air" }), offer()]), NOW), { status: "unavailable", reason: "category_restricted", options: [], quotedAt: NOW.toISOString(), notCarried: ["fragrance_liquid"] })
     const mixed = request([line({ sku: "OUD-50", restriction: "fragrance_liquid" }), line({ sku: "RING-1", restriction: "jewellery_high_value" })])
     assert.equal(rates.acceptQuote(mixed, available([offer({ acceptsRestrictions: ["fragrance_liquid"] })]), NOW).status, "unavailable", "every restriction must be accepted")
     assert.equal(rates.acceptQuote(mixed, available([offer({ acceptsRestrictions: ["jewellery_high_value", "fragrance_liquid"] })]), NOW).status, "available")
+  })
+
+  test("a restricted refusal names the restrictions no offer carries, and only those", () => {
+    const mixed = request([line({ sku: "OUD-50", restriction: "fragrance_liquid" }), line({ sku: "RING-1", restriction: "jewellery_high_value" })])
+    const perfumeOnly = rates.acceptQuote(mixed, available([offer({ acceptsRestrictions: ["fragrance_liquid"] })]), NOW)
+    assert.deepEqual([perfumeOnly.status, perfumeOnly.reason, perfumeOnly.notCarried], ["unavailable", "category_restricted", ["jewellery_high_value"]], "perfume is carried, the ring is not")
+    const neither = rates.acceptQuote(mixed, available([offer(), offer({ serviceRef: "air", mode: "air" })]), NOW)
+    assert.deepEqual(neither.notCarried, ["fragrance_liquid", "jewellery_high_value"])
+    const split = rates.acceptQuote(mixed, available([offer({ serviceRef: "p", acceptsRestrictions: ["fragrance_liquid"] }), offer({ serviceRef: "j", acceptsRestrictions: ["jewellery_high_value"] })]), NOW)
+    assert.deepEqual([split.reason, split.notCarried], ["category_restricted", []], "each is carried by some service, never both by one: no single item to blame")
+    const heavy = rates.acceptQuote(request([line({ weightGrams: 12000 })]), available([offer()]), NOW)
+    assert.equal(heavy.notCarried, undefined, "not a restriction refusal")
+    const courierSaid = rates.acceptQuote(mixed, { status: "unavailable", reason: "category_restricted", options: [] }, NOW)
+    assert.equal(courierSaid.notCarried, undefined, "the courier's own refusal does not say which; nothing is guessed")
   })
 
   test("malformed or made-up offers are dropped: wrong currency, fractional or negative paise, missing fields, bad dates", () => {

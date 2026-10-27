@@ -5311,9 +5311,16 @@ export interface operations {
                                 }[];
                                 /** Format: date-time */
                                 quotedAt: string;
+                                /** @description With category_restricted: the restrictions no offered service carries */
+                                notCarried?: ("fragrance_liquid" | "jewellery_high_value")[];
                             } | null;
                             /** @description True only for a live courier's answer; never for test rates */
                             liveEligible: boolean;
+                            /** @description The bag's items no offered service carries; empty otherwise */
+                            restrictedItems: {
+                                sku: string;
+                                title: string;
+                            }[];
                         };
                     };
                 };

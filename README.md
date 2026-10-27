@@ -45,7 +45,7 @@ npm run db:seed:synthetic
 npm run test:db
 ```
 
-`db:up` starts PostgreSQL 17 in Docker on `127.0.0.1:54329` with development-only credentials (`compose.yaml`). `npm run db:restore-check` backs up and restores the development database to prove recovery works. See [apps/api/prisma/README.md](apps/api/prisma/README.md) for schema changes. `docker compose --profile services up --build -d` runs the API and worker in containers.
+`db:up` starts PostgreSQL 17 in Docker on `127.0.0.1:15432` with development-only credentials (`compose.yaml`). `npm run db:restore-check` backs up and restores the development database to prove recovery works. See [apps/api/prisma/README.md](apps/api/prisma/README.md) for schema changes. `docker compose --profile services up --build -d` runs the API and worker in containers.
 
 ## Project documentation
 

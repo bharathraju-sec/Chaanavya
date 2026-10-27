@@ -13147,6 +13147,17 @@
                                 "quotedAt": {
                                   "type": "string",
                                   "format": "date-time"
+                                },
+                                "notCarried": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "enum": [
+                                      "fragrance_liquid",
+                                      "jewellery_high_value"
+                                    ]
+                                  },
+                                  "description": "With category_restricted: the restrictions no offered service carries"
                                 }
                               },
                               "required": [
@@ -13164,13 +13175,34 @@
                         "liveEligible": {
                           "type": "boolean",
                           "description": "True only for a live courier's answer; never for test rates"
+                        },
+                        "restrictedItems": {
+                          "type": "array",
+                          "description": "The bag's items no offered service carries; empty otherwise",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "sku",
+                              "title"
+                            ],
+                            "additionalProperties": false
+                          }
                         }
                       },
                       "required": [
                         "mode",
                         "delivery",
                         "quote",
-                        "liveEligible"
+                        "liveEligible",
+                        "restrictedItems"
                       ],
                       "additionalProperties": false
                     }

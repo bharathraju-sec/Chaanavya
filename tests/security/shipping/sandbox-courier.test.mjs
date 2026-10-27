@@ -162,7 +162,7 @@ describe("CHV-S12-M08 simulation is kept apart from live eligibility", () => {
     const sandboxed = await courier.shippingRatesFor(ctx.db, owner, { gateway: sandbox.sandboxCourier({ now: at }), pickupPinCode: "560001" }, NOW)
     assert.deepEqual([sandboxed.mode, sandboxed.delivery.deliverable, sandboxed.liveEligible], ["test", false, false])
     const none = await courier.shippingRatesFor(ctx.db, owner, null, NOW)
-    assert.deepEqual(none, { mode: "none", delivery: { pinCode: "560034", format: "valid", delivery: "unknown", deliverable: false, source: "none" }, quote: null, liveEligible: false })
+    assert.deepEqual(none, { mode: "none", delivery: { pinCode: "560034", format: "valid", delivery: "unknown", deliverable: false, source: "none" }, quote: null, liveEligible: false, restrictedItems: [] })
   })
 })
 
@@ -207,6 +207,16 @@ describe("CHV-S12-M08 the bag shows test rates as test rates and live rates plai
     assert.equal(shown.kind, "test")
     assert.ok(shown.rows.every(r => r.testRate))
     assert.equal(describeShipping({ ...answer("test"), mode: "unexpected" }).kind, "test", "anything not live is shown as a test")
+  })
+
+  test("every delivery answer has its own wording; only a live deliverable answer says 'Delivers to'", () => {
+    const at = (mode, delivery, deliverable = false) => describeShipping({ ...answer(mode), delivery: { pinCode: "560034", format: "valid", delivery, deliverable, source: mode } }).delivery
+    assert.equal(at("test", "not_serviceable"), "Simulated: the sandbox courier does not deliver to 560034.")
+    assert.equal(at("test", "unknown"), "Simulated: no sandbox answer for 560034.")
+    assert.equal(at("live", "serviceable", true), "Delivers to 560034.")
+    assert.equal(at("live", "not_serviceable"), "We don't deliver to 560034 yet.")
+    assert.equal(at("live", "unknown"), "Delivery to 560034 is not confirmed yet.")
+    assert.equal(at("live", "serviceable", false), "Delivery to 560034 is not confirmed yet.", "serviceable but not deliverable is not a promise")
   })
 
   test("no courier shows nothing; no rate shows the reason, never a price", () => {

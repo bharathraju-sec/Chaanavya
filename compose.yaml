@@ -13,9 +13,10 @@ services:
       POSTGRES_USER: chaanavya
       POSTGRES_PASSWORD: chaanavya_dev_only
       POSTGRES_DB: chaanavya_dev
-    # Bound to this machine only, on 54329 so it does not clash with another local Postgres.
+    # Bound to this machine only, on 15432: clear of another local Postgres (5432, 5433) and below Windows'
+    # dynamic port range (49152 and up), where Windows can reserve blocks (54329 was reserved on 27 October 2026).
     ports:
-      - "127.0.0.1:54329:5432"
+      - "127.0.0.1:15432:5432"
     volumes:
       - chaanavya-db:/var/lib/postgresql/data
     healthcheck:

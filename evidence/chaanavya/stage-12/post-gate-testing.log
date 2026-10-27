@@ -1,0 +1,111 @@
+# Post-gate testing pass, 27 October 2026
+
+## Red (new tests before the code)
+✖ CHV-S12-M12 an unserviceable route stops checkout (1633.4238ms)
+✖ CHV-S12-M12 the review never shows a total or a delivery claim it does not have (92.7993ms)
+✖ CHV-S12-M07 only real offers that fit the parcel survive (3.8727ms)
+ℹ tests 23
+ℹ pass 20
+ℹ fail 3
+✖ failing tests:
+✖ the restricted item is named: only the items no courier carries, by their title (69.8069ms)
+✖ the restricted message lists the items in plain English; with none known it stays general (0.5685ms)
+✖ a restricted refusal names the restrictions no offer carries, and only those (1.1543ms)
+
+## Mutation checks
+﻿== T1 every restriction blamed
+ℹ pass 66
+ℹ fail 2
+== T2 every restricted item named
+ℹ pass 67
+ℹ fail 1
+== T3 item not named in the message
+ℹ pass 66
+ℹ fail 2
+== G1 draft edit keeps old rates
+ℹ pass 67
+ℹ fail 1
+== G2 active profile not listed first
+ℹ pass 68
+ℹ fail 0
+== G3 tax refusal not named
+ℹ pass 67
+ℹ fail 1
+== G4 promise without a deliverable answer
+ℹ pass 67
+ℹ fail 1
+== restored
+ℹ pass 68
+ℹ fail 0
+
+## Listing-order mutation after strengthening its test
+﻿== G2 active profile not listed first
+ℹ pass 67
+ℹ fail 1
+== restored
+ℹ pass 68
+ℹ fail 0
+
+## All levels
+﻿== unit (npm test)
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+== integration: database (npm run test:db)
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+== integration: API + database (npm run test:security)
+ℹ tests 420
+ℹ pass 420
+ℹ fail 0
+== build
+✓ Compiled successfully in 3.2s
+Error [SecurityFatalError]: Your version of Next.js is affected by a known security vulnerability.
+== end to end (npm run test:e2e)
+ℹ tests 79
+ℹ pass 79
+ℹ fail 0
+== typecheck
+== lint
+✖ 2 problems (0 errors, 2 warnings)
+done
+
+## Stage 12 coverage
+ℹ tests 134
+ℹ pass 134
+ℹ fail 0
+start of coverage report
+---------------------------------------------------------------------------
+file                       | line % | branch % | funcs % | uncovered lines
+---------------------------------------------------------------------------
+apps                       |        |          |         | 
+ api                       |        |          |         | 
+  src                      |        |          |         | 
+   checkout                |        |          |         | 
+    address-book.ts        |  86.29 |    90.00 |  100.00 | 1-17
+    address.ts             |  80.49 |   100.00 |  100.00 | 1-24
+    contact.ts             |  83.33 |    90.38 |  100.00 | 1-16
+    quote-fingerprint.ts   | 100.00 |   100.00 |  100.00 | 
+    quote.ts               |  99.59 |    91.96 |  100.00 | 244
+    region.ts              |  83.91 |   100.00 |  100.00 | 1-14
+   modules                 |        |          |         | 
+    address.controller.ts  | 100.00 |   100.00 |  100.00 | 
+    contact.controller.ts  | 100.00 |   100.00 |  100.00 | 
+    quote.controller.ts    | 100.00 |   100.00 |  100.00 | 
+    shipping.controller.ts | 100.00 |   100.00 |  100.00 | 
+    tax.controller.ts      | 100.00 |    85.71 |  100.00 | 
+   shipping                |        |          |         | 
+    courier.ts             | 100.00 |    94.12 |   92.86 | 
+    rates.ts               |  91.67 |    95.28 |   95.83 | 1-12
+    sandbox-courier.ts     |  81.52 |   100.00 |  100.00 | 1-17
+   tax                     |        |          |         | 
+    compute.ts             |  88.89 |    95.00 |   96.97 | 1-25
+    profile.ts             |  94.24 |    80.95 |   96.15 | 1-17
+lib                        |        |          |         | 
+ checkout.ts               |  96.05 |    84.91 |   80.00 | 17-22
+ shipping-rates.ts         | 100.00 |    89.47 |  100.00 | 
+---------------------------------------------------------------------------
+all files                  |  93.35 |    91.70 |   97.04 | 
+---------------------------------------------------------------------------
+end of coverage report

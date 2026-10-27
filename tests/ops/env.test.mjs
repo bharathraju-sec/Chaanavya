@@ -128,7 +128,7 @@ describe("test and live separation", () => {
 
   test("development and staging cannot point at a production-looking database; production cannot use a local one", () => {
     assert.equal(checkEnv({ ...commerceStaging, DATABASE_URL: "postgresql://app:x@prod-db.example.net/chaanavya" }, { target: "staging" }).ok, false)
-    assert.equal(checkEnv({ ...commerceProduction, DATABASE_URL: "postgresql://chaanavya:x@127.0.0.1:54329/chaanavya_dev" }, { target: "production" }).ok, false)
+    assert.equal(checkEnv({ ...commerceProduction, DATABASE_URL: "postgresql://chaanavya:x@127.0.0.1:15432/chaanavya_dev" }, { target: "production" }).ok, false)
   })
 
   test("APP_ENV=production is refused on a Vercel preview deployment", () => {
@@ -180,7 +180,7 @@ describe("sign-in settings (Stage 05)", () => {
     assert.ok(names(checkEnv({ ...commerceStaging, BETTER_AUTH_SECRET: "too-short" }, { target: "staging" })).includes("BETTER_AUTH_SECRET"))
     assert.ok(names(checkEnv({ ...commerceProduction, BETTER_AUTH_URL: "http://chaanavya.example" }, { target: "production" })).includes("BETTER_AUTH_URL"))
     assert.ok(names(checkEnv({ ...commerceStaging, BETTER_AUTH_URL: "" }, { target: "staging" })).includes("BETTER_AUTH_URL"))
-    assert.equal(checkEnv({ DATABASE_URL: "postgresql://a:b@127.0.0.1:54329/chaanavya_dev", PAYMENT_MODE: "test", RAZORPAY_KEY_ID: "rzp_test_FAKE0000000001", RAZORPAY_KEY_SECRET: "fake-key-secret-0001", RAZORPAY_WEBHOOK_SECRET: "fake-webhook-secret-0001", BETTER_AUTH_SECRET: "fake-auth-secret-0000000000000000000001" }, { target: "development" }).ok, true, "the URL may default locally")
+    assert.equal(checkEnv({ DATABASE_URL: "postgresql://a:b@127.0.0.1:15432/chaanavya_dev", PAYMENT_MODE: "test", RAZORPAY_KEY_ID: "rzp_test_FAKE0000000001", RAZORPAY_KEY_SECRET: "fake-key-secret-0001", RAZORPAY_WEBHOOK_SECRET: "fake-webhook-secret-0001", BETTER_AUTH_SECRET: "fake-auth-secret-0000000000000000000001" }, { target: "development" }).ok, true, "the URL may default locally")
   })
 
   test("the admin URL must be https in production and on its own host", () => {

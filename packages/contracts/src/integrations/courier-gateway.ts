@@ -61,7 +61,17 @@ export type RateUnavailableReason = "pin_unserviceable" | "category_restricted" 
  */
 export type RateQuoteV1 =
   | { status: "available"; options: CourierRateOptionV1[]; quotedAt: IsoDateTime }
-  | { status: "unavailable"; reason: RateUnavailableReason; options: []; quotedAt: IsoDateTime }
+  | {
+      status: "unavailable"
+      reason: RateUnavailableReason
+      options: []
+      quotedAt: IsoDateTime
+      /**
+       * With reason "category_restricted", when the server could tell: the parcel's restrictions that
+       * no offered service carries. Empty when each is carried by some service, never all by one.
+       */
+      notCarried?: ShippingRestrictionV1[]
+    }
 
 /**
  * Delivery and rates for the shopper's bag (Stage 12.08). `mode` says where the answer came from:
@@ -74,6 +84,8 @@ export type ShippingRatesV1 = {
   delivery: DeliveryCheckV1
   quote: RateQuoteV1 | null
   liveEligible: boolean
+  /** The bag's items no offered service carries (12.12 follow-up), so the shopper can be told which; empty otherwise. */
+  restrictedItems: { sku: string; title: string }[]
 }
 
 export interface CourierGateway {

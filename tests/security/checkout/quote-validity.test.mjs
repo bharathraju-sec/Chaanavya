@@ -197,6 +197,17 @@ describe("CHV-S12-M10 any change to what the quote was priced from invalidates i
     }
   })
 
+  test("tax: the profile no longer has a rate for the bag's category", async () => {
+    const { jar, quote } = await quoted()
+    const rate = await ctx.db.taxRate.findUniqueOrThrow({ where: { profileId_taxCategory: { profileId, taxCategory: "apparel_cotton" } } })
+    await ctx.db.taxRate.delete({ where: { profileId_taxCategory: { profileId, taxCategory: "apparel_cotton" } } })
+    try {
+      await refusedFor(jar, quote.id, ["tax"])
+    } finally {
+      await ctx.db.taxRate.create({ data: rate })
+    }
+  })
+
   test("stock: units taken by someone else, or the item withdrawn", async () => {
     const short = await quoted({ onHand: 1 })
     await ctx.db.inventoryBalance.update({ where: { variantId: short.item.variantId }, data: { reserved: 1 } })

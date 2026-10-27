@@ -55,7 +55,7 @@ export async function shippingRatesFor(db: Db, owner: Shopper | null, choice: Co
   const lines = await db.cartLine.findMany({
     where: { cartId: cart.id },
     orderBy: { createdAt: "asc" },
-    select: { quantity: true, variant: { select: { sku: true, weightGrams: true, pricePaise: true, product: { select: { shippingRestriction: true } } } } },
+    select: { quantity: true, variant: { select: { sku: true, weightGrams: true, pricePaise: true, product: { select: { title: true, shippingRestriction: true } } } } },
   })
   if (lines.length === 0) throw new ApiError(409, "conflict", "your bag is empty")
   const contact = await db.cartContact.findUnique({ where: { cartId: cart.id }, select: { shippingAddress: true } })
@@ -63,7 +63,7 @@ export async function shippingRatesFor(db: Db, owner: Shopper | null, choice: Co
   const address = contact.shippingAddress as unknown as IndianAddressV1
 
   const mode = modeOf(choice)
-  if (!choice || mode === "none") return { mode: "none", delivery: deliveryCheck(address.pinCode), quote: null, liveEligible: false }
+  if (!choice || mode === "none") return { mode: "none", delivery: deliveryCheck(address.pinCode), quote: null, liveEligible: false, restrictedItems: [] }
   const source = mode === "live" ? "live" : "test"
 
   const built = parcelFor(lines.map(l => ({ sku: l.variant.sku, quantity: l.quantity, weightGrams: l.variant.weightGrams, unitPricePaise: l.variant.pricePaise, restriction: l.variant.product.shippingRestriction })))
@@ -78,5 +78,11 @@ export async function shippingRatesFor(db: Db, owner: Shopper | null, choice: Co
   // Rates only for an address the courier serves.
   if (delivery.delivery !== "serviceable" && quote.status === "available") quote = { status: "unavailable", reason: delivery.delivery === "not_serviceable" ? "pin_unserviceable" : "provider_unavailable", options: [], quotedAt: now.toISOString() as IsoDateTime }
 
-  return { mode, delivery, quote, liveEligible: mode === "live" && delivery.deliverable && quote.status === "available" }
+  // Name the items whose restriction no offered service carries, in bag order, once each.
+  const notCarried = quote.status === "unavailable" && quote.reason === "category_restricted" ? (quote.notCarried ?? []) : []
+  const restrictedItems = lines
+    .filter(l => l.variant.product.shippingRestriction !== null && (notCarried as string[]).includes(l.variant.product.shippingRestriction))
+    .map(l => ({ sku: l.variant.sku, title: l.variant.product.title }))
+    .filter((item, i, all) => all.findIndex(x => x.sku === item.sku) === i)
+  return { mode, delivery, quote, liveEligible: mode === "live" && delivery.deliverable && quote.status === "available", restrictedItems }
 }

@@ -9,7 +9,7 @@ if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE)
 
 // Without DATABASE_URL the CLI targets the local compose database (development credentials only,
 // see compose.yaml). Staging and production always set DATABASE_URL explicitly.
-const LOCAL_DEV_DATABASE = "postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:54329/chaanavya_dev"
+const LOCAL_DEV_DATABASE = "postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:15432/chaanavya_dev"
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

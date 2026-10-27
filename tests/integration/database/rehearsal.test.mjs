@@ -24,7 +24,7 @@ const docker = (args, input) => spawnSync("docker", ["compose", "exec", "-T", "d
 
 describe("synthetic seed", () => {
   test("loads, and a second run changes nothing", () => {
-    const url = `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:54329/${SOURCE}`
+    const url = `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:15432/${SOURCE}`
     const first = prisma(["db", "seed"], url)
     assert.equal(first.status, 0, first.output)
     assert.match(first.output, /Synthetic fixtures ready: 6 collections, 2 products, 4 variants, 4 stock balances/)
@@ -50,7 +50,7 @@ describe("backup and restore of a migrated database", () => {
     assert.equal(restore.status, 0, String(restore.stderr))
     assert.equal(psqlOk(RESTORED, FINGERPRINT), psqlOk(SOURCE, FINGERPRINT))
     assert.equal(counts(RESTORED), counts(SOURCE))
-    const status = prisma(["migrate", "status"], `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:54329/${RESTORED}`)
+    const status = prisma(["migrate", "status"], `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:15432/${RESTORED}`)
     assert.match(status.output, /Database schema is up to date/)
   })
 
@@ -62,7 +62,7 @@ describe("backup and restore of a migrated database", () => {
       psqlOk(RESTORED, null, { input: readFileSync(`${API_ROOT}prisma/rollback/${name}.down.sql`, "utf8") })
     }
     assert.equal(psqlOk(RESTORED, "SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name <> '_prisma_migrations'"), "0")
-    const url = `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:54329/${RESTORED}`
+    const url = `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:15432/${RESTORED}`
     const migrate = prisma(["migrate", "deploy"], url)
     assert.equal(migrate.status, 0, migrate.output)
     assert.match(prisma(["migrate", "status"], url).output, /Database schema is up to date/)

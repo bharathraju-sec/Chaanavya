@@ -10,7 +10,7 @@ export const ROOT = fileURLToPath(new URL("../../../", import.meta.url))
 export const API_ROOT = fileURLToPath(new URL("../../../apps/api/", import.meta.url))
 const PRISMA_CLI = fileURLToPath(new URL("../../../node_modules/prisma/build/index.js", import.meta.url))
 
-export const urlFor = name => `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:54329/${name}`
+export const urlFor = name => `postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:15432/${name}`
 
 /** Runs SQL through psql inside the compose container. Returns { status, stdout, stderr }. */
 export function psql(database, sql, { input, variables = {} } = {}) {

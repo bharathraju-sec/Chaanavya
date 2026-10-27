@@ -10,7 +10,7 @@ export type Db = PrismaClient
 export type Tx = Parameters<Parameters<PrismaClient["$transaction"]>[0]>[0]
 
 /** Local compose database (development-only credentials), used when DATABASE_URL is unset. */
-export const LOCAL_DEV_DATABASE_URL = "postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:54329/chaanavya_dev"
+export const LOCAL_DEV_DATABASE_URL = "postgresql://chaanavya:chaanavya_dev_only@127.0.0.1:15432/chaanavya_dev"
 
 export function databaseUrl(env: Readonly<Record<string, string | undefined>> = process.env) {
   const url = env.DATABASE_URL?.trim()

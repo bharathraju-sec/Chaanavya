@@ -1001,3 +1001,74 @@ Payment stays disabled and production checkout stays closed. Awaiting the owner'
 - the delivery fee rule (no markup or free-delivery threshold today) and the conflicting "Free shipping across India" header copy
 - the wording of the review and failure messages
 - carried from Stage 11: shopping as a guest with an unverified email, the line limits, and the cart lifetimes
+
+## After the gate: testing pass and local database port (27 October 2026)
+
+Asked by the owner after the Stage 12 commit: unit testing, integration testing and test-driven development. Log: `post-gate-testing.log`.
+
+**Local database moved to port 15432**
+
+- **The problem:** Windows reserved the port range 54248 to 54347 for its network service (WinNAT), which covers the old port 54329, so the database container could not start. The owner chose to move the port rather than restart WinNAT.
+- **The fix:** 15432 is below Windows' dynamic port range (49152 and up), where those reservations happen. Changed in `compose.yaml`, the local defaults (`apps/api/prisma.config.ts`, `apps/api/src/db/client.ts`), the test helpers (`tests/integration/database/helpers.mjs`, `rehearsal.test.mjs`, `tests/ops/env.test.mjs`), `.env.example`, `README.md`, `apps/api/prisma/README.md`, `docs/ENVIRONMENT.md` and `docs/operations/environments.md`.
+- **History notes:** `docs/DECISIONS.md` and `docs/operations/bootstrap.md` say why the port moved. Earlier evidence logs keep 54329, because they record what happened at the time.
+- **Data:** the container was recreated, and its data volume (dev catalogue, migrations) kept. `.env.local` did not mention the port and was not touched.
+
+**Coverage**
+
+- Node's built-in coverage (`--experimental-test-coverage` with source maps) ran over the Stage 12 tests.
+- Before: 92.3% of lines, 90.6% of branches, 95.4% of functions.
+- Leaving out file header comments, the untested code was: editing a draft tax profile, listing profiles (and its route), the "ready for sale" path, a stored quote that fails its check because of tax, and three delivery wordings in the bag.
+
+**Gap tests**
+
+- `tests/security/tax/profile.test.mjs`:
+  - editing a draft replaces its rates and is audited; an invalid edit changes nothing; only the owner edits
+  - only the owner lists profiles, never cached, with the active profile first and then the newest
+  - `assertTaxReadyForSale` returns once sales are ready
+- `tests/security/checkout/quote-validity.test.mjs`: a quote whose category lost its tax rate is refused with `tax` named.
+- `tests/security/shipping/sandbox-courier.test.mjs`: every delivery wording, and only a live deliverable answer says "Delivers to".
+
+These passed on the first run, so the code was already right; mutations confirm they now guard it.
+
+**Test-driven change: the restricted item is named** (follow-up noted in 12.12)
+
+- **Red:** three tests were written first:
+  - the rate check reports which restrictions no offer carries
+  - the bag's rates name those items by title (a ring is named; the kurta and perfume in the same bag are not)
+  - the message reads "We can't send Fixture ring to 110001", lists two or three items in plain English, and stays general when none is known
+
+  All three failed against the unchanged code (log section "Red"), and every existing test passed.
+- **Green:**
+  - **Contract**, additive: `RateQuoteV1` unavailable gains `notCarried?` (only for `category_restricted` worked out by the server; a courier's own refusal names nothing, and nothing is guessed), and `ShippingRatesV1` gains `restrictedItems` (empty unless items are blocked).
+  - **Code:** `apps/api/src/shipping/rates.ts` (`notCarriedBy`), `apps/api/src/shipping/courier.ts` (items in bag order, once each), `apps/api/src/modules/shipping.controller.ts` (OpenAPI), `lib/checkout.ts` (wording).
+  - **Two existing tests** that compare the exact answer shape were updated for the new fields.
+- **Mutations** (each undone afterwards):
+
+  | Mutation | Tests failing |
+  |---|---|
+  | Every restriction blamed | 2 |
+  | Every restricted item named | 1 |
+  | Item not named in the message | 2 |
+  | Draft edit keeps old rates | 1 |
+  | Tax refusal not named | 1 |
+  | A delivery promise without a deliverable answer | 1 |
+  | Active profile not listed first | 0 at first, because the active profile was also the newest; 1 after the test added a newer draft |
+
+  The restored run passes 68 of 68.
+
+**Results**
+
+| Check | Result |
+|---|---|
+| `npm test` (unit) | 95 of 95 |
+| `npm run test:db` (integration, database) | 61 of 61 |
+| `npm run test:security` (integration, API with database) | 420 of 420 |
+| `npm run test:e2e` | 79 of 79 |
+| `npm run build` | passes (the first run stopped at the Next.js notice, the retry passed) |
+| `npm run typecheck` | clean |
+| `npm run lint` | 0 errors, the 2 existing warnings |
+
+- **Stage 12 coverage now:** 93.4% of lines, 91.7% of branches, 97.0% of functions.
+- **Still not run by these tests** (header comments aside): one defensive fallback in `quote.ts` (line 244) and the environment switch in `lib/checkout.ts`, which the end-to-end tests cover.
+- **Not checked in the browser:** the new named message is checked by tests, not visually.
+- **Not committed.**

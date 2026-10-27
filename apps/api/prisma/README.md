@@ -31,7 +31,7 @@ npm run db:seed:synthetic
 npm run test:db
 ```
 
-Without `DATABASE_URL`, the CLI and `src/db/client.ts` use the local compose database on `127.0.0.1:54329`. Staging and production must set `DATABASE_URL` (checked by `npm run check:env`).
+Without `DATABASE_URL`, the CLI and `src/db/client.ts` use the local compose database on `127.0.0.1:15432`. Staging and production must set `DATABASE_URL` (checked by `npm run check:env`).
 
 ## Changing the schema
 

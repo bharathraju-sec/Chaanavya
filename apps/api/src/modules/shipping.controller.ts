@@ -35,6 +35,7 @@ const quote = {
     reason: { type: "string", enum: ["pin_unserviceable", "category_restricted", "parcel_unsupported", "provider_unavailable"] },
     options: { type: "array", items: option },
     quotedAt: { type: "string", format: "date-time" },
+    notCarried: { type: "array", items: restriction, description: "With category_restricted: the restrictions no offered service carries" },
   },
   required: ["status", "options", "quotedAt"],
   additionalProperties: false,
@@ -51,8 +52,13 @@ const rates = {
     },
     quote: { oneOf: [quote, { type: "null" }] },
     liveEligible: { type: "boolean", description: "True only for a live courier's answer; never for test rates" },
+    restrictedItems: {
+      type: "array",
+      description: "The bag's items no offered service carries; empty otherwise",
+      items: { type: "object", properties: { sku: text, title: text }, required: ["sku", "title"], additionalProperties: false },
+    },
   },
-  required: ["mode", "delivery", "quote", "liveEligible"],
+  required: ["mode", "delivery", "quote", "liveEligible", "restrictedItems"],
   additionalProperties: false,
 }
 

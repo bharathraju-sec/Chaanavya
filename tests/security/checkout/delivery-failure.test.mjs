@@ -54,6 +54,7 @@ before(async () => {
   await fixture("kurta")
   await fixture("ring", { restriction: "jewellery_high_value" })
   await fixture("unweighed", { weightGrams: null })
+  await fixture("oud", { restriction: "fragrance_liquid" })
 })
 after(() => ctx?.teardown())
 
@@ -109,6 +110,18 @@ describe("CHV-S12-M12 an unserviceable route stops checkout", () => {
     assert.equal(proceed, false)
   })
 
+  test("the restricted item is named: only the items no courier carries, by their title", async () => {
+    const ring = await review(["ring"], "110001")
+    assert.deepEqual(ring.rates.restrictedItems, [{ sku: "fixture-dfail-ring", title: "Fixture ring" }])
+    assert.equal(ring.issue.title, "We can't send Fixture ring to 110001")
+    const mixed = await review(["kurta", "oud", "ring"], "110001")
+    assert.deepEqual(mixed.rates.restrictedItems.map(i => i.title), ["Fixture ring"], "the kurta and the perfume can travel; only the ring is named")
+    assert.equal(mixed.issue.title, "We can't send Fixture ring to 110001")
+    assert.deepEqual(mixed.issue.actions, ["edit_bag", "change_address"])
+    const served = await review(["kurta"], "110001")
+    assert.deepEqual(served.rates.restrictedItems, [], "nothing to name when delivery is available")
+  })
+
   test("a bag with no weight: 'can't price delivery', with contact", async () => {
     const { quote, issue, proceed } = await review(["kurta", "unweighed"], "110001")
     assert.deepEqual([quote.status, quote.json.error.fields.shipping], [409, "parcel_unsupported"])
@@ -150,7 +163,7 @@ describe("CHV-S12-M12 an unserviceable route stops checkout", () => {
     const contradictory = { ...refusing, quoteRates: async () => ({ status: "available", options: [{ serviceRef: "live-1", courierName: "Synthetic Live", rate: { amountPaise: 5000, currency: "INR" }, estimatedDeliveryDays: 3, quotedAt: new Date().toISOString(), mode: "surface", maxWeightGrams: 10000, maxDeclaredValuePaise: null, acceptsRestrictions: [] }], quotedAt: new Date().toISOString() }) }
     await assert.rejects(quotes.quoteBag(ctx.db, owner, {}, { courier: { gateway: contradictory, pickupPinCode: "560001" } }), e => e.status === 409 && e.fields.shipping === "pin_unserviceable")
     await assert.rejects(quotes.quoteBag(ctx.db, owner, {}, { env: { APP_ENV: "production" } }), e => e.status === 409 && e.fields.shipping === "no_courier")
-    const none = deliveryIssue({ mode: "none", delivery: { pinCode: "110001", format: "valid", delivery: "unknown", deliverable: false, source: "none" }, quote: null, liveEligible: false }, { fields: { shipping: "no_courier" } })
+    const none = deliveryIssue({ mode: "none", delivery: { pinCode: "110001", format: "valid", delivery: "unknown", deliverable: false, source: "none" }, quote: null, liveEligible: false, restrictedItems: [] }, { fields: { shipping: "no_courier" } })
     assert.deepEqual([none.kind, none.actions], ["no_courier", ["contact"]])
   })
 })
@@ -163,6 +176,16 @@ describe("CHV-S12-M12 the review never shows a total or a delivery claim it does
     assert.equal(deliveryIssue(served, null), null)
     assert.equal(deliveryIssue(served, { fields: { shipping: "pin_unserviceable" } }).kind, "pin_unserviceable", "a quote refusal wins over an earlier rates answer")
     assert.equal(deliveryIssue(served, { fields: { "lines.x": "insufficient_stock" } }), null, "stock is not a delivery problem")
+  })
+
+  test("the restricted message lists the items in plain English; with none known it stays general", () => {
+    const restricted = items => deliveryIssue({ mode: "test", delivery: { pinCode: "110001", format: "valid", delivery: "serviceable", deliverable: false, source: "test" }, quote: { status: "unavailable", reason: "category_restricted", options: [], quotedAt: "" }, liveEligible: false, restrictedItems: items.map((title, i) => ({ sku: `s${i}`, title })) }, null)
+    assert.equal(restricted(["Oud attar"]).title, "We can't send Oud attar to 110001")
+    assert.equal(restricted(["Oud attar", "Ruby ring"]).title, "We can't send Oud attar and Ruby ring to 110001")
+    assert.equal(restricted(["A", "B", "C"]).title, "We can't send A, B and C to 110001")
+    assert.equal(restricted([]).title, "Something in your bag can't be sent to 110001")
+    assert.match(restricted(["Oud attar"]).detail, /Remove it from your bag/)
+    assert.match(restricted(["Oud attar", "Ruby ring"]).detail, /Remove them from your bag/)
   })
 
   test("a quote that arrives while delivery is blocked still cannot go on (rates failed, the quote call a moment later did not)", async () => {

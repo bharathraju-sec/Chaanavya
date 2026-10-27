@@ -88,6 +88,12 @@ function blocks(option: unknown, parcel: RateParcelV1) {
 
 const unavailable = (reason: RateUnavailableReason, now: Date): RateQuoteV1 => ({ status: "unavailable", reason, options: [], quotedAt: now.toISOString() as IsoDateTime })
 
+/** The parcel's restrictions that no offer with a readable list of accepted restrictions carries. */
+function notCarriedBy(offered: unknown[], parcel: RateParcelV1): ShippingRestrictionV1[] {
+  const accepted = (o: unknown) => (typeof o === "object" && o !== null && Array.isArray((o as Record<string, unknown>).acceptsRestrictions) ? ((o as Record<string, unknown>).acceptsRestrictions as unknown[]) : null)
+  return parcel.restrictions.filter(r => !offered.some(o => accepted(o)?.includes(r)))
+}
+
 /**
  * Checks a courier's answer for this request and keeps only offers that fit the parcel, cheapest
  * first (ties by service reference, so the order is stable). The courier's own unavailable answer is
@@ -107,7 +113,8 @@ export function acceptQuote(request: RateRequestV1, answer: unknown, now = new D
   if (options.length === 0) {
     // Every offer was refused because none carries a restricted item: say so; otherwise the parcel is unsupported.
     const restricted = request.parcel.restrictions.length > 0 && offered.length > 0 && offered.every(o => blocks(o, request.parcel))
-    return unavailable(restricted ? "category_restricted" : "parcel_unsupported", now)
+    if (restricted) return { ...unavailable("category_restricted", now), notCarried: notCarriedBy(offered, request.parcel) } as RateQuoteV1
+    return unavailable("parcel_unsupported", now)
   }
   const copy = options
     .map(o => ({ serviceRef: o.serviceRef, courierName: o.courierName, rate: { amountPaise: o.rate.amountPaise, currency: o.rate.currency }, estimatedDeliveryDays: o.estimatedDeliveryDays, quotedAt: o.quotedAt, mode: o.mode, maxWeightGrams: o.maxWeightGrams, maxDeclaredValuePaise: o.maxDeclaredValuePaise, acceptsRestrictions: [...o.acceptsRestrictions] }))

@@ -131,13 +131,18 @@ export function deliveryIssue(rates: ShippingRatesV1 | null, quoteError: { field
     }
   if (rates.delivery.delivery === "not_serviceable" || reason === "pin_unserviceable")
     return { kind: "pin_unserviceable", title: `We don't deliver to ${pin} yet`, detail: "Check the PIN code, or use another delivery address.", actions: ["change_address", "contact"] }
-  if (reason === "category_restricted")
+  if (reason === "category_restricted") {
+    const titles = (rates.restrictedItems ?? []).map(i => i.title)
+    const named = titles.length === 0 ? null : titles.length === 1 ? titles[0] : `${titles.slice(0, -1).join(", ")} and ${titles.at(-1)}`
     return {
       kind: "category_restricted",
-      title: `Something in your bag can't be sent to ${pin}`,
-      detail: "The couriers that serve this address don't carry one of your items, such as perfume. Remove it from your bag, or use another address.",
+      title: named ? `We can't send ${named} to ${pin}` : `Something in your bag can't be sent to ${pin}`,
+      detail: named
+        ? `The couriers that serve this address don't carry ${titles.length === 1 ? "it" : "them"}. Remove ${titles.length === 1 ? "it" : "them"} from your bag, or use another address.`
+        : "The couriers that serve this address don't carry one of your items, such as perfume. Remove it from your bag, or use another address.",
       actions: ["edit_bag", "change_address"],
     }
+  }
   if (reason === "parcel_unsupported")
     return { kind: "parcel_unsupported", title: "We can't price delivery for this bag yet", detail: "Contact us and we'll arrange delivery for your order.", actions: ["contact", "edit_bag"] }
   return null

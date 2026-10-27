@@ -126,6 +126,33 @@ describe("CHV-S12-M05 approval checks", () => {
   })
 })
 
+describe("CHV-S12-M05 drafts can be edited and listed", () => {
+  test("editing a draft replaces its rates and is audited; nothing else is kept from before", async () => {
+    const d = await create()
+    const edited = await api("PUT", `/profiles/${d.id}`, { jar: owner.jar, body: draft({ pricesIncludeTax: false, note: "second look", rates: [{ taxCategory: "apparel_cotton", hsnCode: "6204", rateBasisPoints: 1200 }, { taxCategory: "apparel_silk", hsnCode: "5007", rateBasisPoints: 500 }] }) })
+    assert.equal(edited.status, 200, JSON.stringify(edited.json))
+    assert.equal(edited.json.data.status, "draft")
+    assert.equal(edited.json.data.pricesIncludeTax, false)
+    assert.deepEqual(edited.json.data.rates.map(r => [r.taxCategory, r.rateBasisPoints]).sort(), [["apparel_cotton", 1200], ["apparel_silk", 500]])
+    assert.equal(await ctx.db.taxRate.count({ where: { profileId: d.id } }), 2, "the old rate rows are gone")
+    const audit = await ctx.db.auditEvent.findFirst({ where: { entityId: d.id, action: "tax_profile.updated" } })
+    assert.ok(audit, "the edit is audited")
+    const refused = await api("PUT", `/profiles/${d.id}`, { jar: owner.jar, body: draft({ rates: [{ taxCategory: "apparel_cotton", hsnCode: "6204", rateBasisPoints: 5000 }] }) })
+    assert.equal(refused.status, 400, "an invalid edit is refused")
+    assert.equal(await ctx.db.taxRate.count({ where: { profileId: d.id } }), 2, "and changes nothing")
+    assert.equal((await api("PUT", `/profiles/${d.id}`, { jar: admin.jar, body: draft() })).status, 403, "only the owner edits")
+  })
+
+  test("only the owner lists profiles; the list is never cached", async () => {
+    const listed = await api("GET", "/profiles", { jar: owner.jar })
+    assert.equal(listed.status, 200)
+    assert.equal(listed.response.headers.get("cache-control"), "no-store")
+    assert.ok(listed.json.data.length >= 1)
+    for (const jar of [admin.jar, staff.jar]) assert.equal((await api("GET", "/profiles", { jar })).status, 403)
+    assert.equal((await api("GET", "/profiles")).status, 401)
+  })
+})
+
 describe("CHV-S12-M05 approved and active", () => {
   let first
 
@@ -141,6 +168,10 @@ describe("CHV-S12-M05 approved and active", () => {
     assert.equal(active.json.data.active, true)
     const readiness = await tax.taxReadiness(ctx.db)
     assert.deepEqual(readiness, { ready: true, profileId: first.id, blockers: [] })
+    assert.deepEqual(await tax.assertTaxReadyForSale(ctx.db), readiness, "sales are open")
+    const newer = await create()
+    const listed = (await api("GET", "/profiles", { jar: owner.jar })).json.data
+    assert.deepEqual([listed[0].id, listed[1].id], [first.id, newer.id], "the active profile is listed first, then the newest")
     const used = await tax.taxProfileFor(ctx.db, "production")
     assert.equal(used.approved, true)
     assert.equal(used.profile.id, first.id)
