@@ -41,6 +41,10 @@ export type AuditAction =
   | "staff.sessions_revoked"
   | "refund.approved"
   | "settings.changed"
+  | "tax_profile.created"
+  | "tax_profile.updated"
+  | "tax_profile.approved"
+  | "tax_profile.activated"
 
 export type AuditEventV1 = {
   version: ContractVersion

@@ -1,0 +1,26 @@
+﻿▶ CHV-S12-M05 nothing is live without an approved profile
+  ✔ with no profile, live sales are blocked and production has no profile to use (33.4239ms)
+  ✔ a draft cannot be activated, and production never falls back to it (50.4376ms)
+  ✔ the database refuses an active or approved profile that was never signed (56.7648ms)
+  ✔ only the owner may draft, approve or activate; admin and staff are refused, signed out is 401 (98.9037ms)
+✔ CHV-S12-M05 nothing is live without an approved profile (2199.7316ms)
+▶ CHV-S12-M05 approval checks
+  ✔ approval needs the advisor statement, the advisor's reference, a typed name and a reason (29.9197ms)
+  ✔ an incomplete profile cannot be approved: no GSTIN, no rates, or a sellable category without a rate (94.2999ms)
+  ✔ GSTINs must be well formed, carry the right check character and belong to the seller state (51.0918ms)
+  ✔ rates must name a real category once, a 4, 6 or 8 digit HSN code and 0% to 40% in whole basis points (7.8113ms)
+✔ CHV-S12-M05 approval checks (183.7414ms)
+▶ CHV-S12-M05 approved and active
+  ✔ a signed, complete profile is approved, then active; sales are ready and production uses it (73.1397ms)
+  ✔ an approved profile never changes: no edit, no rate change, no deletion (75.7822ms)
+  ✔ a new sellable category without a rate blocks sales again until a new profile covers it (33.9041ms)
+  ✔ activating a newer approved profile retires the old one; exactly one is ever active, even in parallel (147.7616ms)
+✔ CHV-S12-M05 approved and active (331.0021ms)
+ℹ tests 12
+ℹ suites 3
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8074.1748

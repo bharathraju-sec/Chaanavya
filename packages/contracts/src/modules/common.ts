@@ -30,6 +30,7 @@ export type ReturnId = Brand<string, "ReturnId">
 export type PromotionId = Brand<string, "PromotionId">
 export type CustomerId = Brand<string, "CustomerId">
 export type GuestSessionId = Brand<string, "GuestSessionId">
+export type AddressId = Brand<string, "AddressId">
 export type StaffId = Brand<string, "StaffId">
 export type AuditEventId = Brand<string, "AuditEventId">
 export type CorrelationId = Brand<string, "CorrelationId">

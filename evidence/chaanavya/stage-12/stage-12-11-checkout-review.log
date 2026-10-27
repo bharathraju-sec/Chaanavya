@@ -1,0 +1,52 @@
+# CHV-S12-M11 run (tests/e2e/checkout-review.test.mjs within npm run test:e2e), 27 October 2026
+▶ CHV-S12-M11 the review shows exactly the total the API authorised
+✔ CHV-S12-M11 the review shows exactly the total the API authorised (2513.2422ms)
+▶ CHV-S12-M11 the review page is open in development and staging only
+✔ CHV-S12-M11 the review page is open in development and staging only (317.0521ms)
+ℹ tests 65
+ℹ pass 65
+ℹ fail 0
+
+# Mutation checks
+﻿== M1 total worked out in the browser
+ℹ pass 6
+ℹ fail 1
+== M2 Total cell shows the subtotal
+ℹ pass 6
+ℹ fail 1
+== M3 review open in production
+ℹ pass 6
+ℹ fail 1
+== M4 bag links to review in production
+ℹ pass 6
+ℹ fail 1
+== M5 page not gated
+ℹ pass 6
+ℹ fail 1
+== M6 test quote not marked
+ℹ pass 6
+ℹ fail 1
+== M7 discount row hidden
+ℹ pass 6
+ℹ fail 1
+== restored
+ℹ pass 7
+ℹ fail 0
+
+# Wider runs
+﻿== security
+ℹ tests 403
+ℹ pass 403
+ℹ fail 0
+== db
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+== unit
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+== typecheck
+== lint
+✖ 2 problems (0 errors, 2 warnings)
+build: pass

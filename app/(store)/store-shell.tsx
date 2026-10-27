@@ -9,6 +9,7 @@ import { isChatConfigured } from "@/lib/chat/assistant"
 import { isMeasurementId } from "@/lib/consent"
 import { getSearchProducts } from "@/lib/catalogue/storefront"
 import { accountLink } from "@/lib/auth/account-link"
+import { checkoutReviewOpen } from "@/lib/checkout"
 
 // Storefront chrome: bag, header, footer, cookie banner and chat. Used by the
 // app/(store) layout and the global 404 page; the admin workspace (app/admin) has its own shell.
@@ -32,7 +33,7 @@ export async function StoreShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
         <SiteFooter cookieSettings={cookieConsent} />
-        <CartSheet />
+        <CartSheet checkoutOpen={checkoutReviewOpen(process.env)} />
       </CartProvider>
       {cookieConsent && <CookieConsent measurementId={gaId} />}
       {/* Shop chat: shown only when enabled in lib/chat/assistant.ts and ANTHROPIC_API_KEY is set. */}

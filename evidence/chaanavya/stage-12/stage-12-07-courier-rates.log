@@ -1,0 +1,24 @@
+﻿▶ CHV-S12-M07 the parcel is built from catalogue data, never guessed
+  ✔ weights add up per unit, value is the goods' price, restrictions come from the products (0.968ms)
+  ✔ a line without a weight or a reviewed restriction makes the parcel unsupported: no request, no quote (0.1766ms)
+  ✔ a malformed pickup or delivery address gives no request (0.1939ms)
+✔ CHV-S12-M07 the parcel is built from catalogue data, never guessed (1.9734ms)
+▶ CHV-S12-M07 only real offers that fit the parcel survive
+  ✔ well-formed offers come back exactly as the courier gave them, cheapest first (1.4518ms)
+  ✔ offers that cannot carry the parcel are dropped; none left is unavailable with no options (0.1966ms)
+  ✔ a restricted item is never offered a service that does not accept it (0.2524ms)
+  ✔ malformed or made-up offers are dropped: wrong currency, fractional or negative paise, missing fields, bad dates (0.21ms)
+  ✔ an unavailable answer never carries options, even when the courier attached some (0.2127ms)
+  ✔ returned offers are copies: changing the courier's objects afterwards changes nothing (0.1256ms)
+✔ CHV-S12-M07 only real offers that fit the parcel survive (2.7432ms)
+▶ CHV-S12-M07 courier failures give no offer
+  ✔ a throw, a timeout or a malformed answer is provider_unavailable with no options (21.3335ms)
+✔ CHV-S12-M07 courier failures give no offer (21.6834ms)
+ℹ tests 10
+ℹ suites 3
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 329.1163

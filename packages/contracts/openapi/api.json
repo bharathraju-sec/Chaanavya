@@ -209,6 +209,634 @@
         ]
       }
     },
+    "/api/v1/account/addresses": {
+      "get": {
+        "operationId": "AddressController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "version": {
+                            "type": "integer",
+                            "enum": [
+                              1
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "address": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "phone": {
+                                "type": "string",
+                                "description": "Indian mobile, stored as +91XXXXXXXXXX"
+                              },
+                              "line1": {
+                                "type": "string"
+                              },
+                              "line2": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "landmark": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "city": {
+                                "type": "string"
+                              },
+                              "district": {
+                                "type": "string"
+                              },
+                              "stateCode": {
+                                "type": "string",
+                                "description": "ISO 3166-2:IN, for example IN-KA"
+                              },
+                              "pinCode": {
+                                "type": "string",
+                                "pattern": "^[1-9][0-9]{5}$"
+                              },
+                              "country": {
+                                "type": "string",
+                                "enum": [
+                                  "IN"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "phone",
+                              "line1",
+                              "line2",
+                              "landmark",
+                              "city",
+                              "district",
+                              "stateCode",
+                              "pinCode",
+                              "country"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "isDefault": {
+                            "type": "boolean"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "id",
+                          "address",
+                          "isDefault",
+                          "updatedAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "The signed-in customer's saved addresses, default first",
+        "tags": [
+          "account"
+        ]
+      },
+      "post": {
+        "operationId": "AddressController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "description": "Indian mobile, stored as +91XXXXXXXXXX"
+                      },
+                      "line1": {
+                        "type": "string"
+                      },
+                      "line2": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "landmark": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "stateCode": {
+                        "type": "string",
+                        "description": "ISO 3166-2:IN, for example IN-KA"
+                      },
+                      "pinCode": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{5}$"
+                      },
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "IN"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "phone",
+                      "line1",
+                      "city",
+                      "district",
+                      "stateCode",
+                      "pinCode"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "isDefault": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "address"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "enum": [
+                            1
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "description": "Indian mobile, stored as +91XXXXXXXXXX"
+                            },
+                            "line1": {
+                              "type": "string"
+                            },
+                            "line2": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "landmark": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string",
+                              "description": "ISO 3166-2:IN, for example IN-KA"
+                            },
+                            "pinCode": {
+                              "type": "string",
+                              "pattern": "^[1-9][0-9]{5}$"
+                            },
+                            "country": {
+                              "type": "string",
+                              "enum": [
+                                "IN"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "phone",
+                            "line1",
+                            "line2",
+                            "landmark",
+                            "city",
+                            "district",
+                            "stateCode",
+                            "pinCode",
+                            "country"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "isDefault": {
+                          "type": "boolean"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "id",
+                        "address",
+                        "isDefault",
+                        "updatedAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Save an address; the first one becomes the default",
+        "tags": [
+          "account"
+        ]
+      }
+    },
+    "/api/v1/account/addresses/{addressId}": {
+      "patch": {
+        "operationId": "AddressController_update",
+        "parameters": [
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "description": "Indian mobile, stored as +91XXXXXXXXXX"
+                      },
+                      "line1": {
+                        "type": "string"
+                      },
+                      "line2": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "landmark": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "stateCode": {
+                        "type": "string",
+                        "description": "ISO 3166-2:IN, for example IN-KA"
+                      },
+                      "pinCode": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{5}$"
+                      },
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "IN"
+                        ]
+                      }
+                    },
+                    "required": [],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "address"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "enum": [
+                            1
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "description": "Indian mobile, stored as +91XXXXXXXXXX"
+                            },
+                            "line1": {
+                              "type": "string"
+                            },
+                            "line2": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "landmark": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string",
+                              "description": "ISO 3166-2:IN, for example IN-KA"
+                            },
+                            "pinCode": {
+                              "type": "string",
+                              "pattern": "^[1-9][0-9]{5}$"
+                            },
+                            "country": {
+                              "type": "string",
+                              "enum": [
+                                "IN"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "phone",
+                            "line1",
+                            "line2",
+                            "landmark",
+                            "city",
+                            "district",
+                            "stateCode",
+                            "pinCode",
+                            "country"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "isDefault": {
+                          "type": "boolean"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "id",
+                        "address",
+                        "isDefault",
+                        "updatedAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Change some fields of one of the customer's addresses; the result is checked as a whole",
+        "tags": [
+          "account"
+        ]
+      },
+      "delete": {
+        "operationId": "AddressController_remove",
+        "parameters": [
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "summary": "Delete one of the customer's addresses; orders keep their own copy",
+        "tags": [
+          "account"
+        ]
+      }
+    },
+    "/api/v1/account/addresses/{addressId}/default": {
+      "post": {
+        "operationId": "AddressController_makeDefault",
+        "parameters": [
+          {
+            "name": "addressId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "enum": [
+                            1
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "address": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "description": "Indian mobile, stored as +91XXXXXXXXXX"
+                            },
+                            "line1": {
+                              "type": "string"
+                            },
+                            "line2": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "landmark": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string",
+                              "description": "ISO 3166-2:IN, for example IN-KA"
+                            },
+                            "pinCode": {
+                              "type": "string",
+                              "pattern": "^[1-9][0-9]{5}$"
+                            },
+                            "country": {
+                              "type": "string",
+                              "enum": [
+                                "IN"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "phone",
+                            "line1",
+                            "line2",
+                            "landmark",
+                            "city",
+                            "district",
+                            "stateCode",
+                            "pinCode",
+                            "country"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "isDefault": {
+                          "type": "boolean"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "id",
+                        "address",
+                        "isDefault",
+                        "updatedAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Make one of the customer's addresses the default",
+        "tags": [
+          "account"
+        ]
+      }
+    },
     "/api/v1/orders/{id}": {
       "get": {
         "operationId": "OrdersController_one",
@@ -9947,6 +10575,1013 @@
         ]
       }
     },
+    "/api/v1/admin/tax/profiles": {
+      "get": {
+        "operationId": "TaxController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "draft",
+                              "approved",
+                              "retired"
+                            ]
+                          },
+                          "active": {
+                            "type": "boolean"
+                          },
+                          "sellerStateCode": {
+                            "type": "string"
+                          },
+                          "gstin": {
+                            "type": [
+                              "string",
+                              "null"
+                            ]
+                          },
+                          "pricesIncludeTax": {
+                            "type": "boolean"
+                          },
+                          "note": {
+                            "type": "string"
+                          },
+                          "rates": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "taxCategory": {
+                                  "type": "string"
+                                },
+                                "hsnCode": {
+                                  "type": "string",
+                                  "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                                },
+                                "rateBasisPoints": {
+                                  "type": "integer",
+                                  "minimum": 0,
+                                  "maximum": 4000,
+                                  "description": "GST in basis points, 5% = 500"
+                                }
+                              },
+                              "required": [
+                                "taxCategory",
+                                "hsnCode",
+                                "rateBasisPoints"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "approval": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "properties": {
+                              "approvedById": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "approvedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "signedName": {
+                                "type": "string"
+                              },
+                              "advisorReference": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "activatedAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "date-time"
+                          },
+                          "retiredAt": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "date-time"
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updatedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "status",
+                          "active",
+                          "sellerStateCode",
+                          "gstin",
+                          "pricesIncludeTax",
+                          "note",
+                          "rates",
+                          "approval",
+                          "activatedAt",
+                          "retiredAt",
+                          "createdAt",
+                          "updatedAt"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tax profiles, the active one first",
+        "tags": [
+          "admin"
+        ]
+      },
+      "post": {
+        "operationId": "TaxController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sellerStateCode": {
+                    "type": "string",
+                    "description": "ISO 3166-2:IN, for example IN-KA"
+                  },
+                  "gstin": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "pricesIncludeTax": {
+                    "type": "boolean"
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "rates": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "taxCategory": {
+                          "type": "string"
+                        },
+                        "hsnCode": {
+                          "type": "string",
+                          "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                        },
+                        "rateBasisPoints": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4000,
+                          "description": "GST in basis points, 5% = 500"
+                        }
+                      },
+                      "required": [
+                        "taxCategory",
+                        "hsnCode",
+                        "rateBasisPoints"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "sellerStateCode",
+                  "rates"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "retired"
+                          ]
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "sellerStateCode": {
+                          "type": "string"
+                        },
+                        "gstin": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "pricesIncludeTax": {
+                          "type": "boolean"
+                        },
+                        "note": {
+                          "type": "string"
+                        },
+                        "rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "taxCategory": {
+                                "type": "string"
+                              },
+                              "hsnCode": {
+                                "type": "string",
+                                "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                              },
+                              "rateBasisPoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4000,
+                                "description": "GST in basis points, 5% = 500"
+                              }
+                            },
+                            "required": [
+                              "taxCategory",
+                              "hsnCode",
+                              "rateBasisPoints"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "approval": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "approvedById": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "approvedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "signedName": {
+                              "type": "string"
+                            },
+                            "advisorReference": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "activatedAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "retiredAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "active",
+                        "sellerStateCode",
+                        "gstin",
+                        "pricesIncludeTax",
+                        "note",
+                        "rates",
+                        "approval",
+                        "activatedAt",
+                        "retiredAt",
+                        "createdAt",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Start a draft tax profile: seller state, GSTIN, and HSN code and GST rate per tax category",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tax/profiles/{id}": {
+      "put": {
+        "operationId": "TaxController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sellerStateCode": {
+                    "type": "string",
+                    "description": "ISO 3166-2:IN, for example IN-KA"
+                  },
+                  "gstin": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "pricesIncludeTax": {
+                    "type": "boolean"
+                  },
+                  "note": {
+                    "type": "string"
+                  },
+                  "rates": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "taxCategory": {
+                          "type": "string"
+                        },
+                        "hsnCode": {
+                          "type": "string",
+                          "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                        },
+                        "rateBasisPoints": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 4000,
+                          "description": "GST in basis points, 5% = 500"
+                        }
+                      },
+                      "required": [
+                        "taxCategory",
+                        "hsnCode",
+                        "rateBasisPoints"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "sellerStateCode",
+                  "rates"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "retired"
+                          ]
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "sellerStateCode": {
+                          "type": "string"
+                        },
+                        "gstin": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "pricesIncludeTax": {
+                          "type": "boolean"
+                        },
+                        "note": {
+                          "type": "string"
+                        },
+                        "rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "taxCategory": {
+                                "type": "string"
+                              },
+                              "hsnCode": {
+                                "type": "string",
+                                "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                              },
+                              "rateBasisPoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4000,
+                                "description": "GST in basis points, 5% = 500"
+                              }
+                            },
+                            "required": [
+                              "taxCategory",
+                              "hsnCode",
+                              "rateBasisPoints"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "approval": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "approvedById": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "approvedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "signedName": {
+                              "type": "string"
+                            },
+                            "advisorReference": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "activatedAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "retiredAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "active",
+                        "sellerStateCode",
+                        "gstin",
+                        "pricesIncludeTax",
+                        "note",
+                        "rates",
+                        "approval",
+                        "activatedAt",
+                        "retiredAt",
+                        "createdAt",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Replace a draft's values and rates; an approved profile never changes",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tax/profiles/{id}/approve": {
+      "post": {
+        "operationId": "TaxController_approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "statement": {
+                    "type": "boolean"
+                  },
+                  "advisorReference": {
+                    "type": "string"
+                  },
+                  "signedName": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "statement",
+                  "advisorReference",
+                  "signedName",
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "retired"
+                          ]
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "sellerStateCode": {
+                          "type": "string"
+                        },
+                        "gstin": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "pricesIncludeTax": {
+                          "type": "boolean"
+                        },
+                        "note": {
+                          "type": "string"
+                        },
+                        "rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "taxCategory": {
+                                "type": "string"
+                              },
+                              "hsnCode": {
+                                "type": "string",
+                                "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                              },
+                              "rateBasisPoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4000,
+                                "description": "GST in basis points, 5% = 500"
+                              }
+                            },
+                            "required": [
+                              "taxCategory",
+                              "hsnCode",
+                              "rateBasisPoints"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "approval": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "approvedById": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "approvedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "signedName": {
+                              "type": "string"
+                            },
+                            "advisorReference": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "activatedAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "retiredAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "active",
+                        "sellerStateCode",
+                        "gstin",
+                        "pricesIncludeTax",
+                        "note",
+                        "rates",
+                        "approval",
+                        "activatedAt",
+                        "retiredAt",
+                        "createdAt",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Sign a complete draft: confirm a qualified tax advisor checked it, give the advisor's reference, type your full name",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tax/profiles/{id}/activate": {
+      "post": {
+        "operationId": "TaxController_activate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "reason"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "draft",
+                            "approved",
+                            "retired"
+                          ]
+                        },
+                        "active": {
+                          "type": "boolean"
+                        },
+                        "sellerStateCode": {
+                          "type": "string"
+                        },
+                        "gstin": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "pricesIncludeTax": {
+                          "type": "boolean"
+                        },
+                        "note": {
+                          "type": "string"
+                        },
+                        "rates": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "taxCategory": {
+                                "type": "string"
+                              },
+                              "hsnCode": {
+                                "type": "string",
+                                "pattern": "^([0-9]{4}|[0-9]{6}|[0-9]{8})$"
+                              },
+                              "rateBasisPoints": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 4000,
+                                "description": "GST in basis points, 5% = 500"
+                              }
+                            },
+                            "required": [
+                              "taxCategory",
+                              "hsnCode",
+                              "rateBasisPoints"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "approval": {
+                          "type": [
+                            "object",
+                            "null"
+                          ],
+                          "properties": {
+                            "approvedById": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "approvedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "signedName": {
+                              "type": "string"
+                            },
+                            "advisorReference": {
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "activatedAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "retiredAt": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "date-time"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "status",
+                        "active",
+                        "sellerStateCode",
+                        "gstin",
+                        "pricesIncludeTax",
+                        "note",
+                        "rates",
+                        "approval",
+                        "activatedAt",
+                        "retiredAt",
+                        "createdAt",
+                        "updatedAt"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "Make an approved profile the one checkout uses; the previous one is retired",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
+    "/api/v1/admin/tax/readiness": {
+      "get": {
+        "operationId": "TaxController_readiness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ready": {
+                          "type": "boolean"
+                        },
+                        "profileId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "format": "uuid"
+                        },
+                        "blockers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "code": {
+                                "type": "string",
+                                "enum": [
+                                  "no_active_profile",
+                                  "unassigned_category",
+                                  "unmapped_category"
+                                ]
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "taxCategory": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "code",
+                              "message"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "ready",
+                        "profileId",
+                        "blockers"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "summary": "What blocks live sales for tax reasons; ready only with an approved, active profile covering every sellable variant",
+        "tags": [
+          "admin"
+        ]
+      }
+    },
     "/api/v1/catalogue/products": {
       "get": {
         "operationId": "StorefrontCatalogueController_products",
@@ -11027,6 +12662,1690 @@
         "summary": "Visible collections",
         "tags": [
           "catalogue"
+        ]
+      }
+    },
+    "/api/v1/cart/contact": {
+      "get": {
+        "operationId": "ContactController_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "oneOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "email": {
+                              "type": "string"
+                            },
+                            "shippingAddress": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string"
+                                },
+                                "phone": {
+                                  "type": "string",
+                                  "description": "Indian mobile, the delivery phone; stored as +91XXXXXXXXXX"
+                                },
+                                "line1": {
+                                  "type": "string"
+                                },
+                                "line2": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "landmark": {
+                                  "type": [
+                                    "string",
+                                    "null"
+                                  ]
+                                },
+                                "city": {
+                                  "type": "string"
+                                },
+                                "district": {
+                                  "type": "string"
+                                },
+                                "stateCode": {
+                                  "type": "string",
+                                  "description": "ISO 3166-2:IN, for example IN-KA"
+                                },
+                                "pinCode": {
+                                  "type": "string",
+                                  "pattern": "^[1-9][0-9]{5}$"
+                                },
+                                "country": {
+                                  "type": "string",
+                                  "enum": [
+                                    "IN"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "phone",
+                                "line1",
+                                "line2",
+                                "landmark",
+                                "city",
+                                "district",
+                                "stateCode",
+                                "pinCode",
+                                "country"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "marketing": {
+                              "type": "string",
+                              "enum": [
+                                "not_offered"
+                              ]
+                            },
+                            "updatedAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "email",
+                            "shippingAddress",
+                            "marketing",
+                            "updatedAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "The contact details saved for the shopper's bag, or null",
+        "tags": [
+          "cart"
+        ]
+      },
+      "put": {
+        "operationId": "ContactController_save",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "shippingAddress": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string",
+                        "description": "Indian mobile, the delivery phone; stored as +91XXXXXXXXXX"
+                      },
+                      "line1": {
+                        "type": "string"
+                      },
+                      "line2": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "landmark": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "city": {
+                        "type": "string"
+                      },
+                      "district": {
+                        "type": "string"
+                      },
+                      "stateCode": {
+                        "type": "string",
+                        "description": "ISO 3166-2:IN, for example IN-KA"
+                      },
+                      "pinCode": {
+                        "type": "string",
+                        "pattern": "^[1-9][0-9]{5}$"
+                      },
+                      "country": {
+                        "type": "string",
+                        "enum": [
+                          "IN"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "phone",
+                      "line1",
+                      "city",
+                      "district",
+                      "stateCode",
+                      "pinCode"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "marketingConsent": {
+                    "type": "boolean",
+                    "description": "Not offered yet: only false or absent is accepted"
+                  }
+                },
+                "required": [
+                  "shippingAddress"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "shippingAddress": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "description": "Indian mobile, the delivery phone; stored as +91XXXXXXXXXX"
+                            },
+                            "line1": {
+                              "type": "string"
+                            },
+                            "line2": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "landmark": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string",
+                              "description": "ISO 3166-2:IN, for example IN-KA"
+                            },
+                            "pinCode": {
+                              "type": "string",
+                              "pattern": "^[1-9][0-9]{5}$"
+                            },
+                            "country": {
+                              "type": "string",
+                              "enum": [
+                                "IN"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "phone",
+                            "line1",
+                            "line2",
+                            "landmark",
+                            "city",
+                            "district",
+                            "stateCode",
+                            "pinCode",
+                            "country"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "marketing": {
+                          "type": "string",
+                          "enum": [
+                            "not_offered"
+                          ]
+                        },
+                        "updatedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "email",
+                        "shippingAddress",
+                        "marketing",
+                        "updatedAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Save the email and delivery address for the shopper's bag; a guest needs no account. Places no order",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/shipping-rates": {
+      "get": {
+        "operationId": "ShippingController_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "test",
+                            "live",
+                            "none"
+                          ],
+                          "description": "test: sandbox courier, simulated prices that must be shown as test rates; live: a connected courier; none: no courier here"
+                        },
+                        "delivery": {
+                          "type": "object",
+                          "properties": {
+                            "pinCode": {
+                              "type": "string"
+                            },
+                            "format": {
+                              "type": "string",
+                              "enum": [
+                                "valid",
+                                "invalid"
+                              ]
+                            },
+                            "delivery": {
+                              "type": "string",
+                              "enum": [
+                                "unknown",
+                                "serviceable",
+                                "not_serviceable"
+                              ]
+                            },
+                            "deliverable": {
+                              "type": "boolean"
+                            },
+                            "source": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "test",
+                                "live"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "pinCode",
+                            "format",
+                            "delivery",
+                            "deliverable",
+                            "source"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "quote": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "status": {
+                                  "type": "string",
+                                  "enum": [
+                                    "available",
+                                    "unavailable"
+                                  ]
+                                },
+                                "reason": {
+                                  "type": "string",
+                                  "enum": [
+                                    "pin_unserviceable",
+                                    "category_restricted",
+                                    "parcel_unsupported",
+                                    "provider_unavailable"
+                                  ]
+                                },
+                                "options": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "serviceRef": {
+                                        "type": "string"
+                                      },
+                                      "courierName": {
+                                        "type": "string"
+                                      },
+                                      "rate": {
+                                        "type": "object",
+                                        "properties": {
+                                          "amountPaise": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                          },
+                                          "currency": {
+                                            "type": "string",
+                                            "enum": [
+                                              "INR"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "amountPaise",
+                                          "currency"
+                                        ],
+                                        "additionalProperties": false
+                                      },
+                                      "estimatedDeliveryDays": {
+                                        "type": [
+                                          "integer",
+                                          "null"
+                                        ]
+                                      },
+                                      "quotedAt": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                      },
+                                      "mode": {
+                                        "type": "string",
+                                        "enum": [
+                                          "air",
+                                          "surface"
+                                        ]
+                                      },
+                                      "maxWeightGrams": {
+                                        "type": "integer"
+                                      },
+                                      "maxDeclaredValuePaise": {
+                                        "type": [
+                                          "integer",
+                                          "null"
+                                        ]
+                                      },
+                                      "acceptsRestrictions": {
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "enum": [
+                                            "fragrance_liquid",
+                                            "jewellery_high_value"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "serviceRef",
+                                      "courierName",
+                                      "rate",
+                                      "estimatedDeliveryDays",
+                                      "quotedAt",
+                                      "mode",
+                                      "maxWeightGrams",
+                                      "maxDeclaredValuePaise",
+                                      "acceptsRestrictions"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "quotedAt": {
+                                  "type": "string",
+                                  "format": "date-time"
+                                }
+                              },
+                              "required": [
+                                "status",
+                                "options",
+                                "quotedAt"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "liveEligible": {
+                          "type": "boolean",
+                          "description": "True only for a live courier's answer; never for test rates"
+                        }
+                      },
+                      "required": [
+                        "mode",
+                        "delivery",
+                        "quote",
+                        "liveEligible"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delivery and courier rates for the shopper's bag to its saved delivery address. Test rates in development and staging; books nothing",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/quote": {
+      "post": {
+        "operationId": "QuoteController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "serviceRef": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "A delivery option from /cart/shipping-rates; the cheapest when absent"
+                  },
+                  "cartRevision": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "The bag revision the shopper reviewed; a stale one is refused"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "version": {
+                          "type": "integer",
+                          "enum": [
+                            1
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "cartId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "cartRevision": {
+                          "type": "integer"
+                        },
+                        "lines": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "variantId": {
+                                "type": "string"
+                              },
+                              "sku": {
+                                "type": "string"
+                              },
+                              "title": {
+                                "type": "string"
+                              },
+                              "variantTitle": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "minimum": 1
+                              },
+                              "unitPrice": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "lineSubtotal": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "discount": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "tax": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "component": {
+                                      "type": "string",
+                                      "enum": [
+                                        "CGST",
+                                        "SGST",
+                                        "UTGST",
+                                        "IGST"
+                                      ]
+                                    },
+                                    "rateBasisPoints": {
+                                      "type": "number"
+                                    },
+                                    "amount": {
+                                      "type": "object",
+                                      "properties": {
+                                        "amountPaise": {
+                                          "type": "integer",
+                                          "minimum": 0
+                                        },
+                                        "currency": {
+                                          "type": "string",
+                                          "enum": [
+                                            "INR"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "amountPaise",
+                                        "currency"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  },
+                                  "required": [
+                                    "component",
+                                    "rateBasisPoints",
+                                    "amount"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "lineTotal": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "classification": {
+                                "type": "object",
+                                "properties": {
+                                  "taxProfileId": {
+                                    "type": "string"
+                                  },
+                                  "profileApproved": {
+                                    "type": "boolean"
+                                  },
+                                  "taxCategory": {
+                                    "type": "string"
+                                  },
+                                  "hsnCode": {
+                                    "type": "string"
+                                  },
+                                  "rateBasisPoints": {
+                                    "type": "integer"
+                                  },
+                                  "supply": {
+                                    "type": "string",
+                                    "enum": [
+                                      "intra",
+                                      "inter"
+                                    ]
+                                  },
+                                  "sellerStateCode": {
+                                    "type": "string"
+                                  },
+                                  "deliveryStateCode": {
+                                    "type": "string"
+                                  },
+                                  "pricesIncludeTax": {
+                                    "type": "boolean"
+                                  },
+                                  "rounding": {
+                                    "type": "string",
+                                    "enum": [
+                                      "line_half_up_v1"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "taxProfileId",
+                                  "profileApproved",
+                                  "taxCategory",
+                                  "hsnCode",
+                                  "rateBasisPoints",
+                                  "supply",
+                                  "sellerStateCode",
+                                  "deliveryStateCode",
+                                  "pricesIncludeTax",
+                                  "rounding"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "variantId",
+                              "sku",
+                              "title",
+                              "variantTitle",
+                              "quantity",
+                              "unitPrice",
+                              "lineSubtotal",
+                              "discount",
+                              "tax",
+                              "lineTotal",
+                              "classification"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "promotionId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "subtotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "discountTotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "shippingFee": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "taxTotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "grandTotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "pricesIncludeTax": {
+                          "type": "boolean"
+                        },
+                        "courierQuoteRef": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "expiresAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "shipping": {
+                          "type": "object",
+                          "properties": {
+                            "serviceRef": {
+                              "type": "string"
+                            },
+                            "courierName": {
+                              "type": "string"
+                            },
+                            "mode": {
+                              "type": "string",
+                              "enum": [
+                                "air",
+                                "surface"
+                              ]
+                            },
+                            "estimatedDeliveryDays": {
+                              "type": [
+                                "integer",
+                                "null"
+                              ]
+                            },
+                            "fee": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "tax": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "component": {
+                                    "type": "string",
+                                    "enum": [
+                                      "CGST",
+                                      "SGST",
+                                      "UTGST",
+                                      "IGST"
+                                    ]
+                                  },
+                                  "rateBasisPoints": {
+                                    "type": "number"
+                                  },
+                                  "amount": {
+                                    "type": "object",
+                                    "properties": {
+                                      "amountPaise": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                          "INR"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "amountPaise",
+                                      "currency"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "required": [
+                                  "component",
+                                  "rateBasisPoints",
+                                  "amount"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "total": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "required": [
+                            "serviceRef",
+                            "courierName",
+                            "mode",
+                            "estimatedDeliveryDays",
+                            "fee",
+                            "tax",
+                            "total"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "supply": {
+                          "type": "string",
+                          "enum": [
+                            "intra",
+                            "inter"
+                          ]
+                        },
+                        "mode": {
+                          "type": "string",
+                          "enum": [
+                            "test",
+                            "live"
+                          ],
+                          "description": "test: sandbox delivery rates or an unapproved tax profile; never a real order"
+                        },
+                        "testReasons": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "enum": [
+                              "test_shipping_rates",
+                              "tax_profile_unapproved"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "version",
+                        "id",
+                        "cartId",
+                        "cartRevision",
+                        "lines",
+                        "promotionId",
+                        "subtotal",
+                        "discountTotal",
+                        "shippingFee",
+                        "taxTotal",
+                        "grandTotal",
+                        "pricesIncludeTax",
+                        "courierQuoteRef",
+                        "expiresAt",
+                        "shipping",
+                        "supply",
+                        "mode",
+                        "testReasons"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Price the shopper's bag on the server: catalogue prices, promotion, delivery and GST. Any amount in the body is ignored. Places no order",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/quote/{quoteId}": {
+      "get": {
+        "operationId": "QuoteController_check",
+        "parameters": [
+          {
+            "name": "quoteId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "valid"
+                          ]
+                        },
+                        "quote": {
+                          "type": "object",
+                          "properties": {
+                            "version": {
+                              "type": "integer",
+                              "enum": [
+                                1
+                              ]
+                            },
+                            "id": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "cartId": {
+                              "type": "string",
+                              "format": "uuid"
+                            },
+                            "cartRevision": {
+                              "type": "integer"
+                            },
+                            "lines": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "variantId": {
+                                    "type": "string"
+                                  },
+                                  "sku": {
+                                    "type": "string"
+                                  },
+                                  "title": {
+                                    "type": "string"
+                                  },
+                                  "variantTitle": {
+                                    "type": "string"
+                                  },
+                                  "quantity": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                  },
+                                  "unitPrice": {
+                                    "type": "object",
+                                    "properties": {
+                                      "amountPaise": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                          "INR"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "amountPaise",
+                                      "currency"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "lineSubtotal": {
+                                    "type": "object",
+                                    "properties": {
+                                      "amountPaise": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                          "INR"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "amountPaise",
+                                      "currency"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "discount": {
+                                    "type": "object",
+                                    "properties": {
+                                      "amountPaise": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                          "INR"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "amountPaise",
+                                      "currency"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "tax": {
+                                    "type": "array",
+                                    "items": {
+                                      "type": "object",
+                                      "properties": {
+                                        "component": {
+                                          "type": "string",
+                                          "enum": [
+                                            "CGST",
+                                            "SGST",
+                                            "UTGST",
+                                            "IGST"
+                                          ]
+                                        },
+                                        "rateBasisPoints": {
+                                          "type": "number"
+                                        },
+                                        "amount": {
+                                          "type": "object",
+                                          "properties": {
+                                            "amountPaise": {
+                                              "type": "integer",
+                                              "minimum": 0
+                                            },
+                                            "currency": {
+                                              "type": "string",
+                                              "enum": [
+                                                "INR"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "amountPaise",
+                                            "currency"
+                                          ],
+                                          "additionalProperties": false
+                                        }
+                                      },
+                                      "required": [
+                                        "component",
+                                        "rateBasisPoints",
+                                        "amount"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  },
+                                  "lineTotal": {
+                                    "type": "object",
+                                    "properties": {
+                                      "amountPaise": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                      },
+                                      "currency": {
+                                        "type": "string",
+                                        "enum": [
+                                          "INR"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "amountPaise",
+                                      "currency"
+                                    ],
+                                    "additionalProperties": false
+                                  },
+                                  "classification": {
+                                    "type": "object",
+                                    "properties": {
+                                      "taxProfileId": {
+                                        "type": "string"
+                                      },
+                                      "profileApproved": {
+                                        "type": "boolean"
+                                      },
+                                      "taxCategory": {
+                                        "type": "string"
+                                      },
+                                      "hsnCode": {
+                                        "type": "string"
+                                      },
+                                      "rateBasisPoints": {
+                                        "type": "integer"
+                                      },
+                                      "supply": {
+                                        "type": "string",
+                                        "enum": [
+                                          "intra",
+                                          "inter"
+                                        ]
+                                      },
+                                      "sellerStateCode": {
+                                        "type": "string"
+                                      },
+                                      "deliveryStateCode": {
+                                        "type": "string"
+                                      },
+                                      "pricesIncludeTax": {
+                                        "type": "boolean"
+                                      },
+                                      "rounding": {
+                                        "type": "string",
+                                        "enum": [
+                                          "line_half_up_v1"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "taxProfileId",
+                                      "profileApproved",
+                                      "taxCategory",
+                                      "hsnCode",
+                                      "rateBasisPoints",
+                                      "supply",
+                                      "sellerStateCode",
+                                      "deliveryStateCode",
+                                      "pricesIncludeTax",
+                                      "rounding"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "required": [
+                                  "variantId",
+                                  "sku",
+                                  "title",
+                                  "variantTitle",
+                                  "quantity",
+                                  "unitPrice",
+                                  "lineSubtotal",
+                                  "discount",
+                                  "tax",
+                                  "lineTotal",
+                                  "classification"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "promotionId": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "subtotal": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "discountTotal": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "shippingFee": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "taxTotal": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "grandTotal": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer",
+                                  "minimum": 0
+                                },
+                                "currency": {
+                                  "type": "string",
+                                  "enum": [
+                                    "INR"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "pricesIncludeTax": {
+                              "type": "boolean"
+                            },
+                            "courierQuoteRef": {
+                              "type": [
+                                "string",
+                                "null"
+                              ]
+                            },
+                            "expiresAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "shipping": {
+                              "type": "object",
+                              "properties": {
+                                "serviceRef": {
+                                  "type": "string"
+                                },
+                                "courierName": {
+                                  "type": "string"
+                                },
+                                "mode": {
+                                  "type": "string",
+                                  "enum": [
+                                    "air",
+                                    "surface"
+                                  ]
+                                },
+                                "estimatedDeliveryDays": {
+                                  "type": [
+                                    "integer",
+                                    "null"
+                                  ]
+                                },
+                                "fee": {
+                                  "type": "object",
+                                  "properties": {
+                                    "amountPaise": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    "currency": {
+                                      "type": "string",
+                                      "enum": [
+                                        "INR"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "amountPaise",
+                                    "currency"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "tax": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "component": {
+                                        "type": "string",
+                                        "enum": [
+                                          "CGST",
+                                          "SGST",
+                                          "UTGST",
+                                          "IGST"
+                                        ]
+                                      },
+                                      "rateBasisPoints": {
+                                        "type": "number"
+                                      },
+                                      "amount": {
+                                        "type": "object",
+                                        "properties": {
+                                          "amountPaise": {
+                                            "type": "integer",
+                                            "minimum": 0
+                                          },
+                                          "currency": {
+                                            "type": "string",
+                                            "enum": [
+                                              "INR"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "amountPaise",
+                                          "currency"
+                                        ],
+                                        "additionalProperties": false
+                                      }
+                                    },
+                                    "required": [
+                                      "component",
+                                      "rateBasisPoints",
+                                      "amount"
+                                    ],
+                                    "additionalProperties": false
+                                  }
+                                },
+                                "total": {
+                                  "type": "object",
+                                  "properties": {
+                                    "amountPaise": {
+                                      "type": "integer",
+                                      "minimum": 0
+                                    },
+                                    "currency": {
+                                      "type": "string",
+                                      "enum": [
+                                        "INR"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "amountPaise",
+                                    "currency"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "required": [
+                                "serviceRef",
+                                "courierName",
+                                "mode",
+                                "estimatedDeliveryDays",
+                                "fee",
+                                "tax",
+                                "total"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "supply": {
+                              "type": "string",
+                              "enum": [
+                                "intra",
+                                "inter"
+                              ]
+                            },
+                            "mode": {
+                              "type": "string",
+                              "enum": [
+                                "test",
+                                "live"
+                              ],
+                              "description": "test: sandbox delivery rates or an unapproved tax profile; never a real order"
+                            },
+                            "testReasons": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "test_shipping_rates",
+                                  "tax_profile_unapproved"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "version",
+                            "id",
+                            "cartId",
+                            "cartRevision",
+                            "lines",
+                            "promotionId",
+                            "subtotal",
+                            "discountTotal",
+                            "shippingFee",
+                            "taxTotal",
+                            "grandTotal",
+                            "pricesIncludeTax",
+                            "courierQuoteRef",
+                            "expiresAt",
+                            "shipping",
+                            "supply",
+                            "mode",
+                            "testReasons"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "quote"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Check the shopper's stored quote: 404 unless it is theirs and still the bag's latest; 409 once it has expired or anything it was priced from has changed (the quote is then discarded)",
+        "tags": [
+          "cart"
         ]
       }
     },

@@ -1,0 +1,83 @@
+# CHV-S12-M12 focused run (delivery-failure), 27 October 2026
+▶ CHV-S12-M12 an unserviceable route stops checkout
+  ✔ a PIN the courier does not serve: no option, no quote stored, 'we don't deliver' with change-address (268.3997ms)
+  ✔ a courier outage: 'could not check', with retry; never worded as delivering or refusing; retry recovers (243.4939ms)
+  ✔ a restricted item: no option, 'can't be sent' with edit-bag (120.8576ms)
+  ✔ a bag with no weight: 'can't price delivery', with contact (149.8ms)
+  ✔ a served address goes on: a quote, no issue, a total (123.883ms)
+  ✔ moving a quoted bag to an unserviceable PIN invalidates the earlier quote; the new route gets none (199.9743ms)
+  ✔ a live courier that says not serviceable, or fails, is treated the same; production without a courier cannot quote (183.9548ms)
+✔ CHV-S12-M12 an unserviceable route stops checkout (2436.4394ms)
+▶ CHV-S12-M12 the review never shows a total or a delivery claim it does not have
+  ✔ rates that could not be loaded are an outage, not a refusal; no issue only with a served answer (0.2252ms)
+  ✔ a quote that arrives while delivery is blocked still cannot go on (rates failed, the quote call a moment later did not) (101.1753ms)
+  ✔ the page shows the issue, hides the total and keeps the order button disabled while delivery is blocked (11.1813ms)
+✔ CHV-S12-M12 the review never shows a total or a delivery claim it does not have (112.8894ms)
+ℹ tests 10
+ℹ suites 2
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10454.5618
+
+# Mutation checks (9 tests at the time)
+﻿== M1 API quotes an unserviceable route
+ℹ pass 3
+ℹ fail 6
+== M2 rates kept when the courier says not serviceable
+ℹ pass 7
+ℹ fail 2
+== M3 outage not recognised
+ℹ pass 8
+ℹ fail 1
+== M4 unserviceable PIN not shown
+ℹ pass 7
+ℹ fail 2
+== M5 restricted item not shown
+ℹ pass 8
+ℹ fail 1
+== M6 checkout goes on despite an issue
+ℹ pass 9
+ℹ fail 0
+== M7 total shown while delivery is blocked
+ℹ pass 8
+ℹ fail 1
+== M8 retry does nothing
+ℹ pass 8
+ℹ fail 1
+== restored
+ℹ pass 9
+ℹ fail 0
+
+# Rerun of the surviving mutation after adding its test (10 tests)
+﻿== M6 checkout goes on despite an issue
+ℹ pass 9
+ℹ fail 1
+== restored
+ℹ pass 10
+ℹ fail 0
+
+# Wider runs
+﻿== security
+ℹ tests 413
+ℹ pass 413
+ℹ fail 0
+== db
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+== unit
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+== typecheck
+== lint
+✖ 2 problems (0 errors, 2 warnings)
+== build
+✓ Compiled successfully in 2.8s
+== e2e
+ℹ tests 65
+ℹ pass 65
+ℹ fail 0

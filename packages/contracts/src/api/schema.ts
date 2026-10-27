@@ -55,6 +55,59 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/account/addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The signed-in customer's saved addresses, default first */
+        get: operations["AddressController_list"];
+        put?: never;
+        /** Save an address; the first one becomes the default */
+        post: operations["AddressController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/account/addresses/{addressId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete one of the customer's addresses; orders keep their own copy */
+        delete: operations["AddressController_remove"];
+        options?: never;
+        head?: never;
+        /** Change some fields of one of the customer's addresses; the result is checked as a whole */
+        patch: operations["AddressController_update"];
+        trace?: never;
+    };
+    "/api/v1/account/addresses/{addressId}/default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Make one of the customer's addresses the default */
+        post: operations["AddressController_makeDefault"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/orders/{id}": {
         parameters: {
             query?: never;
@@ -741,6 +794,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/tax/profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tax profiles, the active one first */
+        get: operations["TaxController_list"];
+        put?: never;
+        /** Start a draft tax profile: seller state, GSTIN, and HSN code and GST rate per tax category */
+        post: operations["TaxController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tax/profiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Replace a draft's values and rates; an approved profile never changes */
+        put: operations["TaxController_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tax/profiles/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign a complete draft: confirm a qualified tax advisor checked it, give the advisor's reference, type your full name */
+        post: operations["TaxController_approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tax/profiles/{id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Make an approved profile the one checkout uses; the previous one is retired */
+        post: operations["TaxController_activate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/tax/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** What blocks live sales for tax reasons; ready only with an approved, active profile covering every sellable variant */
+        get: operations["TaxController_readiness"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/catalogue/products": {
         parameters: {
             query?: never;
@@ -801,6 +940,75 @@ export interface paths {
         };
         /** Visible collections */
         get: operations["StorefrontCatalogueController_collections"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The contact details saved for the shopper's bag, or null */
+        get: operations["ContactController_read"];
+        /** Save the email and delivery address for the shopper's bag; a guest needs no account. Places no order */
+        put: operations["ContactController_save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/shipping-rates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Delivery and courier rates for the shopper's bag to its saved delivery address. Test rates in development and staging; books nothing */
+        get: operations["ShippingController_read"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/quote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Price the shopper's bag on the server: catalogue prices, promotion, delivery and GST. Any amount in the body is ignored. Places no order */
+        post: operations["QuoteController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/quote/{quoteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Check the shopper's stored quote: 404 unless it is theirs and still the bag's latest; 409 once it has expired or anything it was priced from has changed (the quote is then discarded) */
+        get: operations["QuoteController_check"];
         put?: never;
         post?: never;
         delete?: never;
@@ -998,6 +1206,246 @@ export interface operations {
                     "application/json": {
                         /** @enum {string} */
                         status: "claimed";
+                    };
+                };
+            };
+        };
+    };
+    AddressController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            address: {
+                                name: string;
+                                /** @description Indian mobile, stored as +91XXXXXXXXXX */
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                /** @description ISO 3166-2:IN, for example IN-KA */
+                                stateCode: string;
+                                pinCode: string;
+                                /** @enum {string} */
+                                country: "IN";
+                            };
+                            isDefault: boolean;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    AddressController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    address: {
+                        name: string;
+                        /** @description Indian mobile, stored as +91XXXXXXXXXX */
+                        phone: string;
+                        line1: string;
+                        line2?: string | null;
+                        landmark?: string | null;
+                        city: string;
+                        district: string;
+                        /** @description ISO 3166-2:IN, for example IN-KA */
+                        stateCode: string;
+                        pinCode: string;
+                        /** @enum {string} */
+                        country?: "IN";
+                    };
+                    isDefault?: boolean;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            address: {
+                                name: string;
+                                /** @description Indian mobile, stored as +91XXXXXXXXXX */
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                /** @description ISO 3166-2:IN, for example IN-KA */
+                                stateCode: string;
+                                pinCode: string;
+                                /** @enum {string} */
+                                country: "IN";
+                            };
+                            isDefault: boolean;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    AddressController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                addressId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AddressController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                addressId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    address: {
+                        name?: string;
+                        /** @description Indian mobile, stored as +91XXXXXXXXXX */
+                        phone?: string;
+                        line1?: string;
+                        line2?: string | null;
+                        landmark?: string | null;
+                        city?: string;
+                        district?: string;
+                        /** @description ISO 3166-2:IN, for example IN-KA */
+                        stateCode?: string;
+                        pinCode?: string;
+                        /** @enum {string} */
+                        country?: "IN";
+                    };
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            address: {
+                                name: string;
+                                /** @description Indian mobile, stored as +91XXXXXXXXXX */
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                /** @description ISO 3166-2:IN, for example IN-KA */
+                                stateCode: string;
+                                pinCode: string;
+                                /** @enum {string} */
+                                country: "IN";
+                            };
+                            isDefault: boolean;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    AddressController_makeDefault: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                addressId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            address: {
+                                name: string;
+                                /** @description Indian mobile, stored as +91XXXXXXXXXX */
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                /** @description ISO 3166-2:IN, for example IN-KA */
+                                stateCode: string;
+                                pinCode: string;
+                                /** @enum {string} */
+                                country: "IN";
+                            };
+                            isDefault: boolean;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
                     };
                 };
             };
@@ -4043,6 +4491,355 @@ export interface operations {
             };
         };
     };
+    TaxController_list: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "retired";
+                            active: boolean;
+                            sellerStateCode: string;
+                            gstin: string | null;
+                            pricesIncludeTax: boolean;
+                            note: string;
+                            rates: {
+                                taxCategory: string;
+                                hsnCode: string;
+                                /** @description GST in basis points, 5% = 500 */
+                                rateBasisPoints: number;
+                            }[];
+                            approval: {
+                                /** Format: uuid */
+                                approvedById?: string;
+                                /** Format: date-time */
+                                approvedAt?: string;
+                                signedName?: string;
+                                advisorReference?: string;
+                            } | null;
+                            /** Format: date-time */
+                            activatedAt: string | null;
+                            /** Format: date-time */
+                            retiredAt: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    TaxController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description ISO 3166-2:IN, for example IN-KA */
+                    sellerStateCode: string;
+                    gstin?: string | null;
+                    pricesIncludeTax?: boolean;
+                    note?: string;
+                    rates: {
+                        taxCategory: string;
+                        hsnCode: string;
+                        /** @description GST in basis points, 5% = 500 */
+                        rateBasisPoints: number;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "retired";
+                            active: boolean;
+                            sellerStateCode: string;
+                            gstin: string | null;
+                            pricesIncludeTax: boolean;
+                            note: string;
+                            rates: {
+                                taxCategory: string;
+                                hsnCode: string;
+                                /** @description GST in basis points, 5% = 500 */
+                                rateBasisPoints: number;
+                            }[];
+                            approval: {
+                                /** Format: uuid */
+                                approvedById?: string;
+                                /** Format: date-time */
+                                approvedAt?: string;
+                                signedName?: string;
+                                advisorReference?: string;
+                            } | null;
+                            /** Format: date-time */
+                            activatedAt: string | null;
+                            /** Format: date-time */
+                            retiredAt: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    TaxController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description ISO 3166-2:IN, for example IN-KA */
+                    sellerStateCode: string;
+                    gstin?: string | null;
+                    pricesIncludeTax?: boolean;
+                    note?: string;
+                    rates: {
+                        taxCategory: string;
+                        hsnCode: string;
+                        /** @description GST in basis points, 5% = 500 */
+                        rateBasisPoints: number;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "retired";
+                            active: boolean;
+                            sellerStateCode: string;
+                            gstin: string | null;
+                            pricesIncludeTax: boolean;
+                            note: string;
+                            rates: {
+                                taxCategory: string;
+                                hsnCode: string;
+                                /** @description GST in basis points, 5% = 500 */
+                                rateBasisPoints: number;
+                            }[];
+                            approval: {
+                                /** Format: uuid */
+                                approvedById?: string;
+                                /** Format: date-time */
+                                approvedAt?: string;
+                                signedName?: string;
+                                advisorReference?: string;
+                            } | null;
+                            /** Format: date-time */
+                            activatedAt: string | null;
+                            /** Format: date-time */
+                            retiredAt: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    TaxController_approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    statement: boolean;
+                    advisorReference: string;
+                    signedName: string;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "retired";
+                            active: boolean;
+                            sellerStateCode: string;
+                            gstin: string | null;
+                            pricesIncludeTax: boolean;
+                            note: string;
+                            rates: {
+                                taxCategory: string;
+                                hsnCode: string;
+                                /** @description GST in basis points, 5% = 500 */
+                                rateBasisPoints: number;
+                            }[];
+                            approval: {
+                                /** Format: uuid */
+                                approvedById?: string;
+                                /** Format: date-time */
+                                approvedAt?: string;
+                                signedName?: string;
+                                advisorReference?: string;
+                            } | null;
+                            /** Format: date-time */
+                            activatedAt: string | null;
+                            /** Format: date-time */
+                            retiredAt: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    TaxController_activate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            status: "draft" | "approved" | "retired";
+                            active: boolean;
+                            sellerStateCode: string;
+                            gstin: string | null;
+                            pricesIncludeTax: boolean;
+                            note: string;
+                            rates: {
+                                taxCategory: string;
+                                hsnCode: string;
+                                /** @description GST in basis points, 5% = 500 */
+                                rateBasisPoints: number;
+                            }[];
+                            approval: {
+                                /** Format: uuid */
+                                approvedById?: string;
+                                /** Format: date-time */
+                                approvedAt?: string;
+                                signedName?: string;
+                                advisorReference?: string;
+                            } | null;
+                            /** Format: date-time */
+                            activatedAt: string | null;
+                            /** Format: date-time */
+                            retiredAt: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    TaxController_readiness: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ready: boolean;
+                            /** Format: uuid */
+                            profileId: string | null;
+                            blockers: {
+                                /** @enum {string} */
+                                code: "no_active_profile" | "unassigned_category" | "unmapped_category";
+                                message: string;
+                                taxCategory?: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+        };
+    };
     StorefrontCatalogueController_products: {
         parameters: {
             query?: {
@@ -4347,6 +5144,482 @@ export interface operations {
                             title: string;
                             hidden: boolean;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    ContactController_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            email: string;
+                            shippingAddress: {
+                                name: string;
+                                /** @description Indian mobile, the delivery phone; stored as +91XXXXXXXXXX */
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                /** @description ISO 3166-2:IN, for example IN-KA */
+                                stateCode: string;
+                                pinCode: string;
+                                /** @enum {string} */
+                                country: "IN";
+                            };
+                            /** @enum {string} */
+                            marketing: "not_offered";
+                            /** Format: date-time */
+                            updatedAt: string;
+                        } | null;
+                    };
+                };
+            };
+        };
+    };
+    ContactController_save: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    email?: string;
+                    shippingAddress: {
+                        name: string;
+                        /** @description Indian mobile, the delivery phone; stored as +91XXXXXXXXXX */
+                        phone: string;
+                        line1: string;
+                        line2?: string | null;
+                        landmark?: string | null;
+                        city: string;
+                        district: string;
+                        /** @description ISO 3166-2:IN, for example IN-KA */
+                        stateCode: string;
+                        pinCode: string;
+                        /** @enum {string} */
+                        country?: "IN";
+                    };
+                    /** @description Not offered yet: only false or absent is accepted */
+                    marketingConsent?: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            email: string;
+                            shippingAddress: {
+                                name: string;
+                                /** @description Indian mobile, the delivery phone; stored as +91XXXXXXXXXX */
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                /** @description ISO 3166-2:IN, for example IN-KA */
+                                stateCode: string;
+                                pinCode: string;
+                                /** @enum {string} */
+                                country: "IN";
+                            };
+                            /** @enum {string} */
+                            marketing: "not_offered";
+                            /** Format: date-time */
+                            updatedAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    ShippingController_read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /**
+                             * @description test: sandbox courier, simulated prices that must be shown as test rates; live: a connected courier; none: no courier here
+                             * @enum {string}
+                             */
+                            mode: "test" | "live" | "none";
+                            delivery: {
+                                pinCode: string;
+                                /** @enum {string} */
+                                format: "valid" | "invalid";
+                                /** @enum {string} */
+                                delivery: "unknown" | "serviceable" | "not_serviceable";
+                                deliverable: boolean;
+                                /** @enum {string} */
+                                source: "none" | "test" | "live";
+                            };
+                            quote: {
+                                /** @enum {string} */
+                                status: "available" | "unavailable";
+                                /** @enum {string} */
+                                reason?: "pin_unserviceable" | "category_restricted" | "parcel_unsupported" | "provider_unavailable";
+                                options: {
+                                    serviceRef: string;
+                                    courierName: string;
+                                    rate: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                    estimatedDeliveryDays: number | null;
+                                    /** Format: date-time */
+                                    quotedAt: string;
+                                    /** @enum {string} */
+                                    mode: "air" | "surface";
+                                    maxWeightGrams: number;
+                                    maxDeclaredValuePaise: number | null;
+                                    acceptsRestrictions: ("fragrance_liquid" | "jewellery_high_value")[];
+                                }[];
+                                /** Format: date-time */
+                                quotedAt: string;
+                            } | null;
+                            /** @description True only for a live courier's answer; never for test rates */
+                            liveEligible: boolean;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    QuoteController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description A delivery option from /cart/shipping-rates; the cheapest when absent */
+                    serviceRef?: string | null;
+                    /** @description The bag revision the shopper reviewed; a stale one is refused */
+                    cartRevision?: number | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {integer} */
+                            version: 1;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            cartId: string;
+                            cartRevision: number;
+                            lines: {
+                                variantId: string;
+                                sku: string;
+                                title: string;
+                                variantTitle: string;
+                                quantity: number;
+                                unitPrice: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                lineSubtotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                discount: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                tax: {
+                                    /** @enum {string} */
+                                    component: "CGST" | "SGST" | "UTGST" | "IGST";
+                                    rateBasisPoints: number;
+                                    amount: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                }[];
+                                lineTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                classification: {
+                                    taxProfileId: string;
+                                    profileApproved: boolean;
+                                    taxCategory: string;
+                                    hsnCode: string;
+                                    rateBasisPoints: number;
+                                    /** @enum {string} */
+                                    supply: "intra" | "inter";
+                                    sellerStateCode: string;
+                                    deliveryStateCode: string;
+                                    pricesIncludeTax: boolean;
+                                    /** @enum {string} */
+                                    rounding: "line_half_up_v1";
+                                };
+                            }[];
+                            promotionId: string | null;
+                            subtotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            discountTotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            shippingFee: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            taxTotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            grandTotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            pricesIncludeTax: boolean;
+                            courierQuoteRef: string | null;
+                            /** Format: date-time */
+                            expiresAt: string;
+                            shipping: {
+                                serviceRef: string;
+                                courierName: string;
+                                /** @enum {string} */
+                                mode: "air" | "surface";
+                                estimatedDeliveryDays: number | null;
+                                fee: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                tax: {
+                                    /** @enum {string} */
+                                    component: "CGST" | "SGST" | "UTGST" | "IGST";
+                                    rateBasisPoints: number;
+                                    amount: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                }[];
+                                total: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                            };
+                            /** @enum {string} */
+                            supply: "intra" | "inter";
+                            /**
+                             * @description test: sandbox delivery rates or an unapproved tax profile; never a real order
+                             * @enum {string}
+                             */
+                            mode: "test" | "live";
+                            testReasons: ("test_shipping_rates" | "tax_profile_unapproved")[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    QuoteController_check: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                quoteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "valid";
+                            quote: {
+                                /** @enum {integer} */
+                                version: 1;
+                                /** Format: uuid */
+                                id: string;
+                                /** Format: uuid */
+                                cartId: string;
+                                cartRevision: number;
+                                lines: {
+                                    variantId: string;
+                                    sku: string;
+                                    title: string;
+                                    variantTitle: string;
+                                    quantity: number;
+                                    unitPrice: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                    lineSubtotal: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                    discount: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                    tax: {
+                                        /** @enum {string} */
+                                        component: "CGST" | "SGST" | "UTGST" | "IGST";
+                                        rateBasisPoints: number;
+                                        amount: {
+                                            amountPaise: number;
+                                            /** @enum {string} */
+                                            currency: "INR";
+                                        };
+                                    }[];
+                                    lineTotal: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                    classification: {
+                                        taxProfileId: string;
+                                        profileApproved: boolean;
+                                        taxCategory: string;
+                                        hsnCode: string;
+                                        rateBasisPoints: number;
+                                        /** @enum {string} */
+                                        supply: "intra" | "inter";
+                                        sellerStateCode: string;
+                                        deliveryStateCode: string;
+                                        pricesIncludeTax: boolean;
+                                        /** @enum {string} */
+                                        rounding: "line_half_up_v1";
+                                    };
+                                }[];
+                                promotionId: string | null;
+                                subtotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                discountTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                shippingFee: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                taxTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                grandTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                                pricesIncludeTax: boolean;
+                                courierQuoteRef: string | null;
+                                /** Format: date-time */
+                                expiresAt: string;
+                                shipping: {
+                                    serviceRef: string;
+                                    courierName: string;
+                                    /** @enum {string} */
+                                    mode: "air" | "surface";
+                                    estimatedDeliveryDays: number | null;
+                                    fee: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                    tax: {
+                                        /** @enum {string} */
+                                        component: "CGST" | "SGST" | "UTGST" | "IGST";
+                                        rateBasisPoints: number;
+                                        amount: {
+                                            amountPaise: number;
+                                            /** @enum {string} */
+                                            currency: "INR";
+                                        };
+                                    }[];
+                                    total: {
+                                        amountPaise: number;
+                                        /** @enum {string} */
+                                        currency: "INR";
+                                    };
+                                };
+                                /** @enum {string} */
+                                supply: "intra" | "inter";
+                                /**
+                                 * @description test: sandbox delivery rates or an unapproved tax profile; never a real order
+                                 * @enum {string}
+                                 */
+                                mode: "test" | "live";
+                                testReasons: ("test_shipping_rates" | "tax_profile_unapproved")[];
+                            };
+                        };
                     };
                 };
             };

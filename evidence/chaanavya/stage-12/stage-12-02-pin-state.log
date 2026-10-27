@@ -1,0 +1,38 @@
+﻿▶ CHV-S12-M01 address check
+  ✔ a complete address is cleaned: E.164 mobile, upper-case state, India, spaces collapsed (2.5869ms)
+  ✔ each mandatory field missing or blank is named as required (0.6307ms)
+  ✔ every problem is reported at once (0.1046ms)
+  ✔ malformed PIN codes are refused (0.1554ms)
+  ✔ phones that are not Indian mobiles are refused; usual ways of writing one are accepted (0.1799ms)
+  ✔ state codes not shaped IN-XX, other countries, wrong types, control characters and over-long text are refused (0.2843ms)
+✔ CHV-S12-M01 address check (6343.6544ms)
+▶ CHV-S12-M01 saving
+  ✔ a valid address is saved to the customer's address book, cleaned (178.6086ms)
+  ✔ an invalid address is refused and nothing is written (16.0581ms)
+  ✔ the database refuses invalid mandatory data written directly (160.2865ms)
+✔ CHV-S12-M01 saving (355.4879ms)
+▶ CHV-S12-M01 guest snapshot and saved address are separate
+  ✔ a guest's address is checked and returned as a snapshot; the address book is untouched (4.9109ms)
+  ✔ a snapshot of a saved address carries no id or owner and does not follow later edits (13.78ms)
+  ✔ an address book entry needs a customer: there is no guest owner column (31.234ms)
+✔ CHV-S12-M01 guest snapshot and saved address are separate (50.3561ms)
+▶ CHV-S12-M02 format is not delivery
+  ✔ a well-formed PIN no courier has answered for is unknown and not deliverable (1.2936ms)
+  ✔ an address with a well-formed but unknown PIN is accepted as an address, yet still not deliverable (0.441ms)
+  ✔ only a courier answer of serviceable makes a PIN deliverable (0.1722ms)
+  ✔ a malformed PIN is invalid and never deliverable, even if a courier said yes (0.1727ms)
+✔ CHV-S12-M02 format is not delivery (6343.9779ms)
+▶ CHV-S12-M02 state codes
+  ✔ the list holds the 36 current states and union territories (0.4173ms)
+  ✔ known codes are accepted in any case; replaced codes become the current one (0.2611ms)
+  ✔ well-shaped but unknown codes, and names instead of codes, are refused (1.029ms)
+  ✔ the database refuses a saved address with an unknown or replaced state code (318.8316ms)
+✔ CHV-S12-M02 state codes (320.9783ms)
+ℹ tests 20
+ℹ suites 5
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 25009.5108

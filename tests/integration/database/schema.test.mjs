@@ -28,10 +28,10 @@ describe("CHV-S04-001 empty database migrates", () => {
     assert.equal(diff.status, 0, diff.output)
   })
 
-  test("all 37 tables exist", () => {
+  test("all 41 tables exist", () => {
     const tables = psqlOk(NAME, "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' AND table_name <> '_prisma_migrations' ORDER BY 1").split("\n")
-    assert.equal(tables.length, 37, tables.join(", "))
-    for (const t of ["user", "role", "auth_session", "account", "verification", "two_factor", "rate_limit", "guest_session", "customer_profile", "address", "collection", "product", "product_variant", "product_media", "inventory_balance", "inventory_movement", "inventory_reservation", "cart", "cart_line", "promotion", "order", "order_item", "payment_attempt", "provider_event", "refund", "shipment", "shipment_tracking_event", "return_request", "audit_event", "media_upload", "outbox_event", "stocktake", "stocktake_line", "cart_request"]) {
+    assert.equal(tables.length, 41, tables.join(", "))
+    for (const t of ["user", "role", "auth_session", "account", "verification", "two_factor", "rate_limit", "guest_session", "customer_profile", "address", "collection", "product", "product_variant", "product_media", "inventory_balance", "inventory_movement", "inventory_reservation", "cart", "cart_line", "promotion", "order", "order_item", "payment_attempt", "provider_event", "refund", "shipment", "shipment_tracking_event", "return_request", "audit_event", "media_upload", "outbox_event", "stocktake", "stocktake_line", "cart_request", "cart_contact", "tax_profile", "tax_rate", "checkout_quote"]) {
       assert.ok(tables.includes(t), `missing table ${t}`)
     }
   })

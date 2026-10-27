@@ -60,7 +60,7 @@ export async function makeVariant(db, { sku = unique("SYN-SKU"), pricePaise = Bi
   return { product, variant }
 }
 
-export const shippingAddress = { name: "Synthetic Customer", phone: "+910000000000", line1: "1 Example Road", line2: null, landmark: null, city: "Bengaluru", stateCode: "IN-KA", pinCode: "560001", country: "IN" }
+export const shippingAddress = { name: "Synthetic Customer", phone: "+916000000000", line1: "1 Example Road", line2: null, landmark: null, city: "Bengaluru", district: "Bengaluru Urban", stateCode: "IN-KA", pinCode: "560001", country: "IN" }
 
 /** Order with consistent totals (prices include tax). */
 export const orderData = (overrides = {}) => ({

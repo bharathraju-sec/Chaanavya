@@ -1,24 +1,67 @@
-import type { CartId, ContractVersion, CountryCode, IdempotencyKey, IsoDateTime, OrderId, PromotionId, QuoteId, Result, Shopper, Sku, VariantId } from "./common.ts"
-import type { MoneyPaise, TaxLineV1 } from "./money.ts"
+import type { AddressId, CartId, ContractVersion, CountryCode, IdempotencyKey, IsoDateTime, OrderId, PromotionId, QuoteId, Result, Shopper, Sku, VariantId } from "./common.ts"
+import type { MoneyPaise, TaxClassificationV1, TaxLineV1 } from "./money.ts"
 import type { PaymentSessionV1 } from "./payment.ts"
 
 // Checkout module: India address, quote (immutable price breakdown) and confirmation.
 // Every amount in a quote is computed on the server from catalogue prices, promotions, tax rules
 // and the courier quote. A client may echo the total it saw; it is compared, never adopted.
 
+/**
+ * An Indian address as entered (Stage 12.01). Used for a guest's details and as the frozen snapshot
+ * an order keeps; checked on the server by apps/api/src/checkout/address.ts.
+ */
 export type IndianAddressV1 = {
+  /** Recipient. */
   name: string
-  /** E.164, for example +919876543210. */
+  /** Indian mobile number in E.164, for example +919876543210. */
   phone: string
   line1: string
   line2: string | null
   landmark: string | null
   city: string
+  district: string
   /** ISO 3166-2:IN subdivision code, for example "IN-KA". */
   stateCode: string
   /** Six digits, first digit 1 to 9. */
   pinCode: string
   country: CountryCode
+}
+
+/**
+ * What is known about delivering to a PIN (Stage 12.02). A well-formed PIN is not a deliverable one:
+ * `delivery` stays "unknown" until a courier answers, and only "serviceable" sets `deliverable`.
+ */
+export type DeliveryCheckV1 = {
+  pinCode: string
+  format: "valid" | "invalid"
+  delivery: "unknown" | "serviceable" | "not_serviceable"
+  deliverable: boolean
+  /**
+   * Who answered (Stage 12.08): "none" before any courier, "test" for the sandbox courier, "live" for
+   * a connected courier. A test answer shows what the sandbox said but never sets `deliverable`.
+   */
+  source: "none" | "test" | "live"
+}
+
+/**
+ * The contact step for a bag (Stage 12.04): where order emails go and where to deliver. A guest
+ * gives it without an account. The phone is the delivery phone on the address. Marketing sign-up is
+ * not offered yet (owner decision, 26 October 2026).
+ */
+export type CheckoutContactV1 = {
+  email: string
+  shippingAddress: IndianAddressV1
+  marketing: "not_offered"
+  updatedAt: IsoDateTime
+}
+
+/** An entry in a verified customer's address book. Guests have none; orders copy the address. */
+export type SavedAddressV1 = {
+  version: ContractVersion
+  id: AddressId
+  address: IndianAddressV1
+  isDefault: boolean
+  updatedAt: IsoDateTime
 }
 
 export type QuoteRequestV1 = {
@@ -58,6 +101,34 @@ export type QuoteV1 = {
   pricesIncludeTax: boolean
   courierQuoteRef: string | null
   expiresAt: IsoDateTime
+}
+
+/**
+ * What the shopper sees for a checkout quote (Stage 12.09): `QuoteV1` without the owner, with each
+ * line's tax classification and the chosen delivery option. Every amount is worked out on the server
+ * from the catalogue, the applied promotion, the courier's offer and the tax profile; nothing the
+ * browser sends is used as an amount. Only the latest quote for a bag is kept.
+ */
+export type CheckoutQuoteLineV1 = QuoteLineV1 & { title: string; variantTitle: string; classification: TaxClassificationV1 }
+
+export type CheckoutQuoteV1 = Omit<QuoteV1, "owner" | "lines"> & {
+  lines: CheckoutQuoteLineV1[]
+  shipping: {
+    serviceRef: string
+    courierName: string
+    mode: "air" | "surface"
+    estimatedDeliveryDays: number | null
+    /** The fee charged, as the courier quoted it (no markup or free-delivery rule yet). */
+    fee: MoneyPaise
+    /** GST on the fee, shared across lines by value (owner decision, 27 October 2026). */
+    tax: TaxLineV1[]
+    total: MoneyPaise
+  }
+  supply: "intra" | "inter"
+  /** "test": sandbox delivery rates or an unapproved tax profile; such a quote can never become a real order. */
+  mode: "test" | "live"
+  /** Why a quote is a test, when it is. */
+  testReasons: ("test_shipping_rates" | "tax_profile_unapproved")[]
 }
 
 export type ConfirmCheckoutV1 = {

@@ -79,21 +79,29 @@ export async function findCurrentCart(db: Db | Tx, owner: Shopper, now = new Dat
  * new one is created beside them; only live carts count.
  */
 export async function openCart(db: Db | Tx, owner: Shopper, now = new Date()) {
-  let guestExpiresAt: Date | undefined
-  if (owner.kind === "customer") {
-    const [user] = await db.$queryRaw<{ ok: boolean }[]>`
-      SELECT (email_verified AND disabled_at IS NULL) AS ok FROM "user" WHERE id = ${owner.customerId}::uuid FOR UPDATE`
-    if (!user?.ok) return null
-  } else {
-    const [session] = await db.$queryRaw<{ expires_at: Date }[]>`
-      SELECT expires_at FROM guest_session WHERE id = ${owner.guestSessionId}::uuid AND revoked_at IS NULL AND expires_at > ${now} FOR UPDATE`
-    if (!session) return null
-    guestExpiresAt = session.expires_at
-  }
+  const lock = await lockCartOwner(db, owner, now)
+  if (!lock) return null
+  const guestExpiresAt = lock.guestExpiresAt
   const current = await findCurrentCart(db, owner, now)
   if (current) return current
   if (owner.kind === "customer") return db.cart.create({ data: { userId: owner.customerId, expiresAt: cartExpiry(now) }, select: CART_FIELDS })
   return db.cart.create({ data: { guestSessionId: owner.guestSessionId, expiresAt: cartExpiry(now, guestExpiresAt) }, select: CART_FIELDS })
+}
+
+/**
+ * Locks the owner's own row FOR UPDATE (the user, or the guest session): the first lock every cart
+ * writer takes (F01). Null when the owner may not hold a cart: an unverified or disabled customer, or
+ * a guest session that ended. Inside a transaction only.
+ */
+export async function lockCartOwner(db: Db | Tx, owner: Shopper, now = new Date()): Promise<{ guestExpiresAt: Date | undefined } | null> {
+  if (owner.kind === "customer") {
+    const [user] = await db.$queryRaw<{ ok: boolean }[]>`
+      SELECT (email_verified AND disabled_at IS NULL) AS ok FROM "user" WHERE id = ${owner.customerId}::uuid FOR UPDATE`
+    return user?.ok ? { guestExpiresAt: undefined } : null
+  }
+  const [session] = await db.$queryRaw<{ expires_at: Date }[]>`
+    SELECT expires_at FROM guest_session WHERE id = ${owner.guestSessionId}::uuid AND revoked_at IS NULL AND expires_at > ${now} FOR UPDATE`
+  return session ? { guestExpiresAt: session.expires_at } : null
 }
 
 /**

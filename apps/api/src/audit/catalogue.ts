@@ -42,6 +42,10 @@ export type AdminAuditAction = Extract<
   | "shipment.booked"
   | "shipment.cancelled"
   | "settings.changed"
+  | "tax_profile.created"
+  | "tax_profile.updated"
+  | "tax_profile.approved"
+  | "tax_profile.activated"
 >
 
 type Rule = { entity: string; reason: boolean; before?: readonly string[]; after?: readonly string[] }
@@ -81,6 +85,11 @@ export const ADMIN_AUDIT_RULES: Readonly<Record<AdminAuditAction, Rule>> = {
   "shipment.booked": { entity: "shipment", reason: false, after: ["courier"] },
   "shipment.cancelled": { entity: "shipment", reason: true },
   "settings.changed": { entity: "setting", reason: true, before: ["value"], after: ["value"] },
+  // GST configuration (Stage 12.05): drafts need no reason; approving and activating do.
+  "tax_profile.created": { entity: "tax_profile", reason: false, after: ["sellerStateCode", "rates"] },
+  "tax_profile.updated": { entity: "tax_profile", reason: false, after: ["sellerStateCode", "rates"] },
+  "tax_profile.approved": { entity: "tax_profile", reason: true, after: ["signedName", "advisorReference", "rates"] },
+  "tax_profile.activated": { entity: "tax_profile", reason: true, before: ["activeProfileId"], after: ["activeProfileId"] },
 }
 
 export type AdminActor = { kind: "staff"; id: string } | { kind: "system"; process: string }

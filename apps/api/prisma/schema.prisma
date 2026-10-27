@@ -352,6 +352,7 @@ model CustomerProfile {
 }
 
 /// Saved address book entry. Orders copy the address into a frozen snapshot instead of linking here.
+/// Checked by apps/api/src/checkout/address.ts and by CHECK constraints (Stage 12.01); guests have none.
 model Address {
   id        String   @id @default(uuid(7)) @db.Uuid
   userId    String   @map("user_id") @db.Uuid
@@ -361,6 +362,7 @@ model Address {
   line2     String?
   landmark  String?
   city      String
+  district  String
   /// ISO 3166-2:IN, for example IN-KA.
   stateCode String   @map("state_code")
   pinCode   String   @map("pin_code") @db.Char(6)
@@ -632,6 +634,53 @@ model InventoryReservation {
 /// A physical stock count (Stage 09). Lines hold what was counted; on approval the API compares
 /// them with the books, the approver accepts every discrepancy and signs, and corrections are
 /// written to the ledger in the same transaction. Imports of stock files only ever create drafts.
+/// GST configuration for checkout (Stage 12.05): the seller's registration and state, and the HSN code and
+/// GST rate for each tax category. A draft is editable; an approved profile is signed by the owner with the
+/// tax advisor's reference and never changes again (trigger tax_profile_frozen); only an approved profile can
+/// be active, one at a time. No profile exists until the owner enters real values: until one is approved and
+/// active, live sales are blocked (apps/api/src/tax/profile.ts, taxReadiness).
+model TaxProfile {
+  id               String    @id @default(uuid(7)) @db.Uuid
+  /// draft, approved or retired.
+  status           String    @default("draft")
+  active           Boolean   @default(false)
+  /// ISO 3166-2:IN code of the state the seller is registered in (CGST+SGST within it, IGST outside).
+  sellerStateCode  String    @map("seller_state_code")
+  gstin            String?
+  pricesIncludeTax Boolean   @default(true) @map("prices_include_tax")
+  note             String    @default("")
+  createdById      String    @map("created_by_id") @db.Uuid
+  approvedById     String?   @map("approved_by_id") @db.Uuid
+  approvedAt       DateTime? @map("approved_at") @db.Timestamptz(3)
+  /// Full name typed by the approver as their signature.
+  signedName       String?   @map("signed_name")
+  /// The tax advisor's sign-off, for example the opinion or engagement reference and its date.
+  advisorReference String?   @map("advisor_reference")
+  activatedAt      DateTime? @map("activated_at") @db.Timestamptz(3)
+  retiredAt        DateTime? @map("retired_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  rates TaxRate[]
+
+  @@index([status])
+  @@map("tax_profile")
+}
+
+/// One tax category's HSN code and GST rate within a profile.
+model TaxRate {
+  profileId       String @map("profile_id") @db.Uuid
+  taxCategory     String @map("tax_category")
+  hsnCode         String @map("hsn_code")
+  /// GST rate in basis points (5% = 500).
+  rateBasisPoints Int    @map("rate_basis_points")
+
+  profile TaxProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@id([profileId, taxCategory])
+  @@map("tax_rate")
+}
+
 model Stocktake {
   id            String          @id @default(uuid(7)) @db.Uuid
   status        StocktakeStatus @default(draft)
@@ -706,6 +755,8 @@ model Cart {
   promotion    Promotion?    @relation(fields: [promotionId], references: [id], onDelete: SetNull)
   lines        CartLine[]
   requests     CartRequest[]
+  contact      CartContact?
+  quote        CheckoutQuote?
 
   @@index([userId])
   @@index([guestSessionId])
@@ -715,6 +766,49 @@ model Cart {
 
 /// Idempotency-Key of each add to a cart (Stage 11.04): a retry with the same key changes nothing
 /// and gets the bag back; the same key with a different request is refused. Deleted with the cart.
+/// Who to contact and where to deliver for this bag (Stage 12.04), entered at the contact step without
+/// an account. Lives and dies with the bag; cleared when a guest bag is merged at sign-in. The phone is
+/// the delivery phone on the address (owner decision, 26 October 2026). No marketing consent is stored:
+/// none is offered until the owner approves its wording (Stage 18).
+model CartContact {
+  cartId          String   @id @map("cart_id") @db.Uuid
+  email           String
+  /// IndianAddressV1, checked by apps/api/src/checkout/address.ts.
+  shippingAddress Json     @map("shipping_address")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@map("cart_contact")
+}
+
+/// The latest checkout quote for a bag (Stage 12.09), worked out on the server; replaced on every quote.
+model CheckoutQuote {
+  id                 String   @id @db.Uuid
+  cartId             String   @unique @map("cart_id") @db.Uuid
+  cartRevision       Int      @map("cart_revision")
+  grandTotalPaise    BigInt   @map("grand_total_paise")
+  currency           String   @default("INR") @db.Char(3)
+  /// True for sandbox delivery rates or an unapproved tax profile: never a real order.
+  test               Boolean
+  /// CheckoutQuoteV1 as the shopper saw it.
+  quote              Json
+  /// Digest of the guest session or customer the quote belongs to (Stage 12.10); never the id itself.
+  ownerHash          String   @map("owner_hash") @db.Char(64)
+  /// SHA-256 over the owner and every bound part (apps/api/src/checkout/quote-fingerprint.ts).
+  fingerprint        String   @db.Char(64)
+  fingerprintVersion Int      @map("fingerprint_version")
+  /// One digest per bound part, so a refusal can name what changed.
+  parts              Json
+  expiresAt          DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@map("checkout_quote")
+}
+
 model CartRequest {
   cartId        String   @map("cart_id") @db.Uuid
   key           String

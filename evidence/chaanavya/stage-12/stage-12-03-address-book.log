@@ -1,0 +1,24 @@
+﻿▶ CHV-S12-M03 ownership
+  ✔ customer A cannot see, edit, delete or make default customer B's address (83.0995ms)
+  ✔ A's edits to its own address never touch B's (47.7986ms)
+  ✔ signed out is 401, an unverified email is 403, another site is refused, malformed ids are 404 (86.3064ms)
+✔ CHV-S12-M03 ownership (800.1607ms)
+▶ CHV-S12-M03 create, edit, delete, default
+  ✔ an invalid address is refused with its fields named and nothing is saved (53.2557ms)
+  ✔ an edit is checked as a whole; a bad edit changes nothing (45.4776ms)
+  ✔ the first address is the default, one default at a time, and deleting the default promotes the newest (128.8409ms)
+  ✔ the database allows only one default per customer (6.2924ms)
+  ✔ an address book holds up to 20 addresses (280.6098ms)
+✔ CHV-S12-M03 create, edit, delete, default (514.9951ms)
+▶ CHV-S12-M03 parallel requests
+  ✔ parallel first saves and default changes leave exactly one default (140.9898ms)
+  ✔ B racing A's own edits and deletes cannot change A's address (29.0426ms)
+✔ CHV-S12-M03 parallel requests (170.3299ms)
+ℹ tests 10
+ℹ suites 3
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6011.1772

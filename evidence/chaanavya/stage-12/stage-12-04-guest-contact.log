@@ -1,0 +1,24 @@
+﻿▶ CHV-S12-M04 a guest completes the contact step without an account
+  ✔ email and delivery address are saved for the guest's bag; no account, order or reservation is created (156.8659ms)
+  ✔ missing or invalid fields are all named and nothing is stored (51.708ms)
+  ✔ marketing sign-up is not offered: a yes is refused and nothing is stored; no or absent is fine (49.8691ms)
+  ✔ without a bag there is nothing to attach details to: 404, and no guest session is started (7.7567ms)
+  ✔ an emptied bag cannot take contact details (57.7668ms)
+  ✔ another site is refused (36.9907ms)
+✔ CHV-S12-M04 a guest completes the contact step without an account (922.4829ms)
+▶ CHV-S12-M04 isolation
+  ✔ one guest never sees or changes another guest's details (89.4649ms)
+  ✔ the database refuses malformed details written directly (55.389ms)
+✔ CHV-S12-M04 isolation (145.1504ms)
+▶ CHV-S12-M04 customers and sign-in
+  ✔ a customer's order email is the account email; a different one is refused (191.5727ms)
+  ✔ signing in merges the guest bag and clears the guest's contact details (114.5618ms)
+✔ CHV-S12-M04 customers and sign-in (306.3692ms)
+ℹ tests 10
+ℹ suites 3
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6425.9266

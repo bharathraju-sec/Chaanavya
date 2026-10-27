@@ -1,0 +1,97 @@
+# CHV-S12-M09 focused run (quote + tax compute), 27 October 2026
+  ✔ catalogue price, sandbox delivery and GST (fee included) add up; a test quote says why (147.0267ms)
+  ✔ delivery outside the seller's state is IGST on goods and fee; the shopper may pick another offer (73.0416ms)
+  ✔ the applied promotion is checked again and its discount comes from the server (102.0799ms)
+  ✔ the price is the catalogue's now: a price change shows in the next quote (91.0414ms)
+✔ CHV-S12-M09 the server prices the bag (1225.9518ms)
+▶ CHV-S12-M09 tampered input never changes the quote
+  ✔ prices, discounts, fees, taxes and totals in the body, the query or headers are ignored (123.3542ms)
+  ✔ a delivery option the courier did not offer is refused, never priced (93.6736ms)
+  ✔ a stale bag revision is refused, and a quote is stored only for the bag it priced (82.5125ms)
+  ✔ only the latest quote is kept; parallel quotes leave exactly one row, one of theirs (159.0067ms)
+✔ CHV-S12-M09 tampered input never changes the quote (459.0929ms)
+▶ CHV-S12-M09 a bag that cannot be sold as it is gets no quote
+  ✔ no bag, no address, empty bag, short or uncounted stock, a withdrawn item (244.9927ms)
+  ✔ production has no courier and never uses a draft tax profile (85.6257ms)
+✔ CHV-S12-M09 a bag that cannot be sold as it is gets no quote (330.9222ms)
+▶ CHV-S12-M09 GST on the delivery fee is shared by value
+  ✔ the fee is split by line value after discount and each share is taxed at its line's rate (0.3979ms)
+  ✔ with GST-inclusive prices the fee includes its GST; a fee larger than the goods still splits (0.1401ms)
+  ✔ a fully discounted bag shares the fee by list price; a zero fee adds nothing; a negative fee is refused (0.3492ms)
+✔ CHV-S12-M09 GST on the delivery fee is shared by value (1.0231ms)
+▶ CHV-S12-M06 worked examples (GST-inclusive prices)
+  ✔ E1 one line at 5% within Karnataka: CGST 45.21 + SGST 45.21 taken out of 1,899.00 (1.7213ms)
+  ✔ E2 the same line delivered to Maharashtra: IGST 90.43 (one rounding instead of two) (0.1675ms)
+  ✔ E3 two lines, 5% and 12%, with a 100.00 bag discount shared 48.73 / 51.27 (0.2072ms)
+  ✔ E5 a fractional half rate (0.25%) and 3% on three units (0.1503ms)
+  ✔ E6 a 0.02 discount over three equal lines goes to the first two (ties to the earlier line) (0.1542ms)
+  ✔ a seller in a union territory without a legislature charges UTGST, not SGST (0.1633ms)
+✔ CHV-S12-M06 worked examples (GST-inclusive prices) (535.0959ms)
+▶ CHV-S12-M06 worked example (prices before tax)
+  ✔ E4 tax added on top, delivered out of state: IGST 92.51 and 233.61 (0.1811ms)
+✔ CHV-S12-M06 worked example (prices before tax) (0.3208ms)
+▶ CHV-S12-M06 determinism and integers
+  ✔ the same input always gives the same result, and line order is kept (1.0081ms)
+  ✔ every amount is a bigint; totals are the sums of the lines; discounts sum to the bag discount (4.5729ms)
+  ✔ half up: exactly half a paisa rounds up, just under half rounds down (1.4876ms)
+✔ CHV-S12-M06 determinism and integers (7.2854ms)
+▶ CHV-S12-M06 refusals and the quote snapshot
+  ✔ a category without a rate, a bad delivery state, a discount over the bag or a bad quantity is refused, never taxed at zero (1.1965ms)
+  ✔ each line carries the classification a quote freezes: profile, category, HSN, rate, supply, states, rounding (0.3423ms)
+  ✔ with the database: production refuses without an approved active profile; elsewhere a draft is used and marked unapproved (191.5479ms)
+✔ CHV-S12-M06 refusals and the quote snapshot (193.4711ms)
+ℹ tests 26
+ℹ suites 8
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7236.657
+
+# Mutation checks
+﻿== M1 unit price read from the body
+ℹ pass 12
+ℹ fail 1
+== M2 delivery fee read from the body
+ℹ pass 12
+ℹ fail 1
+== M3 discount read from the body
+ℹ pass 12
+ℹ fail 1
+== M4 an option not offered is accepted
+ℹ pass 12
+ℹ fail 1
+== M5 stale revision ignored
+ℹ pass 12
+ℹ fail 1
+== M6 stock not checked
+ℹ pass 12
+ℹ fail 1
+== M7 no GST on the delivery fee
+ℹ pass 10
+ℹ fail 3
+== M8 test delivery rates marked live
+ℹ pass 12
+ℹ fail 1
+== restored
+ℹ pass 13
+ℹ fail 0
+
+# Wider runs
+﻿== security
+ℹ tests 387
+ℹ pass 387
+ℹ fail 0
+== db
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+== unit
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+== typecheck
+== lint
+lint: 0 errors, 2 existing warnings (after removing 2 new unused-variable warnings in the quote test)
+build: pass; test:e2e: 58 of 58 (first run 56 of 58: the two gate tests refusing /api/v1/cart/quote, then narrowed)

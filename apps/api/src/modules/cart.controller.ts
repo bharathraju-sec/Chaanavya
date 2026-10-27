@@ -60,7 +60,7 @@ const secureCookies = (req: ApiRequest) => resolveEnvironment(process.env) === "
 const clearGuestCookie = (req: ApiRequest) => `${GUEST_COOKIE}=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax${secureCookies(req) ? "; Secure" : ""}`
 
 /** The caller's cart owner; for a change, an anonymous caller gets a new guest session and its cookie. */
-async function ownerFor(req: ApiRequest, res: Response, { start }: { start: boolean }) {
+export async function ownerFor(req: ApiRequest, res: Response, { start }: { start: boolean }) {
   const headers = headersOf(req)
   const owner = cartOwnerOf(await resolveShopper(headers))
   if (owner || !start) {

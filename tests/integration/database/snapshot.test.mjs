@@ -77,9 +77,9 @@ describe("CHV-S04-003 order item snapshots", () => {
 
   test("the frozen shipping address is independent of the address book", async () => {
     const user = await db.user.create({ data: { email: "synthetic.snapshot@example.com" } })
-    const address = await db.address.create({ data: { userId: user.id, name: "Synthetic", phone: "+910000000000", line1: "Old Road", city: "Mysuru", stateCode: "IN-KA", pinCode: "570001" } })
-    const { name, phone, line1, line2, landmark, city, stateCode, pinCode, country } = address
-    const order = await db.order.create({ data: orderData({ userId: user.id, shippingAddress: { name, phone, line1, line2, landmark, city, stateCode, pinCode, country } }) })
+    const address = await db.address.create({ data: { userId: user.id, name: "Synthetic", phone: "+916000000000", line1: "Old Road", city: "Mysuru", district: "Mysuru", stateCode: "IN-KA", pinCode: "570001" } })
+    const { name, phone, line1, line2, landmark, city, district, stateCode, pinCode, country } = address
+    const order = await db.order.create({ data: orderData({ userId: user.id, shippingAddress: { name, phone, line1, line2, landmark, city, district, stateCode, pinCode, country } }) })
     await db.address.update({ where: { id: address.id }, data: { line1: "New Road" } })
     const after = await db.order.findUniqueOrThrow({ where: { id: order.id } })
     assert.equal(after.shippingAddress.line1, "Old Road")

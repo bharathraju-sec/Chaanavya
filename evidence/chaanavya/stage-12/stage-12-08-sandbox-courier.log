@@ -1,0 +1,113 @@
+# CHV-S12-M08 focused run (sandbox-courier + pin-state + rates), 27 October 2026
+  ✔ a well-formed PIN no courier has answered for is unknown and not deliverable (0.9016ms)
+  ✔ an address with a well-formed but unknown PIN is accepted as an address, yet still not deliverable (0.2868ms)
+  ✔ only a courier answer of serviceable makes a PIN deliverable (0.1116ms)
+  ✔ a malformed PIN is invalid and never deliverable, even if a courier said yes (0.1065ms)
+✔ CHV-S12-M02 format is not delivery (368.9671ms)
+▶ CHV-S12-M02 state codes
+  ✔ the list holds the 36 current states and union territories (0.3123ms)
+  ✔ known codes are accepted in any case; replaced codes become the current one (0.17ms)
+  ✔ well-shaped but unknown codes, and names instead of codes, are refused (0.4078ms)
+  ✔ the database refuses a saved address with an unknown or replaced state code (263.7915ms)
+✔ CHV-S12-M02 state codes (265.0335ms)
+▶ CHV-S12-M07 the parcel is built from catalogue data, never guessed
+  ✔ weights add up per unit, value is the goods' price, restrictions come from the products (1.0376ms)
+  ✔ a line without a weight or a reviewed restriction makes the parcel unsupported: no request, no quote (0.1742ms)
+  ✔ a malformed pickup or delivery address gives no request (0.1998ms)
+✔ CHV-S12-M07 the parcel is built from catalogue data, never guessed (2.0555ms)
+▶ CHV-S12-M07 only real offers that fit the parcel survive
+  ✔ well-formed offers come back exactly as the courier gave them, cheapest first (1.428ms)
+  ✔ offers that cannot carry the parcel are dropped; none left is unavailable with no options (0.2235ms)
+  ✔ a restricted item is never offered a service that does not accept it (0.2562ms)
+  ✔ malformed or made-up offers are dropped: wrong currency, fractional or negative paise, missing fields, bad dates (0.226ms)
+  ✔ an unavailable answer never carries options, even when the courier attached some (0.2469ms)
+  ✔ returned offers are copies: changing the courier's objects afterwards changes nothing (0.1392ms)
+✔ CHV-S12-M07 only real offers that fit the parcel survive (2.8321ms)
+▶ CHV-S12-M07 courier failures give no offer
+  ✔ a throw, a timeout or a malformed answer is provider_unavailable with no options (33.7435ms)
+✔ CHV-S12-M07 courier failures give no offer (34.0569ms)
+▶ CHV-S12-M08 the sandbox courier is deterministic and only simulates
+  ✔ the same request always gets the same answer; prices follow zone and 500 g slabs (1.9468ms)
+  ✔ documented PINs simulate an unserviceable address and an outage; other couriers' work is not simulated (0.5863ms)
+  ✔ sandbox answers still pass the server's checks: perfume never goes by air, jewellery has no service (0.539ms)
+✔ CHV-S12-M08 the sandbox courier is deterministic and only simulates (546.6292ms)
+▶ CHV-S12-M08 simulation is kept apart from live eligibility
+  ✔ development and staging use the sandbox; production never does, even when it is handed one (0.2176ms)
+  ✔ the bag's rates come from the sandbox as test rates: delivery is simulated, never deliverable or eligible (147.1594ms)
+  ✔ the catalogue decides the parcel: perfume gets surface only, jewellery and unweighed items get no rate (193.0633ms)
+  ✔ an address the sandbox does not serve, or a simulated outage, gives no rate (93.1423ms)
+  ✔ no bag is 404, no delivery address is 409; the browser cannot choose the courier or the parcel (93.7995ms)
+  ✔ only a live courier's answer makes a bag eligible; a live answer carrying a sandbox service is not trusted (58.5794ms)
+✔ CHV-S12-M08 simulation is kept apart from live eligibility (586.4745ms)
+▶ CHV-S12-M08 the bag shows test rates as test rates and live rates plainly
+  ✔ test rates carry the badge, the notice and a label on every price; delivery is worded as simulated (2.8159ms)
+  ✔ live rates carry no test wording at all (0.3087ms)
+  ✔ the label follows the API's mode alone: a test answer dressed as live is still shown as a test (0.3908ms)
+  ✔ no courier shows nothing; no rate shows the reason, never a price (0.1288ms)
+✔ CHV-S12-M08 the bag shows test rates as test rates and live rates plainly (3.8263ms)
+ℹ tests 31
+ℹ suites 8
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5471.0351
+
+# Mutation checks
+﻿== M1 sandbox allowed in production
+ℹ pass 12
+ℹ fail 1
+== M2 test answer makes a PIN deliverable
+ℹ pass 11
+ℹ fail 2
+== M3 eligibility ignores test mode
+ℹ pass 10
+ℹ fail 3
+== M4 sandbox service trusted in a live answer
+ℹ pass 12
+ℹ fail 1
+== M5 sandbox uses the wall clock
+ℹ pass 12
+ℹ fail 1
+== M6 prices lose the test label
+ℹ pass 11
+ℹ fail 2
+== M7 label trusts liveEligible
+ℹ pass 12
+ℹ fail 1
+== restored
+ℹ pass 13
+ℹ fail 0
+
+# Wider runs
+﻿== security
+
+ℹ tests 374
+ℹ pass 374
+ℹ fail 0
+
+
+== db
+
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+
+
+== unit
+
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+
+
+== typecheck
+== lint
+
+  18:10  warning  'visibleCollections' is defined but never used  @typescript-eslint/no-unused-vars
+  55:3  warning  'stock' is assigned a value but never used  @typescript-eslint/no-unused-vars
+✖ 2 problems (0 errors, 2 warnings)
+
+
+build: pass (retry after Next.js notice); test:e2e: 58 of 58

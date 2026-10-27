@@ -1,0 +1,29 @@
+﻿▶ CHV-S12-M06 worked examples (GST-inclusive prices)
+  ✔ E1 one line at 5% within Karnataka: CGST 45.21 + SGST 45.21 taken out of 1,899.00 (1.2791ms)
+  ✔ E2 the same line delivered to Maharashtra: IGST 90.43 (one rounding instead of two) (0.1463ms)
+  ✔ E3 two lines, 5% and 12%, with a 100.00 bag discount shared 48.73 / 51.27 (0.1701ms)
+  ✔ E5 a fractional half rate (0.25%) and 3% on three units (0.1065ms)
+  ✔ E6 a 0.02 discount over three equal lines goes to the first two (ties to the earlier line) (0.1944ms)
+  ✔ a seller in a union territory without a legislature charges UTGST, not SGST (0.1681ms)
+✔ CHV-S12-M06 worked examples (GST-inclusive prices) (501.0752ms)
+▶ CHV-S12-M06 worked example (prices before tax)
+  ✔ E4 tax added on top, delivered out of state: IGST 92.51 and 233.61 (0.1341ms)
+✔ CHV-S12-M06 worked example (prices before tax) (0.2295ms)
+▶ CHV-S12-M06 determinism and integers
+  ✔ the same input always gives the same result, and line order is kept (8.3017ms)
+  ✔ every amount is a bigint; totals are the sums of the lines; discounts sum to the bag discount (4.0657ms)
+  ✔ half up: exactly half a paisa rounds up, just under half rounds down (0.4032ms)
+✔ CHV-S12-M06 determinism and integers (12.9835ms)
+▶ CHV-S12-M06 refusals and the quote snapshot
+  ✔ a category without a rate, a bad delivery state, a discount over the bag or a bad quantity is refused, never taxed at zero (0.2946ms)
+  ✔ each line carries the classification a quote freezes: profile, category, HSN, rate, supply, states, rounding (0.1315ms)
+  ✔ with the database: production refuses without an approved active profile; elsewhere a draft is used and marked unapproved (168.6251ms)
+✔ CHV-S12-M06 refusals and the quote snapshot (169.292ms)
+ℹ tests 13
+ℹ suites 4
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6139.7385

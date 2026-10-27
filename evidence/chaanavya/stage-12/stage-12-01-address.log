@@ -1,0 +1,26 @@
+﻿▶ CHV-S12-M01 address check
+  ✔ a complete address is cleaned: E.164 mobile, upper-case state, India, spaces collapsed (0.9594ms)
+  ✔ each mandatory field missing or blank is named as required (0.4952ms)
+  ✔ every problem is reported at once (0.0768ms)
+  ✔ malformed PIN codes are refused (0.1205ms)
+  ✔ phones that are not Indian mobiles are refused; usual ways of writing one are accepted (0.1662ms)
+  ✔ state codes not shaped IN-XX, other countries, wrong types, control characters and over-long text are refused (0.2109ms)
+✔ CHV-S12-M01 address check (538.6245ms)
+▶ CHV-S12-M01 saving
+  ✔ a valid address is saved to the customer's address book, cleaned (131.0525ms)
+  ✔ an invalid address is refused and nothing is written (10.7435ms)
+  ✔ the database refuses invalid mandatory data written directly (130.0521ms)
+✔ CHV-S12-M01 saving (272.2256ms)
+▶ CHV-S12-M01 guest snapshot and saved address are separate
+  ✔ a guest's address is checked and returned as a snapshot; the address book is untouched (2.7379ms)
+  ✔ a snapshot of a saved address carries no id or owner and does not follow later edits (10.2784ms)
+  ✔ an address book entry needs a customer: there is no guest owner column (13.4853ms)
+✔ CHV-S12-M01 guest snapshot and saved address are separate (26.8324ms)
+ℹ tests 12
+ℹ suites 3
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5787.5775

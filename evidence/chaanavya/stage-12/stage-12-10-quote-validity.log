@@ -1,0 +1,106 @@
+# CHV-S12-M10 focused run (quote-validity + quote), 27 October 2026
+  ✔ a fresh quote checks as valid, any number of times, and checking changes nothing (311.4899ms)
+  ✔ it expires at 15 minutes exactly: valid a millisecond before, refused at expiry, then discarded (157.1458ms)
+  ✔ a title or photo change does not matter: only what is charged is bound (120.9441ms)
+✔ CHV-S12-M10 an unchanged quote stays valid until it expires (1375.6526ms)
+▶ CHV-S12-M10 a quote is bound to its owner and is the bag's latest
+  ✔ another shopper, an unknown id or a malformed id gets 404, and the owner's quote is untouched (155.7225ms)
+  ✔ a newer quote replaces the old one: the old id is 404 (144.635ms)
+  ✔ signing in makes the shopper a customer: the guest's quote no longer belongs to them (221.3321ms)
+  ✔ a changed fingerprint version is never matched (106.3378ms)
+✔ CHV-S12-M10 a quote is bound to its owner and is the bag's latest (628.5398ms)
+▶ CHV-S12-M10 any change to what the quote was priced from invalidates it
+  ✔ bag contents: a quantity change or another item (284.2143ms)
+  ✔ price: the catalogue price changed (115.9139ms)
+  ✔ promotion: the applied code stops applying (195.6443ms)
+  ✔ address: the delivery address changed (139.9241ms)
+  ✔ delivery: the courier's rate changed (a heavier parcel) (107.4664ms)
+  ✔ tax: the tax profile's rate changed (107.942ms)
+  ✔ stock: units taken by someone else, or the item withdrawn (233.3856ms)
+  ✔ a refused quote is replaced by asking again, priced from the new inputs (198.3174ms)
+✔ CHV-S12-M10 any change to what the quote was priced from invalidates it (1383.5284ms)
+▶ CHV-S12-M10 the fingerprint covers every part and the owner
+  ✔ each part changes the fingerprint; the owner changes it too (84.2041ms)
+✔ CHV-S12-M10 the fingerprint covers every part and the owner (84.4255ms)
+▶ CHV-S12-M09 the server prices the bag
+  ✔ catalogue price, sandbox delivery and GST (fee included) add up; a test quote says why (221.0632ms)
+  ✔ delivery outside the seller's state is IGST on goods and fee; the shopper may pick another offer (104.8347ms)
+  ✔ the applied promotion is checked again and its discount comes from the server (142.3695ms)
+  ✔ the price is the catalogue's now: a price change shows in the next quote (110.5376ms)
+✔ CHV-S12-M09 the server prices the bag (1405.1672ms)
+▶ CHV-S12-M09 tampered input never changes the quote
+  ✔ prices, discounts, fees, taxes and totals in the body, the query or headers are ignored (134.2298ms)
+  ✔ a delivery option the courier did not offer is refused, never priced (110.8412ms)
+  ✔ a stale bag revision is refused, and a quote is stored only for the bag it priced (101.3943ms)
+  ✔ only the latest quote is kept; parallel quotes leave exactly one row, one of theirs (198.5915ms)
+✔ CHV-S12-M09 tampered input never changes the quote (545.6562ms)
+▶ CHV-S12-M09 a bag that cannot be sold as it is gets no quote
+  ✔ no bag, no address, empty bag, short or uncounted stock, a withdrawn item (317.5087ms)
+  ✔ production has no courier and never uses a draft tax profile (104.5583ms)
+✔ CHV-S12-M09 a bag that cannot be sold as it is gets no quote (422.4942ms)
+▶ CHV-S12-M09 GST on the delivery fee is shared by value
+  ✔ the fee is split by line value after discount and each share is taxed at its line's rate (0.5278ms)
+  ✔ with GST-inclusive prices the fee includes its GST; a fee larger than the goods still splits (0.1686ms)
+  ✔ a fully discounted bag shares the fee by list price; a zero fee adds nothing; a negative fee is refused (0.5371ms)
+✔ CHV-S12-M09 GST on the delivery fee is shared by value (1.4226ms)
+ℹ tests 29
+ℹ suites 8
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9083.2357
+
+# Mutation checks
+﻿== M1 expiry not checked
+ℹ pass 15
+ℹ fail 1
+== M2 still valid at the expiry instant
+ℹ pass 15
+ℹ fail 1
+== M3 owner not checked
+ℹ pass 14
+ℹ fail 2
+== M4 fingerprint not compared
+ℹ pass 10
+ℹ fail 6
+== M5 a refused quote is kept
+ℹ pass 7
+ℹ fail 9
+== M6 fingerprint version not checked
+ℹ pass 15
+ℹ fail 1
+== M7 address not bound
+ℹ pass 14
+ℹ fail 2
+== M8 owner not in the fingerprint
+ℹ pass 15
+ℹ fail 1
+== M9 test or live rates not bound
+ℹ pass 15
+ℹ fail 1
+== M10 prices not bound as their own part
+ℹ pass 13
+ℹ fail 3
+== restored
+ℹ pass 16
+ℹ fail 0
+
+# Wider runs
+﻿== security
+ℹ tests 403
+ℹ pass 403
+ℹ fail 0
+== db
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+== unit
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+== typecheck
+== lint
+✖ 2 problems (0 errors, 2 warnings)
+build: pass; test:e2e: 58 of 58

@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { formatMoney } from "@/lib/types"
 import { useCart } from "./cart-provider"
+import { ShippingEstimate } from "./shipping-estimate"
 
 export function BagButton() {
   const { count, setOpen } = useCart()
@@ -102,7 +103,8 @@ function PromoCode() {
   )
 }
 
-export function CartSheet() {
+/** `checkoutOpen`: the checkout review page exists here (development and staging, lib/checkout.ts). */
+export function CartSheet({ checkoutOpen = false }: { checkoutOpen?: boolean }) {
   const { lines, subtotal, discount, total, promotion, open, setOpen, busy, setQuantity } = useCart()
   const discounted = promotion?.applied && Number(discount.amount) > 0
 
@@ -171,6 +173,7 @@ export function CartSheet() {
         </div>
 
         <SheetFooter className="gap-0 border-t border-line bg-card px-6 pt-5 pb-[calc(20px+env(safe-area-inset-bottom))]">
+          {lines.length > 0 && open && <ShippingEstimate refreshKey={lines.map(l => `${l.id}:${l.quantity}`).join(",")} />}
           {lines.length > 0 && <PromoCode />}
           <div className="flex justify-between text-base">
             <span>Subtotal</span>
@@ -193,10 +196,20 @@ export function CartSheet() {
             </>
           )}
           <p className="mt-1 text-xs text-muted-foreground">Shipping and taxes are calculated at checkout.</p>
-          {/* Placeholder: online checkout is not built yet (Stages 11 to 14). */}
-          <Button className="mt-4 h-13 w-full" disabled>
-            Checkout opens soon
-          </Button>
+          {checkoutOpen && lines.length > 0 ? (
+            // Development and staging: review the order (Stage 12.11). It places no order.
+            <Button asChild className="mt-4 h-13 w-full">
+              <Link href="/checkout" onClick={() => setOpen(false)}>
+                Review order
+                <ArrowRight strokeWidth={1.5} aria-hidden />
+              </Link>
+            </Button>
+          ) : (
+            /* Production: online checkout is not open until payments exist (Stages 13 and 14). */
+            <Button className="mt-4 h-13 w-full" disabled>
+              Checkout opens soon
+            </Button>
+          )}
           <p className="mt-2 text-xs text-muted-foreground">
             Online checkout is being set up. To order now,{" "}
             <Link href="/contact" onClick={() => setOpen(false)} className="underline underline-offset-4 hover:text-terra">

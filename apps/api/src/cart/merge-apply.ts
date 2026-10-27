@@ -103,6 +103,8 @@ export async function mergeGuestCart(db: Db, input: { userId: string; guestToken
     // The guest bag is emptied and its session ended in the same transaction: nothing can be merged twice.
     if (guestCart) {
       await tx.cartLine.deleteMany({ where: { cartId: guestCart.id } })
+      // The guest's contact details (12.04) are not carried: the account has its own email and addresses.
+      await tx.cartContact.deleteMany({ where: { cartId: guestCart.id } })
       if (guestCart.promotionId) await tx.cart.update({ where: { id: guestCart.id }, data: { promotionId: null } })
     }
     await tx.guestSession.update({ where: { id: guest.id }, data: { revokedAt: now } })

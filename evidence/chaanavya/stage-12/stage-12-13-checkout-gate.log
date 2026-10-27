@@ -1,0 +1,75 @@
+# CHV-S12-M13 Stage 12 gate run (tests/e2e/checkout-gate.test.mjs), 27 October 2026
+  ✔ within Karnataka: CGST and SGST on goods and fee, cheapest delivery, prices including GST (255.8109ms)
+  ✔ to Maharashtra with a 10% code and two units: IGST, the discount and fee shared, the air option the shopper picked (161.846ms)
+  ✔ a mixed bag (5% and 12%) with an odd price: the fee's GST split by value, every paisa accounted for (295.7136ms)
+  ✔ a replaced state code (Orissa) is stored as Odisha and priced as inter-state, national zone (191.8306ms)
+  ✔ perfume is quoted by surface only (155.6197ms)
+  ✔ a signed-in customer gets the same quote, with the account's email (346.8072ms)
+  ✔ tampered prices, totals and fees in the request change nothing (238.3895ms)
+✔ CHV-S12-M13 the correct quote is produced (3836.3744ms)
+▶ CHV-S12-M13 checkout blocks with an explanation
+  ✔ address: a malformed PIN, an unknown state, a non-mobile phone, or no address at all (202.4218ms)
+  ✔ delivery: unserviceable PIN, courier outage, restricted item, no weight, over every courier's limit (458.4172ms)
+  ✔ price and stock: a stale bag, a price change after quoting, stock gone, an item withdrawn (431.6643ms)
+  ✔ tax: a category with no rate in the profile, and production without an approved profile (224.543ms)
+  ✔ an expired quote is refused and must be asked for again (166.0786ms)
+✔ CHV-S12-M13 checkout blocks with an explanation (1483.7381ms)
+▶ CHV-S12-M13 payment stays disabled
+  ✔ no payment, order or webhook route exists on the API or the web host; no order, payment or reservation was made (495.099ms)
+  ✔ the review's final button is disabled; production has no review page and keeps the bag's 'Checkout opens soon' (159.6212ms)
+✔ CHV-S12-M13 payment stays disabled (655.0196ms)
+ℹ tests 14
+ℹ suites 3
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12582.0511
+
+# Gate mutation checks
+﻿== M1 GST rounded down instead of half up
+ℹ pass 12
+ℹ fail 2
+== M2 no GST on the delivery fee
+ℹ pass 8
+ℹ fail 6
+== M3 every delivery taxed as inter-state
+ℹ pass 10
+ℹ fail 4
+== M4 discount all on the first line
+ℹ pass 13
+ℹ fail 1
+== M5 unserviceable route quoted
+ℹ pass 13
+ℹ fail 1
+== restored
+ℹ pass 14
+ℹ fail 0
+
+# Full Stage 12 gate run
+﻿== stage 12 suites
+ℹ tests 127
+ℹ pass 127
+ℹ fail 0
+== security
+ℹ tests 413
+ℹ pass 413
+ℹ fail 0
+== db
+ℹ tests 61
+ℹ pass 61
+ℹ fail 0
+== unit
+ℹ tests 95
+ℹ pass 95
+ℹ fail 0
+== typecheck
+== lint
+✖ 2 problems (0 errors, 2 warnings)
+== build
+✓ Compiled successfully in 1870ms
+== e2e
+ℹ tests 79
+ℹ pass 79
+ℹ fail 0
