@@ -1017,6 +1017,193 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cart/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Place one pending order from the shopper's checked quote. The same Idempotency-Key, or the same quote again, returns the original order (200); a new order is 201. Takes no payment */
+        post: operations["OrderIntentController_place"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/order/{orderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** The shopper's own pending order, to continue its checkout. Any order that is not theirs is the same 404 as an unknown one; an expired, ended or no longer pending checkout is 409 */
+        get: operations["OrderIntentController_pending"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/order/{orderId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel the shopper's own unpaid order and release its stock, once. Repeating is harmless. An order whose payment is still in flight is left pending (awaiting_payment_outcome); another shopper's order is 404 */
+        post: operations["OrderIntentController_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Orders, newest first, with status, fulfilment, payment, date and order-number filters; buyers masked */
+        get: operations["OrderAdminController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/orders/{orderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One order: items, totals, payments, stock hold, late-payment exceptions and its event trail; buyer masked */
+        get: operations["OrderAdminController_one"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/orders/{orderId}/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** The buyer's full name, email, phone and addresses for one order; every read is audited (POST, same-origin only) */
+        post: operations["OrderAdminController_contact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/orders/{orderId}/hold": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Put an open order on hold: fulfilment cannot move forward until released (needs a reason and If-Match) */
+        post: operations["OrderAdminController_hold"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/orders/{orderId}/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Release an order's hold (needs a reason and If-Match) */
+        post: operations["OrderAdminController_release"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/orders/{orderId}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add an internal note to an order; never shown to the buyer (needs an Idempotency-Key) */
+        post: operations["OrderAdminController_note"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/order-recovery/cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Recovery cases for stuck orders and stock holds, newest first; open cases unless a status is given */
+        get: operations["OrderRecoveryController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/order-recovery/cases/{caseId}/resolve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Close an open recovery case with a reason; changes nothing on the order (a closed case is 409) */
+        post: operations["OrderRecoveryController_resolve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/cart": {
         parameters: {
             query?: never;
@@ -5626,6 +5813,699 @@ export interface operations {
                                 mode: "test" | "live";
                                 testReasons: ("test_shipping_rates" | "tax_profile_unapproved")[];
                             };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderIntentController_place: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _; one per order attempt */
+                "Idempotency-Key": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    quoteId: string;
+                    expectedGrandTotal: {
+                        amountPaise: number;
+                        /** @enum {string} */
+                        currency: "INR";
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description The original order, for a repeated submission */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            number: string;
+                            status: string;
+                            /** Format: uuid */
+                            quoteId: string;
+                            grandTotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            /** @description Priced with sandbox delivery rates or a draft tax profile: never a real sale */
+                            test: boolean;
+                            /**
+                             * Format: date-time
+                             * @description The quote's expiry: after it, ask for a new quote
+                             */
+                            payableUntil: string;
+                            items: {
+                                sku: string;
+                                productTitle: string;
+                                variantTitle: string;
+                                quantity: number;
+                                lineTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                            }[];
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                        replayed: boolean;
+                    };
+                };
+            };
+        };
+    };
+    OrderIntentController_pending: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            number: string;
+                            status: string;
+                            /** Format: uuid */
+                            quoteId: string;
+                            grandTotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            /** @description Priced with sandbox delivery rates or a draft tax profile: never a real sale */
+                            test: boolean;
+                            /**
+                             * Format: date-time
+                             * @description The quote's expiry: after it, ask for a new quote
+                             */
+                            payableUntil: string;
+                            items: {
+                                sku: string;
+                                productTitle: string;
+                                variantTitle: string;
+                                quantity: number;
+                                lineTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                            }[];
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderIntentController_cancel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            number: string;
+                            status: string;
+                            /** Format: uuid */
+                            quoteId: string;
+                            grandTotal: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            /** @description Priced with sandbox delivery rates or a draft tax profile: never a real sale */
+                            test: boolean;
+                            /**
+                             * Format: date-time
+                             * @description The quote's expiry: after it, ask for a new quote
+                             */
+                            payableUntil: string;
+                            items: {
+                                sku: string;
+                                productTitle: string;
+                                variantTitle: string;
+                                quantity: number;
+                                lineTotal: {
+                                    amountPaise: number;
+                                    /** @enum {string} */
+                                    currency: "INR";
+                                };
+                            }[];
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                        /** @enum {string} */
+                        outcome: "cancelled" | "awaiting_payment_outcome" | "noop";
+                    };
+                };
+            };
+        };
+    };
+    OrderAdminController_list: {
+        parameters: {
+            query?: {
+                cursor?: unknown;
+                limit?: number;
+                /** @description An order number, for example CHV-1001 */
+                number?: unknown;
+                /** @description ISO date, exclusive */
+                placedTo?: unknown;
+                /** @description ISO date, inclusive */
+                placedFrom?: unknown;
+                paymentStatus?: "created" | "authorized" | "captured" | "pending_reconciliation" | "failed" | "expired" | "partially_refunded" | "refunded";
+                fulfilmentStatus?: "unfulfilled" | "packing" | "packed" | "handed_over" | "cancelled";
+                status?: "pending_payment" | "needs_review" | "confirmed" | "completed" | "cancelled";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            number: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "needs_review" | "confirmed" | "completed" | "cancelled";
+                            /** @enum {string} */
+                            fulfilmentStatus: "unfulfilled" | "packing" | "packed" | "handed_over" | "cancelled";
+                            /** @enum {string|null} */
+                            paymentStatus: "created" | "authorized" | "captured" | "pending_reconciliation" | "failed" | "expired" | "partially_refunded" | "refunded" | null;
+                            grandTotal: {
+                                amountPaise: number;
+                                currency: string;
+                            };
+                            lines: number;
+                            held: boolean;
+                            buyer: {
+                                /** @enum {string} */
+                                kind: "customer" | "guest";
+                                /** @description First name and last initial */
+                                name: string;
+                                /** @description First letter and domain only */
+                                email: string;
+                                /** @description Last four digits only */
+                                phone: string;
+                            };
+                            deliverTo: {
+                                city: string;
+                                stateCode: string;
+                                pinCode: string;
+                            };
+                            /** Format: date-time */
+                            payableUntil: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                        }[];
+                        page: {
+                            nextCursor: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderAdminController_one: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            number: string;
+                            /** @enum {string} */
+                            status: "pending_payment" | "needs_review" | "confirmed" | "completed" | "cancelled";
+                            /** @enum {string} */
+                            fulfilmentStatus: "unfulfilled" | "packing" | "packed" | "handed_over" | "cancelled";
+                            buyer: {
+                                /** @enum {string} */
+                                kind: "customer" | "guest";
+                                /** @description First name and last initial */
+                                name: string;
+                                /** @description First letter and domain only */
+                                email: string;
+                                /** @description Last four digits only */
+                                phone: string;
+                            };
+                            deliverTo: {
+                                city: string;
+                                stateCode: string;
+                                pinCode: string;
+                            };
+                            totals: {
+                                subtotal: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                                discount: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                                shipping: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                                tax: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                                grandTotal: {
+                                    amountPaise: number;
+                                    currency: string;
+                                };
+                                pricesIncludeTax: boolean;
+                            };
+                            items: {
+                                sku: string;
+                                productTitle: string;
+                                variantTitle: string;
+                                hsnCode: string | null;
+                                quantity: number;
+                                unitPricePaise: number;
+                                discountPaise: number;
+                                taxPaise: number;
+                                lineTotalPaise: number;
+                            }[];
+                            delivery: {
+                                courierName: string | null;
+                                mode: string | null;
+                                estimatedDeliveryDays: number | null;
+                            } | null;
+                            payments: {
+                                /** Format: uuid */
+                                id: string;
+                                provider: string;
+                                mode: string;
+                                /** @enum {string} */
+                                status: "created" | "authorized" | "captured" | "pending_reconciliation" | "failed" | "expired" | "partially_refunded" | "refunded";
+                                amountPaise: number;
+                                capturedAmountPaise: number | null;
+                                /** Format: date-time */
+                                createdAt: string;
+                            }[];
+                            stockHold: {
+                                /** @enum {string} */
+                                status: "active" | "allocated" | "released" | "fulfilled";
+                                /** Format: date-time */
+                                expiresAt: string;
+                            } | null;
+                            exceptions: {
+                                reason: string;
+                                /** Format: uuid */
+                                paymentAttemptId: string | null;
+                                capturedAmountPaise: number | null;
+                                /** Format: date-time */
+                                occurredAt: string;
+                            }[];
+                            events: {
+                                kind: string;
+                                fromState: string | null;
+                                toState: string;
+                                actorKind: string;
+                                reason: string;
+                                /** Format: date-time */
+                                occurredAt: string;
+                            }[];
+                            hold: {
+                                /** Format: date-time */
+                                heldAt: string;
+                                /** Format: uuid */
+                                heldBy: string;
+                            } | null;
+                            staffActions: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                kind: "hold" | "release" | "note";
+                                /** @description The staff reason or the internal note; never shown to the buyer */
+                                text: string;
+                                /** Format: uuid */
+                                actorId: string;
+                                /** Format: date-time */
+                                createdAt: string;
+                            }[];
+                            recoveryCases: {
+                                /** Format: uuid */
+                                id: string;
+                                /** @enum {string} */
+                                kind: "pending_past_window" | "captured_not_confirmed" | "hold_overdue" | "hold_mismatch" | "review_waiting";
+                                /** @enum {string} */
+                                status: "open" | "resolved" | "cleared";
+                                check: string;
+                                /** Format: date-time */
+                                detectedAt: string;
+                                /** Format: date-time */
+                                closedAt: string | null;
+                            }[];
+                            /** Format: date-time */
+                            payableUntil: string | null;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** @description Send as If-Match to hold or release */
+                            etag: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderAdminController_contact: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            name: string;
+                            email: string;
+                            phone: string;
+                            shippingAddress: {
+                                name: string;
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                stateCode: string;
+                                pinCode: string;
+                            } | null;
+                            billingAddress: {
+                                name: string;
+                                phone: string;
+                                line1: string;
+                                line2: string | null;
+                                landmark: string | null;
+                                city: string;
+                                district: string;
+                                stateCode: string;
+                                pinCode: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderAdminController_hold: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _: a retry with the same key changes nothing */
+                "Idempotency-Key"?: string;
+                /** @description The order's ETag */
+                "If-Match": string;
+            };
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            held: boolean;
+                            /** Format: date-time */
+                            heldAt: string | null;
+                            /** Format: uuid */
+                            heldBy: string | null;
+                            etag: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderAdminController_release: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _: a retry with the same key changes nothing */
+                "Idempotency-Key"?: string;
+                /** @description The order's ETag */
+                "If-Match": string;
+            };
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            held: boolean;
+                            /** Format: date-time */
+                            heldAt: string | null;
+                            /** Format: uuid */
+                            heldBy: string | null;
+                            etag: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderAdminController_note: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _: a retry with the same key changes nothing */
+                "Idempotency-Key": string;
+            };
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            kind: "hold" | "release" | "note";
+                            /** @description The staff reason or the internal note; never shown to the buyer */
+                            text: string;
+                            /** Format: uuid */
+                            actorId: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderRecoveryController_list: {
+        parameters: {
+            query?: {
+                cursor?: unknown;
+                limit?: number;
+                orderId?: unknown;
+                kind?: "pending_past_window" | "captured_not_confirmed" | "hold_overdue" | "hold_mismatch" | "review_waiting";
+                status?: "open" | "resolved" | "cleared";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            orderId: string;
+                            orderNumber: string;
+                            /** @enum {string} */
+                            kind: "pending_past_window" | "captured_not_confirmed" | "hold_overdue" | "hold_mismatch" | "review_waiting";
+                            /** @enum {string} */
+                            status: "open" | "resolved" | "cleared";
+                            /** @description What a person should check first; never a payment outcome */
+                            check: string;
+                            /** @description Order, payment and stock hold statuses and deadlines as seen; nothing personal */
+                            facts: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: date-time */
+                            detectedAt: string;
+                            /** Format: date-time */
+                            lastSeenAt: string;
+                            /** Format: date-time */
+                            closedAt: string | null;
+                            /** Format: uuid */
+                            closedBy: string | null;
+                            resolution: string | null;
+                        }[];
+                        page: {
+                            nextCursor: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    OrderRecoveryController_resolve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            orderId: string;
+                            orderNumber: string;
+                            /** @enum {string} */
+                            kind: "pending_past_window" | "captured_not_confirmed" | "hold_overdue" | "hold_mismatch" | "review_waiting";
+                            /** @enum {string} */
+                            status: "open" | "resolved" | "cleared";
+                            /** @description What a person should check first; never a payment outcome */
+                            check: string;
+                            /** @description Order, payment and stock hold statuses and deadlines as seen; nothing personal */
+                            facts: {
+                                [key: string]: unknown;
+                            };
+                            /** Format: date-time */
+                            detectedAt: string;
+                            /** Format: date-time */
+                            lastSeenAt: string;
+                            /** Format: date-time */
+                            closedAt: string | null;
+                            /** Format: uuid */
+                            closedBy: string | null;
+                            resolution: string | null;
                         };
                     };
                 };

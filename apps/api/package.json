@@ -8,7 +8,8 @@
     "./db/*": "./src/db/*.ts",
     "./media/*": "./src/media/*.ts",
     "./outbox/*": "./src/outbox/*.ts",
-    "./inventory/*": "./src/inventory/*.ts"
+    "./inventory/*": "./src/inventory/*.ts",
+    "./orders/*": "./src/orders/*.ts"
   },
   "scripts": {
     "build": "prisma generate && tsc -p tsconfig.build.json",

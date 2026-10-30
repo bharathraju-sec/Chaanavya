@@ -14381,6 +14381,2141 @@
         ]
       }
     },
+    "/api/v1/cart/order": {
+      "post": {
+        "operationId": "OrderIntentController_place",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "8 to 100 letters, digits, - or _; one per order attempt",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quoteId": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "expectedGrandTotal": {
+                    "type": "object",
+                    "properties": {
+                      "amountPaise": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "currency": {
+                        "type": "string",
+                        "enum": [
+                          "INR"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "amountPaise",
+                      "currency"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "quoteId",
+                  "expectedGrandTotal"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The original order, for a repeated submission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "number": {
+                          "type": "string",
+                          "pattern": "^CHV-[0-9]{6,}$"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "quoteId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "grandTotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "test": {
+                          "type": "boolean",
+                          "description": "Priced with sandbox delivery rates or a draft tax profile: never a real sale"
+                        },
+                        "payableUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "The quote's expiry: after it, ask for a new quote"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string"
+                              },
+                              "productTitle": {
+                                "type": "string"
+                              },
+                              "variantTitle": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              },
+                              "lineTotal": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "sku",
+                              "productTitle",
+                              "variantTitle",
+                              "quantity",
+                              "lineTotal"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number",
+                        "status",
+                        "quoteId",
+                        "grandTotal",
+                        "test",
+                        "payableUntil",
+                        "items",
+                        "createdAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "replayed": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "replayed"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Place one pending order from the shopper's checked quote. The same Idempotency-Key, or the same quote again, returns the original order (200); a new order is 201. Takes no payment",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/order/{orderId}": {
+      "get": {
+        "operationId": "OrderIntentController_pending",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "number": {
+                          "type": "string",
+                          "pattern": "^CHV-[0-9]{6,}$"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "quoteId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "grandTotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "test": {
+                          "type": "boolean",
+                          "description": "Priced with sandbox delivery rates or a draft tax profile: never a real sale"
+                        },
+                        "payableUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "The quote's expiry: after it, ask for a new quote"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string"
+                              },
+                              "productTitle": {
+                                "type": "string"
+                              },
+                              "variantTitle": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              },
+                              "lineTotal": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "sku",
+                              "productTitle",
+                              "variantTitle",
+                              "quantity",
+                              "lineTotal"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number",
+                        "status",
+                        "quoteId",
+                        "grandTotal",
+                        "test",
+                        "payableUntil",
+                        "items",
+                        "createdAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "The shopper's own pending order, to continue its checkout. Any order that is not theirs is the same 404 as an unknown one; an expired, ended or no longer pending checkout is 409",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/order/{orderId}/cancel": {
+      "post": {
+        "operationId": "OrderIntentController_cancel",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "number": {
+                          "type": "string",
+                          "pattern": "^CHV-[0-9]{6,}$"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "quoteId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "grandTotal": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "test": {
+                          "type": "boolean",
+                          "description": "Priced with sandbox delivery rates or a draft tax profile: never a real sale"
+                        },
+                        "payableUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "The quote's expiry: after it, ask for a new quote"
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string"
+                              },
+                              "productTitle": {
+                                "type": "string"
+                              },
+                              "variantTitle": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              },
+                              "lineTotal": {
+                                "type": "object",
+                                "properties": {
+                                  "amountPaise": {
+                                    "type": "integer",
+                                    "minimum": 0
+                                  },
+                                  "currency": {
+                                    "type": "string",
+                                    "enum": [
+                                      "INR"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "amountPaise",
+                                  "currency"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "sku",
+                              "productTitle",
+                              "variantTitle",
+                              "quantity",
+                              "lineTotal"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number",
+                        "status",
+                        "quoteId",
+                        "grandTotal",
+                        "test",
+                        "payableUntil",
+                        "items",
+                        "createdAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "outcome": {
+                      "type": "string",
+                      "enum": [
+                        "cancelled",
+                        "awaiting_payment_outcome",
+                        "noop"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "outcome"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Cancel the shopper's own unpaid order and release its stock, once. Repeating is harmless. An order whose payment is still in flight is left pending (awaiting_payment_outcome); another shopper's order is 404",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/admin/orders": {
+      "get": {
+        "operationId": "OrderAdminController_list",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "number",
+            "required": false,
+            "in": "query",
+            "description": "An order number, for example CHV-1001",
+            "schema": {}
+          },
+          {
+            "name": "placedTo",
+            "required": false,
+            "in": "query",
+            "description": "ISO date, exclusive",
+            "schema": {}
+          },
+          {
+            "name": "placedFrom",
+            "required": false,
+            "in": "query",
+            "description": "ISO date, inclusive",
+            "schema": {}
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "created",
+                "authorized",
+                "captured",
+                "pending_reconciliation",
+                "failed",
+                "expired",
+                "partially_refunded",
+                "refunded"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "fulfilmentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "unfulfilled",
+                "packing",
+                "packed",
+                "handed_over",
+                "cancelled"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "pending_payment",
+                "needs_review",
+                "confirmed",
+                "completed",
+                "cancelled"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "number": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "pending_payment",
+                              "needs_review",
+                              "confirmed",
+                              "completed",
+                              "cancelled"
+                            ]
+                          },
+                          "fulfilmentStatus": {
+                            "type": "string",
+                            "enum": [
+                              "unfulfilled",
+                              "packing",
+                              "packed",
+                              "handed_over",
+                              "cancelled"
+                            ]
+                          },
+                          "paymentStatus": {
+                            "type": "string",
+                            "enum": [
+                              "created",
+                              "authorized",
+                              "captured",
+                              "pending_reconciliation",
+                              "failed",
+                              "expired",
+                              "partially_refunded",
+                              "refunded"
+                            ],
+                            "nullable": true
+                          },
+                          "grandTotal": {
+                            "type": "object",
+                            "properties": {
+                              "amountPaise": {
+                                "type": "integer"
+                              },
+                              "currency": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "amountPaise",
+                              "currency"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "lines": {
+                            "type": "integer"
+                          },
+                          "held": {
+                            "type": "boolean"
+                          },
+                          "buyer": {
+                            "type": "object",
+                            "properties": {
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "customer",
+                                  "guest"
+                                ]
+                              },
+                              "name": {
+                                "type": "string",
+                                "description": "First name and last initial"
+                              },
+                              "email": {
+                                "type": "string",
+                                "description": "First letter and domain only"
+                              },
+                              "phone": {
+                                "type": "string",
+                                "description": "Last four digits only"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "name",
+                              "email",
+                              "phone"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "deliverTo": {
+                            "type": "object",
+                            "properties": {
+                              "city": {
+                                "type": "string"
+                              },
+                              "stateCode": {
+                                "type": "string"
+                              },
+                              "pinCode": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "city",
+                              "stateCode",
+                              "pinCode"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "payableUntil": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "number",
+                          "status",
+                          "fulfilmentStatus",
+                          "paymentStatus",
+                          "grandTotal",
+                          "lines",
+                          "held",
+                          "buyer",
+                          "deliverTo",
+                          "payableUntil",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "nextCursor": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "nextCursor"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Orders, newest first, with status, fulfilment, payment, date and order-number filters; buyers masked",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/orders/{orderId}": {
+      "get": {
+        "operationId": "OrderAdminController_one",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "number": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending_payment",
+                            "needs_review",
+                            "confirmed",
+                            "completed",
+                            "cancelled"
+                          ]
+                        },
+                        "fulfilmentStatus": {
+                          "type": "string",
+                          "enum": [
+                            "unfulfilled",
+                            "packing",
+                            "packed",
+                            "handed_over",
+                            "cancelled"
+                          ]
+                        },
+                        "buyer": {
+                          "type": "object",
+                          "properties": {
+                            "kind": {
+                              "type": "string",
+                              "enum": [
+                                "customer",
+                                "guest"
+                              ]
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "First name and last initial"
+                            },
+                            "email": {
+                              "type": "string",
+                              "description": "First letter and domain only"
+                            },
+                            "phone": {
+                              "type": "string",
+                              "description": "Last four digits only"
+                            }
+                          },
+                          "required": [
+                            "kind",
+                            "name",
+                            "email",
+                            "phone"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "deliverTo": {
+                          "type": "object",
+                          "properties": {
+                            "city": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string"
+                            },
+                            "pinCode": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "city",
+                            "stateCode",
+                            "pinCode"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "totals": {
+                          "type": "object",
+                          "properties": {
+                            "subtotal": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "discount": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "shipping": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "tax": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "grandTotal": {
+                              "type": "object",
+                              "properties": {
+                                "amountPaise": {
+                                  "type": "integer"
+                                },
+                                "currency": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "amountPaise",
+                                "currency"
+                              ],
+                              "additionalProperties": false
+                            },
+                            "pricesIncludeTax": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "subtotal",
+                            "discount",
+                            "shipping",
+                            "tax",
+                            "grandTotal",
+                            "pricesIncludeTax"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "items": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "sku": {
+                                "type": "string"
+                              },
+                              "productTitle": {
+                                "type": "string"
+                              },
+                              "variantTitle": {
+                                "type": "string"
+                              },
+                              "hsnCode": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              },
+                              "unitPricePaise": {
+                                "type": "integer"
+                              },
+                              "discountPaise": {
+                                "type": "integer"
+                              },
+                              "taxPaise": {
+                                "type": "integer"
+                              },
+                              "lineTotalPaise": {
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "sku",
+                              "productTitle",
+                              "variantTitle",
+                              "hsnCode",
+                              "quantity",
+                              "unitPricePaise",
+                              "discountPaise",
+                              "taxPaise",
+                              "lineTotalPaise"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "delivery": {
+                          "type": "object",
+                          "properties": {
+                            "courierName": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "mode": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "estimatedDeliveryDays": {
+                              "type": "integer",
+                              "nullable": true
+                            }
+                          },
+                          "required": [
+                            "courierName",
+                            "mode",
+                            "estimatedDeliveryDays"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        },
+                        "payments": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "provider": {
+                                "type": "string"
+                              },
+                              "mode": {
+                                "type": "string"
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "created",
+                                  "authorized",
+                                  "captured",
+                                  "pending_reconciliation",
+                                  "failed",
+                                  "expired",
+                                  "partially_refunded",
+                                  "refunded"
+                                ]
+                              },
+                              "amountPaise": {
+                                "type": "integer"
+                              },
+                              "capturedAmountPaise": {
+                                "type": "integer",
+                                "nullable": true
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "provider",
+                              "mode",
+                              "status",
+                              "amountPaise",
+                              "capturedAmountPaise",
+                              "createdAt"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "stockHold": {
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "active",
+                                "allocated",
+                                "released",
+                                "fulfilled"
+                              ]
+                            },
+                            "expiresAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            }
+                          },
+                          "required": [
+                            "status",
+                            "expiresAt"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        },
+                        "exceptions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "reason": {
+                                "type": "string"
+                              },
+                              "paymentAttemptId": {
+                                "type": "string",
+                                "format": "uuid",
+                                "nullable": true
+                              },
+                              "capturedAmountPaise": {
+                                "type": "integer",
+                                "nullable": true
+                              },
+                              "occurredAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "reason",
+                              "paymentAttemptId",
+                              "capturedAmountPaise",
+                              "occurredAt"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "events": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "kind": {
+                                "type": "string"
+                              },
+                              "fromState": {
+                                "type": "string",
+                                "nullable": true
+                              },
+                              "toState": {
+                                "type": "string"
+                              },
+                              "actorKind": {
+                                "type": "string"
+                              },
+                              "reason": {
+                                "type": "string"
+                              },
+                              "occurredAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "kind",
+                              "fromState",
+                              "toState",
+                              "actorKind",
+                              "reason",
+                              "occurredAt"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "hold": {
+                          "type": "object",
+                          "properties": {
+                            "heldAt": {
+                              "type": "string",
+                              "format": "date-time"
+                            },
+                            "heldBy": {
+                              "type": "string",
+                              "format": "uuid"
+                            }
+                          },
+                          "required": [
+                            "heldAt",
+                            "heldBy"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        },
+                        "staffActions": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "hold",
+                                  "release",
+                                  "note"
+                                ]
+                              },
+                              "text": {
+                                "type": "string",
+                                "description": "The staff reason or the internal note; never shown to the buyer"
+                              },
+                              "actorId": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "createdAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "kind",
+                              "text",
+                              "actorId",
+                              "createdAt"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "recoveryCases": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "kind": {
+                                "type": "string",
+                                "enum": [
+                                  "pending_past_window",
+                                  "captured_not_confirmed",
+                                  "hold_overdue",
+                                  "hold_mismatch",
+                                  "review_waiting"
+                                ]
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "open",
+                                  "resolved",
+                                  "cleared"
+                                ]
+                              },
+                              "check": {
+                                "type": "string"
+                              },
+                              "detectedAt": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "closedAt": {
+                                "type": "string",
+                                "format": "date-time",
+                                "nullable": true
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "kind",
+                              "status",
+                              "check",
+                              "detectedAt",
+                              "closedAt"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "payableUntil": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "etag": {
+                          "type": "string",
+                          "description": "Send as If-Match to hold or release"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "number",
+                        "status",
+                        "fulfilmentStatus",
+                        "buyer",
+                        "deliverTo",
+                        "totals",
+                        "items",
+                        "delivery",
+                        "payments",
+                        "stockHold",
+                        "exceptions",
+                        "events",
+                        "hold",
+                        "staffActions",
+                        "recoveryCases",
+                        "payableUntil",
+                        "createdAt",
+                        "etag"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "One order: items, totals, payments, stock hold, late-payment exceptions and its event trail; buyer masked",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/orders/{orderId}/contact": {
+      "post": {
+        "operationId": "OrderAdminController_contact",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "phone": {
+                          "type": "string"
+                        },
+                        "shippingAddress": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string"
+                            },
+                            "line1": {
+                              "type": "string"
+                            },
+                            "line2": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "landmark": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string"
+                            },
+                            "pinCode": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "phone",
+                            "line1",
+                            "line2",
+                            "landmark",
+                            "city",
+                            "district",
+                            "stateCode",
+                            "pinCode"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        },
+                        "billingAddress": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "type": "string"
+                            },
+                            "phone": {
+                              "type": "string"
+                            },
+                            "line1": {
+                              "type": "string"
+                            },
+                            "line2": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "landmark": {
+                              "type": "string",
+                              "nullable": true
+                            },
+                            "city": {
+                              "type": "string"
+                            },
+                            "district": {
+                              "type": "string"
+                            },
+                            "stateCode": {
+                              "type": "string"
+                            },
+                            "pinCode": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "phone",
+                            "line1",
+                            "line2",
+                            "landmark",
+                            "city",
+                            "district",
+                            "stateCode",
+                            "pinCode"
+                          ],
+                          "additionalProperties": false,
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "email",
+                        "phone",
+                        "shippingAddress",
+                        "billingAddress"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "The buyer's full name, email, phone and addresses for one order; every read is audited (POST, same-origin only)",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/orders/{orderId}/hold": {
+      "post": {
+        "operationId": "OrderAdminController_hold",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "8 to 100 letters, digits, - or _: a retry with the same key changes nothing",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The order's ETag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "held": {
+                          "type": "boolean"
+                        },
+                        "heldAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "heldBy": {
+                          "type": "string",
+                          "format": "uuid",
+                          "nullable": true
+                        },
+                        "etag": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "held",
+                        "heldAt",
+                        "heldBy",
+                        "etag"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Put an open order on hold: fulfilment cannot move forward until released (needs a reason and If-Match)",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/orders/{orderId}/release": {
+      "post": {
+        "operationId": "OrderAdminController_release",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "8 to 100 letters, digits, - or _: a retry with the same key changes nothing",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "description": "The order's ETag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "held": {
+                          "type": "boolean"
+                        },
+                        "heldAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "heldBy": {
+                          "type": "string",
+                          "format": "uuid",
+                          "nullable": true
+                        },
+                        "etag": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "held",
+                        "heldAt",
+                        "heldBy",
+                        "etag"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Release an order's hold (needs a reason and If-Match)",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/orders/{orderId}/notes": {
+      "post": {
+        "operationId": "OrderAdminController_note",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "8 to 100 letters, digits, - or _: a retry with the same key changes nothing",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "text"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "hold",
+                            "release",
+                            "note"
+                          ]
+                        },
+                        "text": {
+                          "type": "string",
+                          "description": "The staff reason or the internal note; never shown to the buyer"
+                        },
+                        "actorId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "kind",
+                        "text",
+                        "actorId",
+                        "createdAt"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Add an internal note to an order; never shown to the buyer (needs an Idempotency-Key)",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/order-recovery/cases": {
+      "get": {
+        "operationId": "OrderRecoveryController_list",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "orderId",
+            "required": false,
+            "in": "query",
+            "schema": {}
+          },
+          {
+            "name": "kind",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "pending_past_window",
+                "captured_not_confirmed",
+                "hold_overdue",
+                "hold_mismatch",
+                "review_waiting"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "open",
+                "resolved",
+                "cleared"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "orderId": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "orderNumber": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "pending_past_window",
+                              "captured_not_confirmed",
+                              "hold_overdue",
+                              "hold_mismatch",
+                              "review_waiting"
+                            ]
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "open",
+                              "resolved",
+                              "cleared"
+                            ]
+                          },
+                          "check": {
+                            "type": "string",
+                            "description": "What a person should check first; never a payment outcome"
+                          },
+                          "facts": {
+                            "type": "object",
+                            "description": "Order, payment and stock hold statuses and deadlines as seen; nothing personal",
+                            "additionalProperties": true
+                          },
+                          "detectedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "lastSeenAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "closedAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "nullable": true
+                          },
+                          "closedBy": {
+                            "type": "string",
+                            "format": "uuid",
+                            "nullable": true
+                          },
+                          "resolution": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "orderId",
+                          "orderNumber",
+                          "kind",
+                          "status",
+                          "check",
+                          "facts",
+                          "detectedAt",
+                          "lastSeenAt",
+                          "closedAt",
+                          "closedBy",
+                          "resolution"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "page": {
+                      "type": "object",
+                      "properties": {
+                        "nextCursor": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "nextCursor"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Recovery cases for stuck orders and stock holds, newest first; open cases unless a status is given",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/order-recovery/cases/{caseId}/resolve": {
+      "post": {
+        "operationId": "OrderRecoveryController_resolve",
+        "parameters": [
+          {
+            "name": "caseId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "orderId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "orderNumber": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string",
+                          "enum": [
+                            "pending_past_window",
+                            "captured_not_confirmed",
+                            "hold_overdue",
+                            "hold_mismatch",
+                            "review_waiting"
+                          ]
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "open",
+                            "resolved",
+                            "cleared"
+                          ]
+                        },
+                        "check": {
+                          "type": "string",
+                          "description": "What a person should check first; never a payment outcome"
+                        },
+                        "facts": {
+                          "type": "object",
+                          "description": "Order, payment and stock hold statuses and deadlines as seen; nothing personal",
+                          "additionalProperties": true
+                        },
+                        "detectedAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "lastSeenAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "closedAt": {
+                          "type": "string",
+                          "format": "date-time",
+                          "nullable": true
+                        },
+                        "closedBy": {
+                          "type": "string",
+                          "format": "uuid",
+                          "nullable": true
+                        },
+                        "resolution": {
+                          "type": "string",
+                          "nullable": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "orderId",
+                        "orderNumber",
+                        "kind",
+                        "status",
+                        "check",
+                        "facts",
+                        "detectedAt",
+                        "lastSeenAt",
+                        "closedAt",
+                        "closedBy",
+                        "resolution"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Close an open recovery case with a reason; changes nothing on the order (a closed case is 409)",
+        "tags": [
+          "orders admin"
+        ]
+      }
+    },
     "/api/v1/cart": {
       "get": {
         "operationId": "CartController_current",

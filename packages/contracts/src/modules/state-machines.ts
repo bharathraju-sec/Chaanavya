@@ -59,6 +59,10 @@ export type GuardFacts = {
   refundFullyCovered?: boolean
   refundSucceeded?: boolean
   withinReturnWindow?: boolean
+  /** Any payment attempt exists for the order (Stage 13.09). False means the shopper never started paying. */
+  paymentStarted?: boolean
+  /** The shopper or staff asked to cancel the order before paying (Stage 13.09). */
+  cancelRequested?: boolean
   hasAwb?: boolean
   allShipmentsDelivered?: boolean
 }
@@ -109,8 +113,8 @@ export const ORDER_MACHINE: StateMachine<OrderStatus> = {
       from: "pending_payment",
       to: "cancelled",
       precondition: "payment_closed_without_capture_and_stock_released",
-      description: "The payment attempt failed or expired with no capture, and the reservation has been released.",
-      guard: f => paymentClosedWithoutCapture(f) && f.reservationStatus === "released",
+      description: "No payment was started, or the payment attempt failed or expired with no capture; and the reservation has been released (Stage 13.09).",
+      guard: f => (paymentClosedWithoutCapture(f) || f.paymentStarted === false) && f.reservationStatus === "released",
     },
     {
       from: "needs_review",
@@ -130,8 +134,8 @@ export const ORDER_MACHINE: StateMachine<OrderStatus> = {
       from: "confirmed",
       to: "cancelled",
       precondition: "cancelled_before_courier_handover",
-      description: "Cancellation before the parcel reaches the courier, with a refund requested. After handover only returns or RTO apply.",
-      guard: f => beforeDispatch(f) && f.refundRequested === true && (f.source === "customer" || byStaff(f)),
+      description: "Staff cancel a paid order before the parcel reaches the courier, with a refund requested; the buyer asks the shop. After handover only returns or RTO apply.",
+      guard: f => beforeDispatch(f) && f.refundRequested === true && byStaff(f),
     },
     {
       from: "confirmed",
@@ -208,8 +212,8 @@ export const RESERVATION_MACHINE: StateMachine<ReservationStatus> = {
       from: "active",
       to: "released",
       precondition: "expired_or_payment_closed_and_not_captured",
-      description: "No capture, and the reservation expired, the payment failed or expired, or the order was cancelled.",
-      guard: f => f.paymentStatus !== "captured" && (f.reservationExpired === true || paymentClosedWithoutCapture(f) || f.orderStatus === "cancelled"),
+      description: "No capture, and the reservation expired, the payment failed or expired, the order was cancelled, or the shopper cancelled before paying (Stage 13.09).",
+      guard: f => f.paymentStatus !== "captured" && (f.reservationExpired === true || paymentClosedWithoutCapture(f) || f.orderStatus === "cancelled" || (f.cancelRequested === true && f.paymentStarted === false)),
     },
     {
       from: "allocated",
@@ -341,6 +345,68 @@ export const REFUND_MACHINE: StateMachine<RefundStatus> = {
     { from: "processing", to: "failed", precondition: "provider_reports_refund_failed", description: "Verified provider event or lookup says the refund failed.", guard: fromProvider },
     { from: "failed", to: "processing", precondition: "staff_retried", description: "Permitted staff retried a failed refund with the same idempotency key.", guard: byStaff },
   ],
+}
+
+/**
+ * Who may make each order, fulfilment and payment transition (Stage 13.06; payment and courier kept
+ * apart, Stage 13.07), by the actor's class: a signed-in customer, a guest, staff (with the needed
+ * permission, checked by the caller), a background job (system), a verified payment provider event,
+ * or a verified courier event. A payment provider can move payments and the order's financial status,
+ * never fulfilment; a courier can move fulfilment and complete an order, never a payment. The guard
+ * decides whether the facts allow the move; this decides whether this actor may ask for it at all.
+ * Anything not listed is refused, and the database refuses every move that is not a transition.
+ */
+export type TransitionActor = "customer" | "guest" | "staff" | "system" | "payment_provider" | "courier"
+
+export const ORDER_TRANSITION_ACTORS: Readonly<Record<string, readonly TransitionActor[]>> = {
+  "pending_payment->confirmed": ["payment_provider", "system"],
+  "pending_payment->needs_review": ["payment_provider", "system"],
+  // The shopper may cancel their own unpaid order (Stage 13.09); a job cancels it when its window ends.
+  "pending_payment->cancelled": ["payment_provider", "system", "customer", "guest"],
+  "needs_review->confirmed": ["staff"],
+  "needs_review->cancelled": ["staff"],
+  // A paid order is cancelled by staff only, who then refund it; the buyer asks the shop (owner decision, 30 October 2026).
+  "confirmed->cancelled": ["staff"],
+  "confirmed->completed": ["courier", "system"],
+}
+
+export const FULFILMENT_TRANSITION_ACTORS: Readonly<Record<string, readonly TransitionActor[]>> = {
+  "unfulfilled->packing": ["staff"],
+  "packing->packed": ["staff"],
+  "packed->handed_over": ["courier"],
+  "unfulfilled->cancelled": ["staff", "system"],
+  "packing->cancelled": ["staff", "system"],
+  "packed->cancelled": ["staff", "system"],
+}
+
+/** Payment attempts move only on payment provider events, or a system job where the machine says so. */
+export const PAYMENT_TRANSITION_ACTORS: Readonly<Record<string, readonly TransitionActor[]>> = Object.fromEntries(
+  PAYMENT_MACHINE.transitions.map(t => [`${t.from}->${t.to}`, t.guard({ source: "system" }) ? ["system"] : ["payment_provider"]] as const),
+)
+
+// Only the payment provider the shop launches with (owner decision, 30 October 2026); add PhonePe here once signed up.
+export const PAYMENT_PROVIDERS = ["razorpay"] as const
+export const COURIER_PROVIDERS = ["shiprocket", "sandbox"] as const
+
+/**
+ * The class of an actor as the database records it (kind and id). A provider is a payment provider or
+ * a courier by its name; a provider with any other name has no class and may make no move.
+ */
+export function actorClassOf(actor: { kind: string; id: string | null }): TransitionActor | null {
+  if (actor.kind === "provider") {
+    if ((PAYMENT_PROVIDERS as readonly string[]).includes(actor.id ?? "")) return "payment_provider"
+    if ((COURIER_PROVIDERS as readonly string[]).includes(actor.id ?? "")) return "courier"
+    return null
+  }
+  return ["customer", "guest", "staff", "system"].includes(actor.kind) ? (actor.kind as TransitionActor) : null
+}
+
+/** The guard's fact source for an actor class: a guest acts as a customer, payment and courier events as the provider. */
+export const sourceOf = (actor: TransitionActor): FactSource => (actor === "guest" ? "customer" : actor === "payment_provider" || actor === "courier" ? "provider" : actor)
+
+/** Whether this actor may ask for this move. Unknown moves and actors without a class are refused. */
+export function actorMayTransition(actors: Readonly<Record<string, readonly TransitionActor[]>>, from: string, to: string, actor: TransitionActor | null): boolean {
+  return actor !== null && (actors[`${from}->${to}`] ?? []).includes(actor)
 }
 
 export const STATE_MACHINES = [ORDER_MACHINE, PAYMENT_MACHINE, RESERVATION_MACHINE, FULFILMENT_MACHINE, SHIPMENT_MACHINE, RETURN_MACHINE, REFUND_MACHINE] as const

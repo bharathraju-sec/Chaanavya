@@ -1,0 +1,18 @@
+﻿▶ CHV-S13-M11 a capture after expiry does not oversell
+  ✔ the last unit: A's hold expires, B buys it, then A's money arrives; A goes to review and the unit is sold once (467.1486ms)
+  ✔ the late payment replayed, or reported again, changes nothing and records one exception (182.4216ms)
+  ✔ no one confirms a late order without stock allocated again, even by claiming it is (190.592ms)
+  ✔ a second payment for an order already confirmed is an exception: nothing allocated twice (202.5076ms)
+✔ CHV-S13-M11 a capture after expiry does not oversell (1622.2301ms)
+▶ CHV-S13-M11 a capture racing the expiry jobs ends one way, never both
+  ✔ capture against the Stage 09 expiry job at the same moment: allocated and confirmed, or released and reviewed (1250.3061ms)
+  ✔ capture against the 13.09 order-expiry job at the same moment: no deadlock, and a paid order is never cancelled (1084.7602ms)
+✔ CHV-S13-M11 a capture racing the expiry jobs ends one way, never both (2335.4515ms)
+ℹ tests 6
+ℹ suites 2
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8544.1719

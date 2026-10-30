@@ -5,6 +5,8 @@
 import { createServer } from "node:http"
 import { createDbClient } from "@chaanavya/api/db/client"
 import { settleReservation } from "@chaanavya/api/inventory/reservations"
+import { cancelUnpaidOrder } from "@chaanavya/api/orders/cancel"
+import { reconcileOrders } from "@chaanavya/api/orders/recovery"
 import { mediaStorage } from "@chaanavya/api/media/storage"
 import { createLogger } from "@chaanavya/shared/observability/logger"
 import { housekeeping } from "./jobs/housekeeping.ts"
@@ -12,6 +14,8 @@ import { inventoryReconciliationJob } from "./jobs/inventory-reconciliation.ts"
 import { mediaCleanupJob } from "./jobs/media-cleanup.ts"
 import { outboxJob } from "./jobs/outbox.ts"
 import { storefrontRefresh, storefrontTarget } from "./jobs/storefront-refresh.ts"
+import { orderExpiryJob } from "./jobs/order-expiry.ts"
+import { orderReconciliationJob } from "./jobs/order-reconciliation.ts"
 import { reservationExpiryJob } from "./jobs/reservation-expiry.ts"
 import { startJobs } from "./runner.ts"
 
@@ -19,7 +23,7 @@ const logger = createLogger({ base: { service: "worker" } })
 const db = createDbClient()
 // Catalogue changes refresh the storefront's cached pages through the web host (WEB_URL).
 const storefront = storefrontTarget(process.env)
-const jobs = startJobs(db, [housekeeping, outboxJob(logger, { "catalogue.updated": storefrontRefresh(storefront, logger) }), mediaCleanupJob(mediaStorage), reservationExpiryJob(db, settleReservation), inventoryReconciliationJob], logger)
+const jobs = startJobs(db, [housekeeping, outboxJob(logger, { "catalogue.updated": storefrontRefresh(storefront, logger) }), mediaCleanupJob(mediaStorage), reservationExpiryJob(db, settleReservation), orderExpiryJob(db, cancelUnpaidOrder), orderReconciliationJob(db, reconcileOrders), inventoryReconciliationJob], logger)
 
 const port = Number(process.env.WORKER_HEALTH_PORT?.trim() || 4001)
 const server = createServer(async (request, response) => {

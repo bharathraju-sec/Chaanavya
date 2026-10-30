@@ -4,8 +4,8 @@
 // and the next run picks up where the data stands.
 //
 // Jobs: auth housekeeping (Stage 07), outbox delivery and media clean-up (Stage 08), reservation
-// expiry and inventory reconciliation (Stage 09). Order
-// reconciliation (Stage 13), payment reconciliation (Stage 14) and notification dispatch
+// expiry and inventory reconciliation (Stage 09), order expiry (Stage 13.09) and order recovery
+// reconciliation (Stage 13.14). Payment reconciliation (Stage 14) and notification dispatch
 // (Stage 18, outbox) are added as further jobs.
 import type { Db, Tx } from "@chaanavya/api/db/client"
 import type { Logger } from "@chaanavya/shared/observability/logger"

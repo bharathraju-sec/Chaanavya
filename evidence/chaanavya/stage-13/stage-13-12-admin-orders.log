@@ -1,0 +1,52 @@
+▶ CHV-S06-001 customers cannot reach admin APIs
+  ✔ every Stage 06 admin API refuses a signed-in customer and a visitor (130.1393ms)
+✔ CHV-S06-001 customers cannot reach admin APIs (3194.0295ms)
+▶ CHV-S06-002 staff limits
+  ✔ STAFF and ADMIN cannot change roles or deactivate anyone (186.9545ms)
+  ✔ STAFF and ADMIN cannot open owner settings (31.7433ms)
+  ✔ refund approval limits: STAFF none, ADMIN up to the threshold, OWNER any amount (13.2076ms)
+  ✔ an owner cannot change their own access, and the last active owner is protected (207.0572ms)
+✔ CHV-S06-002 staff limits (439.5799ms)
+▶ CHV-S06-003 canonical audit events
+  ✔ granting a role records actor, entity, time, reason and correlation ID from the session (35.4478ms)
+  ✔ revoking a role signs the person out and is audited with the role and session count (36.9703ms)
+  ✔ deactivation and sign-out-everywhere are audited (523.5981ms)
+  ✔ a change without a reason is refused and leaves no trace (29.0036ms)
+  ✔ the audit catalogue rejects incomplete events (1.7786ms)
+✔ CHV-S06-003 canonical audit events (627.3318ms)
+▶ API patterns
+  ✔ mutations need the current ETag: missing is 428, stale is 412 (95.8156ms)
+  ✔ bad input gets a structured 400 (62.1296ms)
+  ✔ the audit list pages with a cursor and filters (39.2563ms)
+✔ API patterns (197.6657ms)
+▶ admin on its own host
+  ✔ with ADMIN_URL set, admin APIs answer only on the admin host (11.7535ms)
+  ✔ host helpers (1.5577ms)
+✔ admin on its own host (13.5227ms)
+▶ CHV-S13-M12 staff permission boundaries hold on direct API calls
+  ✔ visitors 401; customers 403, even the order's own buyer; staff without two-factor 403 (102.3941ms)
+  ✔ a cross-site contact read is refused before anything is read or recorded, even with an owner's session (7.4843ms)
+  ✔ staff, admins and owners read the list and an order; the routes are read-only (118.6784ms)
+  ✔ an unknown or malformed order id is the same 404 (51.0655ms)
+  ✔ the contact route requires customers.read; the list and order need only orders.read (1.2205ms)
+✔ CHV-S13-M12 staff permission boundaries hold on direct API calls (3117.0143ms)
+▶ CHV-S13-M12 personal data is masked, and full contact reads are on record
+  ✔ the list and the order show the buyer masked: no full name, email, phone or street anywhere (27.6968ms)
+  ✔ the order view carries what staff need: items, totals in paise, payment, stock hold and its trail (13.7806ms)
+  ✔ the full contact, for admins and owners (customers.read); every read writes an audit event naming who looked (35.5947ms)
+  ✔ STAFF see the buyer masked only: a STAFF contact read is 403 and nothing is recorded (13.6196ms)
+  ✔ a refused contact read is not recorded as a view (42.3238ms)
+✔ CHV-S13-M12 personal data is masked, and full contact reads are on record (133.7158ms)
+▶ CHV-S13-M12 filters are checked and pages are stable
+  ✔ status, payment status and order number filters (66.2664ms)
+  ✔ a bad filter is refused, not ignored (82.4556ms)
+  ✔ paging one at a time visits each order once, newest first (23.1364ms)
+✔ CHV-S13-M12 filters are checked and pages are stable (172.4128ms)
+ℹ tests 28
+ℹ suites 8
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11512.5186

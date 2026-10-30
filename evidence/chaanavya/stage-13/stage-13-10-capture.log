@@ -1,0 +1,22 @@
+﻿▶ CHV-S13-M10 a capture allocates the held stock and confirms the order, once
+  ✔ one capture: payment captured, stock reserved -> allocated through the Stage 09 ledger, order confirmed, nothing shipped (1267.579ms)
+  ✔ the same event replayed changes nothing: no second allocation, no second event (607.3613ms)
+  ✔ a second event for the same capture (gateways send several) applies nothing new (1740.1125ms)
+  ✔ many events at once, replays and new ids mixed, allocate exactly once (1348.0815ms)
+✔ CHV-S13-M10 a capture allocates the held stock and confirms the order, once (7524.204ms)
+▶ CHV-S13-M10 only an authoritative, matching capture allocates
+  ✔ the same event id with a different body is a conflict and is never applied (1107.1415ms)
+  ✔ another payment provider's event, a courier, or an unknown name allocates nothing (517.4845ms)
+  ✔ a captured amount that does not match the order sends it to review; the stock stays held, neither allocated nor released (458.1186ms)
+  ✔ a capture after the hold was released allocates nothing and sends the order to review (13.11 decides) (515.4685ms)
+  ✔ a failed or expired payment cannot be captured by a stray event (491.1715ms)
+  ✔ the bridge reuses the Stage 09 settlement and ledger: it does no stock arithmetic of its own (11.4028ms)
+✔ CHV-S13-M10 only an authoritative, matching capture allocates (3101.9148ms)
+ℹ tests 10
+ℹ suites 2
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51325.7111

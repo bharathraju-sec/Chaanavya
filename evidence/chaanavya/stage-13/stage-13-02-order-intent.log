@@ -1,0 +1,62 @@
+# CHV-S13-M02 focused run (tests/security/orders/intent.test.mjs), 27 October 2026
+  ✔ the first submission places one pending order copied from the quote; the quote is used up (269.6613ms)
+  ✔ the same key again returns the same order, unchanged, as a replay (203.9728ms)
+  ✔ the same quote under a new key (a double click after a reload) returns the same order (155.7828ms)
+  ✔ a replay is answered without checking again: it still returns the order after prices and stock change (140.6599ms)
+  ✔ parallel submissions, with one key or many, make exactly one order and all get it (408.3688ms)
+✔ CHV-S13-M02 a duplicate submission returns the original order (2169.9277ms)
+▶ CHV-S13-M02 keys, totals and quotes are checked
+  ✔ a key reused for another quote is refused; keys belong to their shopper (282.0202ms)
+  ✔ another shopper's quote, an unknown quote or no session places nothing (192.9096ms)
+  ✔ a total that differs from the quote places nothing and leaves the quote usable (152.0623ms)
+  ✔ prices, totals or items sent in the body are ignored: the order is the quote's (102.8574ms)
+  ✔ a bag changed after quoting, or an expired quote, places nothing (191.9002ms)
+  ✔ the request must carry a key and a well-formed body (95.0185ms)
+✔ CHV-S13-M02 keys, totals and quotes are checked (1017.3419ms)
+▶ CHV-S13-M02 orders are placed only where checkout is open
+  ✔ production answers 404 and places nothing, even for a valid quote (71.4412ms)
+  ✔ stored keys are per-shopper digests, never the key itself (109.5442ms)
+✔ CHV-S13-M02 orders are placed only where checkout is open (181.2259ms)
+ℹ tests 13
+ℹ suites 3
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10551.8756
+
+# Mutation checks
+﻿== M1 no replay by key
+ℹ pass 11
+ℹ fail 2
+== M2 no replay by quote
+ℹ pass 11
+ℹ fail 2
+== M3 shown total not compared
+ℹ pass 12
+ℹ fail 1
+== M4 keys not scoped to the shopper
+ℹ pass 12
+ℹ fail 1
+== M5 quote not used up
+ℹ pass 12
+ℹ fail 1
+== M6 open in production
+ℹ pass 12
+ℹ fail 1
+== M7 no one-order-per-quote index (lock and re-check remain)
+ℹ pass 13
+ℹ fail 0
+== M8 no owner lock (index and re-check remain)
+ℹ pass 12
+ℹ fail 1
+== M9 no revision re-check (checkQuote remains)
+ℹ pass 13
+ℹ fail 0
+== M10 no owner lock AND no one-order-per-quote index
+ℹ pass 12
+ℹ fail 1
+== restored
+ℹ pass 13
+ℹ fail 0

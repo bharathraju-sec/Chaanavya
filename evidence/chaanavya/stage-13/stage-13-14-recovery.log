@@ -1,0 +1,85 @@
+▶ CHV-S13-M13 only admins and owners act, and only from the admin site
+  ✔ visitors 401; customers and STAFF 403; no two-factor 403 mfa_required; cross-site 403; nothing written (443.9783ms)
+  ✔ the action routes declare orders.manage (1.5128ms)
+  ✔ an unknown or malformed order id is 404 and writes nothing (46.1931ms)
+✔ CHV-S13-M13 only admins and owners act, and only from the admin site (3051.7456ms)
+▶ CHV-S13-M13 hold and release: checked, audited, and safe to repeat
+  ✔ a hold needs If-Match and a reason; it is applied once, audited and on the order's trail (331.9693ms)
+  ✔ a repeated hold is refused with nothing written; a retry with the same key returns the first result (272.3451ms)
+  ✔ two staff holding at once: one succeeds, the other is refused, one record (206.5698ms)
+  ✔ release: refused when not held, applied once when held, and the order can move again (274.1744ms)
+  ✔ only an open order can be held (210.823ms)
+  ✔ a held order's fulfilment cannot move forward, in the API or the database; release lifts it; cancelling stays possible (462.6124ms)
+  ✔ a hold changes no money, payment or stock (202.4559ms)
+✔ CHV-S13-M13 hold and release: checked, audited, and safe to repeat (1961.8638ms)
+▶ CHV-S13-M13 internal notes: checked, audited without their text, never added twice
+  ✔ a note needs an Idempotency-Key and 1 to 1000 plain characters (193.4534ms)
+  ✔ a note is added once and audited by id and length; a retry returns the same note; a reused key is refused (265.0339ms)
+  ✔ staff actions are append-only in the database (176.1175ms)
+✔ CHV-S13-M13 internal notes: checked, audited without their text, never added twice (635.0287ms)
+▶ CHV-S13-M12 staff permission boundaries hold on direct API calls
+  ✔ visitors 401; customers 403, even the order's own buyer; staff without two-factor 403 (120.2415ms)
+  ✔ a cross-site contact read is refused before anything is read or recorded, even with an owner's session (10.3759ms)
+  ✔ staff, admins and owners read the list and an order; the routes are read-only (151.4324ms)
+  ✔ an unknown or malformed order id is the same 404 (57.7458ms)
+  ✔ the contact route requires customers.read; the list and order need only orders.read (1.3996ms)
+✔ CHV-S13-M12 staff permission boundaries hold on direct API calls (3388.3161ms)
+▶ CHV-S13-M12 personal data is masked, and full contact reads are on record
+  ✔ the list and the order show the buyer masked: no full name, email, phone or street anywhere (30.0415ms)
+  ✔ the order view carries what staff need: items, totals in paise, payment, stock hold and its trail (15.3208ms)
+  ✔ the full contact, for admins and owners (customers.read); every read writes an audit event naming who looked (32.1563ms)
+  ✔ STAFF see the buyer masked only: a STAFF contact read is 403 and nothing is recorded (11.9231ms)
+  ✔ a refused contact read is not recorded as a view (34.5303ms)
+✔ CHV-S13-M12 personal data is masked, and full contact reads are on record (124.6334ms)
+▶ CHV-S13-M12 filters are checked and pages are stable
+  ✔ status, payment status and order number filters (56.5585ms)
+  ✔ a bad filter is refused, not ignored (73.4184ms)
+  ✔ paging one at a time visits each order once, newest first (23.01ms)
+✔ CHV-S13-M12 filters are checked and pages are stable (153.2993ms)
+▶ CHV-S13-M09 a retry or race cannot double-release stock
+  ✔ the shopper cancels: the hold is released once, the order cancelled once, each with its origin (512.7275ms)
+  ✔ a repeated cancel changes nothing: no second release, no second event (312.9785ms)
+  ✔ eight parallel cancels by the shopper release the stock exactly once (340.5393ms)
+  ✔ the expiry job racing the shopper, and overlapping job runs, still release once (398.5569ms)
+  ✔ the expiry job cancels orders whose window has ended, and only those, once across overlapping runs (600.2952ms)
+✔ CHV-S13-M09 a retry or race cannot double-release stock (3158.7412ms)
+▶ CHV-S13-M09 a payment in flight is never cut off
+  ✔ an open (created) payment past the window is sent for reconciliation; the order and its stock wait (265.2071ms)
+  ✔ an authorized or reconciling payment keeps the order; the shopper cannot cancel it away either (455.8808ms)
+  ✔ a failed or expired payment no longer holds the order back (533.5369ms)
+  ✔ a captured payment is never cancelled here (245.6795ms)
+✔ CHV-S13-M09 a payment in flight is never cut off (1500.8158ms)
+▶ CHV-S13-M09 only the shopper's own unpaid order
+  ✔ another shopper, an unknown id or a malformed id gets 404 and nothing is released (432.1546ms)
+  ✔ a confirmed order cannot be cancelled through this route (231.0762ms)
+  ✔ the route is closed in production (226.4247ms)
+✔ CHV-S13-M09 only the shopper's own unpaid order (890.0568ms)
+▶ CHV-S13-M14 stuck orders are surfaced, and nothing else changes
+  ✔ a fresh pending order is not stuck (318.5854ms)
+  ✔ a pending order past its window: a case for a person, and the order, hold and ledger untouched (303.5986ms)
+  ✔ a payment in flight is never guessed: the case says to ask the provider, and the payment stays as it is (286.7537ms)
+  ✔ a captured payment on an unconfirmed order is surfaced, not confirmed (241.3678ms)
+  ✔ an order and its hold that disagree: confirmed with stock unallocated, cancelled still holding stock (403.9385ms)
+  ✔ an order left in review for a day is surfaced (298.8851ms)
+  ✔ the worker job runs the same reconciliation on its own clock (231.9571ms)
+✔ CHV-S13-M14 stuck orders are surfaced, and nothing else changes (4009.759ms)
+▶ CHV-S13-M14 runs are idempotent, overlap safely, and close cases correctly
+  ✔ repeated and overlapping runs keep one open case per order and kind, opened and audited once (310.1219ms)
+  ✔ a case clears when its condition goes: the order was cancelled by the expiry path (399.7904ms)
+  ✔ a resolved case does not come back with the same facts, and opens again when something changes (386.8102ms)
+  ✔ findingsFor is pure: the same order at the same time gives the same findings (0.3381ms)
+✔ CHV-S13-M14 runs are idempotent, overlap safely, and close cases correctly (1097.4934ms)
+▶ CHV-S13-M14 staff see and resolve cases; resolving changes nothing on the order
+  ✔ visitors 401, customers 403; staff list; only admins and owners resolve; cross-site refused (343.3916ms)
+  ✔ resolving needs a reason, is audited, is refused the second time, and leaves the order alone (363.2191ms)
+  ✔ the routes declare their capabilities, and bad filters are refused (49.7127ms)
+  ✔ the database keeps cases honest: closed cases do not change, nothing is deleted, facts carry nothing personal (271.4909ms)
+✔ CHV-S13-M14 staff see and resolve cases; resolving changes nothing on the order (1028.2404ms)
+ℹ tests 53
+ℹ suites 12
+ℹ pass 53
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12841.294

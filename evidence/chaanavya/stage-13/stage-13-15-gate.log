@@ -1,0 +1,21 @@
+▶ CHV-S13-M15 no overselling in tested races
+  ✔ eight shoppers race for the last two units: two orders, each paid by replayed and concurrent captures, allocated once (771.4854ms)
+  ✔ multi-item bags race: a bag is held whole or not at all, and the scarce item is sold once (413.3228ms)
+  ✔ payment, hold expiry, window end and the shopper's cancel all race on one order: one consistent outcome, ten times (11961.4666ms)
+  ✔ a late payment after the last unit was resold: the second buyer keeps it, the first goes to review, no re-reservation (341.5482ms)
+  ✔ an order with a payment still open is never cancelled or its outcome guessed; the stock goes back only once (176.8627ms)
+  ✔ cancelling twice, expiring twice and re-running every job change nothing more (203.4123ms)
+✔ CHV-S13-M15 no overselling in tested races (14567.0912ms)
+▶ CHV-S13-M15 no unpaid fulfilment
+  ✔ unpaid, under review and cancelled orders cannot be packed through the API or the database (476.3057ms)
+  ✔ a paid order packs once its payment confirmed it; packing races apply once; a held order waits (363.3054ms)
+  ✔ after every race above, reconciliation finds the stuck orders without changing any of them (72.4911ms)
+✔ CHV-S13-M15 no unpaid fulfilment (912.5676ms)
+ℹ tests 9
+ℹ suites 2
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 20617.8866

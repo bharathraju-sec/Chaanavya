@@ -1,0 +1,123 @@
+
+> chaanavya-storefront@2.0.0 test:e2e
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/e2e/*.test.mjs"
+
+▶ CHV-S06-001 admin pages are blocked for customers and visitors
+  ✔ the shop host never serves the admin (58.2357ms)
+  ✔ signed-out visitors on the admin host are sent to the login page, which is not indexed (37.4518ms)
+  ✔ old /admin/... addresses on the admin host redirect to the short form (2.6327ms)
+  ✔ a signed-in customer gets a plain 404 on every admin page (520.8368ms)
+  ✔ unknown admin addresses are a plain 404 (12.3859ms)
+✔ CHV-S06-001 admin pages are blocked for customers and visitors (3085.5501ms)
+▶ roles and empty states
+  ✔ CHV-S06-004 the overview shows no sales figures, sample rows or currency amounts (40.4933ms)
+  ✔ CHV-S06-004 every planned section says it is not built yet and shows no data (106.257ms)
+  ✔ the owner sees team and configuration; values never appear (30.5064ms)
+  ✔ STAFF sees no Settings or Audit link, and those pages refuse them (39.5118ms)
+  ✔ CHV-S08 products: an empty catalogue says so; STAFF can look but gets no editing controls (115.7259ms)
+  ✔ CHV-S08 product editor, preview, collections and import pages render from the API (230.3979ms)
+  ✔ CHV-S08/S09 a signed-in customer gets a 404 on the product and inventory pages (440.5745ms)
+  ✔ admin pages may load photos and send uploads to the photo store; shop pages may not upload (36.7487ms)
+  ✔ CHV-S09 inventory: stock list, stocktakes; STAFF reads but cannot start a count (129.1946ms)
+  ✔ the audit trail page lists real entries (20.1314ms)
+✔ roles and empty states (3319.4468ms)
+▶ storefront header
+  ✔ the sign-in button opens our sign-in page; signed in, it says Account (472.7785ms)
+  ✔ robots.txt: the shop keeps crawlers out of private paths; the admin host blocks everything (82.986ms)
+  ✔ no Shopify anywhere in storefront pages (92.8086ms)
+✔ storefront header (648.9306ms)
+▶ static check
+  ✔ admin code has no chart libraries or hard-coded money figures (30.9411ms)
+✔ static check (31.0612ms)
+▶ CHV-S11-M11 bag drawer on the shop's own cart API
+  ✔ add, change, remove and clear work through the web host, with totals from the API (361.0852ms)
+  ✔ the bag survives a reload through the web host and is never cached (48.4527ms)
+  ✔ errors from the API reach the drawer as the API sent them (75.0527ms)
+  ✔ the drawer calls only the shop's cart API, and the shop's code holds no Shopify cart or browser-only bag (69.0892ms)
+  ✔ adding to the bag reserves no stock (44.1426ms)
+✔ CHV-S11-M11 bag drawer on the shop's own cart API (2330.48ms)
+▶ CHV-S11-M12 Stage 11 gate
+  ✔ a guest shops, reloads, signs in, changes quantities and signs out: the bag follows every step, and no stock moves (743.7889ms)
+  ✔ prices and availability are always the catalogue's current ones (182.0101ms)
+  ✔ an unreachable API is a clean, uncached error for the bag, and nothing is half-done (3.3609ms)
+  ✔ no shopper sees another's bag, account or session, on any cart route (362.9547ms)
+  ✔ checkout stays closed: no checkout, payment, quote or webhook route, page or API, and the bag's checkout button is disabled (175.221ms)
+  ✔ the bag never reserves stock, whatever is done to it (229.7061ms)
+✔ CHV-S11-M12 Stage 11 gate (3418.3127ms)
+(node:15744) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M11 the sitemap lists exactly what shoppers can open, and nothing hidden or sample (10568.2059ms)
+✔ CHV-S10-M11 robots.txt keeps private paths out and points at the sitemap (3.9622ms)
+✔ CHV-S10-M11 every listed page opens, is mobile-ready, has a title and its own canonical address, and names no sample product (515.9981ms)
+✔ CHV-S10-M11 an empty collection and the Show more pages are kept out of the index, with one canonical address (97.6704ms)
+✔ CHV-S10-M11 the sitemap follows the catalogue: an unpublish drops the product after the worker delivers it (181.5602ms)
+✔ CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, page or API, and no payment provider on the pages (254.9634ms)
+✔ CHV-S10-M11 when the API is down the sitemap and robots still work, with fixed pages only and no stale or sample product (885.2456ms)
+✔ CHV-S10-M10 the refresh route answers only the worker, and only to POST (7661.5647ms)
+✔ CHV-S10-M10 policy: public reads are cached for a bounded 60 seconds (8.795ms)
+(node:57964) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M10 a publish becomes visible after the worker delivers it, not before (590.9468ms)
+✔ CHV-S10-M10 a stock change to sold out becomes visible after the worker delivers it (162.8416ms)
+✔ CHV-S10-M10 an unpublish removes the product after the worker delivers it (123.8554ms)
+▶ CHV-S12-M13 the correct quote is produced
+  ✔ within Karnataka: CGST and SGST on goods and fee, cheapest delivery, prices including GST (221.0908ms)
+  ✔ to Maharashtra with a 10% code and two units: IGST, the discount and fee shared, the air option the shopper picked (154.7138ms)
+  ✔ a mixed bag (5% and 12%) with an odd price: the fee's GST split by value, every paisa accounted for (202.6192ms)
+  ✔ a replaced state code (Orissa) is stored as Odisha and priced as inter-state, national zone (101.8065ms)
+  ✔ perfume is quoted by surface only (97.734ms)
+  ✔ a signed-in customer gets the same quote, with the account's email (224.9871ms)
+  ✔ tampered prices, totals and fees in the request change nothing (145.7343ms)
+✔ CHV-S12-M13 the correct quote is produced (3019.9001ms)
+▶ CHV-S12-M13 checkout blocks with an explanation
+  ✔ address: a malformed PIN, an unknown state, a non-mobile phone, or no address at all (185.0187ms)
+  ✔ delivery: unserviceable PIN, courier outage, restricted item, no weight, over every courier's limit (443.3816ms)
+  ✔ price and stock: a stale bag, a price change after quoting, stock gone, an item withdrawn (431.7938ms)
+  ✔ tax: a category with no rate in the profile, and production without an approved profile (197.2765ms)
+  ✔ an expired quote is refused and must be asked for again (137.9221ms)
+✔ CHV-S12-M13 checkout blocks with an explanation (1396.0254ms)
+▶ CHV-S12-M13 payment stays disabled
+  ✔ no payment, order or webhook route exists on the API or the web host; no order, payment or reservation was made (381.5434ms)
+  ✔ the review's final button is disabled; production has no review page and keeps the bag's 'Checkout opens soon' (142.7106ms)
+✔ CHV-S12-M13 payment stays disabled (524.5313ms)
+▶ CHV-S12-M11 the review shows exactly the total the API authorised
+  ✔ through the web host, the shown total is the API's grand total, and it matches the stored quote (312.2303ms)
+  ✔ choosing another delivery option shows the API's new total, not one worked out in the browser (195.7478ms)
+  ✔ the summary only formats the API's figures: a quote whose parts do not add up still shows the API's total (1.0733ms)
+  ✔ a test quote says so on the summary; nothing on the page can place an order (105.0724ms)
+✔ CHV-S12-M11 the review shows exactly the total the API authorised (2458.6534ms)
+▶ CHV-S12-M11 the review page is open in development and staging only
+  ✔ development serves /checkout, not indexed; production answers 404 (286.2372ms)
+  ✔ the switch: development and staging open, production closed however it is declared (0.4026ms)
+  ✔ the bag links to the review only when it is open; otherwise checkout stays a disabled button (1.8385ms)
+✔ CHV-S12-M11 the review page is open in development and staging only (288.9754ms)
+✔ CHV-S10-M08 every collection page keeps its slug and editorial copy and shows an honest empty state (7935.51ms)
+(node:37168) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M08 each collection shows exactly its published members, newest first (1826.069ms)
+✔ CHV-S10-M08 a collection with more than 48 products pages with Show more and no product is lost or repeated (462.3287ms)
+✔ CHV-S10-M08 a forged or malformed cursor is a plain 404, never a leak (132.3583ms)
+✔ CHV-S10-M08 unknown slugs, an owner-hidden collection and the old links behave as before (112.3233ms)
+✔ CHV-S10-M08 when the API is down each collection page says so calmly and shows no sample products (1035.7516ms)
+✔ CHV-S10-M07 with nothing published the homepage keeps its editorial layout and shows no sample products (7707.3837ms)
+(node:18800) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M07 published, counted products render from the API, newest first, capped at four, without hidden ones (2181.0144ms)
+✔ CHV-S10-M07 when the API is down the homepage says so calmly and still shows no sample products (1044.1974ms)
+(node:31172) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M09 a published product shows its details, both photos, its collection and related products (9344.8189ms)
+✔ CHV-S10-M09 before a choice the price is the first buyable size's and the button asks for a size (35.0146ms)
+✔ CHV-S10-M09 a linked size shows that size's own price, reduced price and stock (99.8239ms)
+✔ CHV-S10-M09 a bad variant link is ignored and reveals nothing (262.1928ms)
+✔ CHV-S10-M09 a fully sold-out product is found, shows its price and cannot be added (29.495ms)
+✔ CHV-S10-M09 handles keep one canonical spelling; hidden, missing and sample handles are a plain 404 (396.6199ms)
+✔ CHV-S10-M09 when the API is down the page says so, is not indexed and shows no sample or stale product (585.7966ms)
+ℹ tests 79
+ℹ suites 11
+ℹ pass 79
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113200.3952

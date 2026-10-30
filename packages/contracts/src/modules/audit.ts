@@ -5,7 +5,17 @@ import type { Actor, AuditEventId, ContractVersion, CorrelationId, IsoDateTime }
 
 export type AuditAction =
   | "order.transition"
+  | "order.fulfilment_transition"
   | "payment.event"
+  | "payment.transition"
+  | "payment.late_capture"
+  | "customer.contact_viewed"
+  | "order.held"
+  | "order.released"
+  | "order.note_added"
+  | "order.recovery_case_opened"
+  | "order.recovery_case_cleared"
+  | "order.recovery_case_resolved"
   | "refund.requested"
   | "refund.transition"
   | "inventory.adjusted"

@@ -757,6 +757,7 @@ model Cart {
   requests     CartRequest[]
   contact      CartContact?
   quote        CheckoutQuote?
+  orders       Order[]
 
   @@index([userId])
   @@index([guestSessionId])
@@ -784,6 +785,82 @@ model CartContact {
 }
 
 /// The latest checkout quote for a bag (Stage 12.09), worked out on the server; replaced on every quote.
+/// The order's event trail (Stage 13.08): append-only, written by the database for every status move and by
+/// the API for the placement. Each event names its origin (actor, correlation id); nothing personal.
+model OrderEvent {
+  id            String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  orderId       String    @map("order_id") @db.Uuid
+  /// placed | status | fulfilment | payment | reservation | hold
+  kind          String
+  /// The order, payment attempt or stock hold that moved.
+  subjectId     String    @map("subject_id") @db.Uuid
+  fromState     String?   @map("from_state")
+  toState       String    @map("to_state")
+  actorKind     ActorKind @map("actor_kind")
+  actorId       String?   @map("actor_id")
+  correlationId String    @map("correlation_id")
+  reason        String    @default("")
+  /// Redacted context only (enforced by order_event_context_redacted).
+  context       Json      @default("{}")
+  occurredAt    DateTime  @default(now()) @map("occurred_at") @db.Timestamptz(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId, occurredAt])
+  @@index([correlationId])
+  @@map("order_event")
+}
+
+/// Staff actions on an order (Stage 13.13): holds, releases and internal notes. Append-only. A note's
+/// text is internal and never shown to the buyer; the audit trail records only its id and length.
+model OrderAdminAction {
+  id             String   @id @default(uuid(7)) @db.Uuid
+  orderId        String   @map("order_id") @db.Uuid
+  /// hold | release | note
+  kind           String
+  actorId        String   @map("actor_id") @db.Uuid
+  /// The staff reason for a hold or release, or the note's text.
+  body           String
+  /// "staff:<actor id>:<Idempotency-Key>": a retry with the same key changes nothing.
+  idempotencyKey String?  @unique @map("idempotency_key")
+  correlationId  String   @map("correlation_id")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([orderId, createdAt])
+  @@map("order_admin_action")
+}
+
+/// A stuck order found by order reconciliation (Stage 13.14), for a person to look at. Opening a case never
+/// changes the order, its payments or its stock hold. Facts are statuses, ids and times only: nothing personal.
+model OrderRecoveryCase {
+  id           String    @id @default(uuid(7)) @db.Uuid
+  orderId      String    @map("order_id") @db.Uuid
+  /// pending_past_window | captured_not_confirmed | hold_overdue | hold_mismatch | review_waiting
+  kind         String
+  /// open | resolved (by staff, with a reason) | cleared (the condition no longer holds)
+  status       String    @default("open")
+  /// What was seen: order, payment and hold statuses and deadlines.
+  facts        Json
+  /// SHA-256 of the facts: a resolved case is not reopened while the facts stay the same.
+  factsKey     String    @map("facts_key") @db.Char(64)
+  /// What a person should check first; never a payment outcome.
+  check        String
+  detectedAt   DateTime  @default(now()) @map("detected_at") @db.Timestamptz(3)
+  lastSeenAt   DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  closedAt     DateTime? @map("closed_at") @db.Timestamptz(3)
+  closedBy     String?   @map("closed_by") @db.Uuid
+  resolution   String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+
+  @@index([status, detectedAt])
+  @@index([orderId])
+  /// One open case per order and kind: a partial unique index in migration 20261030010000_order_recovery_cases, not modelled here.
+  @@map("order_recovery_case")
+}
+
 model CheckoutQuote {
   id                 String   @id @db.Uuid
   cartId             String   @unique @map("cart_id") @db.Uuid
@@ -886,22 +963,44 @@ model Order {
   /// Idempotency key of the checkout confirmation: the same key returns the same order.
   submitKey              String           @unique @map("submit_key")
   legacyShopifyOrderName String?          @unique @map("legacy_shopify_order_name")
+  /// Stage 13.01: who bought it, as placed: { kind, email, name, phone }. NULL only for orders not placed from a quote.
+  customerSnapshot       Json?            @map("customer_snapshot")
+  /// The tax basis: { taxProfileId, profileApproved, supply, seller and delivery states, pricesIncludeTax, rounding }.
+  taxSnapshot            Json?            @map("tax_snapshot")
+  /// The delivery option sold: { serviceRef, courierName, mode, estimatedDeliveryDays, fee, tax, total, ratesMode }.
+  shippingSnapshot       Json?            @map("shipping_snapshot")
+  /// Fingerprint of the quote the order was placed from (Stage 12.10).
+  quoteFingerprint       String?          @map("quote_fingerprint") @db.Char(64)
+  /// The bag the order was placed from (Stage 13.03); cleared if the bag is deleted.
+  cartId                 String?          @map("cart_id") @db.Uuid
+  /// When the order's price stops being payable: the quote's expiry (Stage 13.03).
+  payableUntil           DateTime?        @map("payable_until") @db.Timestamptz(3)
+  /// Staff hold (Stage 13.13): while set, fulfilment cannot move forward (the database refuses it); only cancelling can.
+  heldAt                 DateTime?        @map("held_at") @db.Timestamptz(3)
+  /// The staff member who placed the hold.
+  heldBy                 String?          @map("held_by") @db.Uuid
   createdAt              DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt              DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   user         User?                 @relation(fields: [userId], references: [id], onDelete: SetNull)
   guestSession GuestSession?         @relation(fields: [guestSessionId], references: [id], onDelete: SetNull)
   promotion    Promotion?            @relation(fields: [promotionId], references: [id], onDelete: Restrict)
+  cart         Cart?                 @relation(fields: [cartId], references: [id], onDelete: SetNull)
   items        OrderItem[]
+  events       OrderEvent[]
   reservation  InventoryReservation?
   payments     PaymentAttempt[]
   shipments    Shipment[]
   returns      ReturnRequest[]
+  adminActions OrderAdminAction[]
+  recoveryCases OrderRecoveryCase[]
 
   @@index([userId, createdAt])
   @@index([guestSessionId])
   @@index([status, createdAt])
   @@index([email])
+  @@index([cartId])
+  /// One order per checkout quote (Stage 13.02); a partial unique index in migration 20261028010000_order_one_per_quote, not modelled here.
   @@map("order")
 }
 
@@ -924,6 +1023,8 @@ model OrderItem {
   /// TaxLineV1[] at the time of purchase.
   taxLines       Json     @default("[]") @map("tax_lines")
   lineTotalPaise BigInt   @map("line_total_paise")
+  /// TaxClassificationV1 at the time of purchase (Stage 13.01).
+  taxClassification Json? @map("tax_classification")
   currency       String   @default("INR") @db.Char(3)
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 

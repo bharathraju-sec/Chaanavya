@@ -1,0 +1,97 @@
+# CHV-S13-M08 focused run (tests/security/orders/events.test.mjs with the order tests that change statuses), 29 October 2026
+  ✔ a placed order names its bag, and is payable until its quote's expiry (309.9107ms)
+  ✔ the shopper who placed it can continue it (179.2781ms)
+✔ CHV-S13-M03 an order is bound to the checkout it came from (1456.4966ms)
+▶ CHV-S13-M03 a customer cannot reuse someone else's order id
+  ✔ another guest, a signed-in customer and a signed-out visitor all get the same 404 as an unknown id (373.8959ms)
+  ✔ a foreign order cannot be placed again, replayed or continued with its own key or quote (286.0492ms)
+  ✔ a guest's order stays with the guest session: after signing in it is not the customer's to continue (188.889ms)
+  ✔ a customer's order is theirs alone: another customer and the customer's earlier guest session are refused (217.5127ms)
+✔ CHV-S13-M03 a customer cannot reuse someone else's order id (1066.9352ms)
+▶ CHV-S13-M03 the checkout must still be live
+  ✔ at or after the payment window the order cannot be continued (138.2419ms)
+  ✔ an order that is no longer pending cannot be continued (123.2842ms)
+  ✔ when the bag it came from is gone, the checkout has ended (128.563ms)
+  ✔ the bag link and payment window are frozen: they cannot be moved or extended (261.949ms)
+  ✔ the route is closed in production (164.1632ms)
+✔ CHV-S13-M03 the checkout must still be live (816.7074ms)
+▶ CHV-S13-M08 every sensitive transition has an auditable origin
+  ✔ placing an order records one 'placed' event: the guest, the request's correlation id, and a redacted context (238.3786ms)
+  ✔ a signed-in customer's placement names the customer's account (193.8594ms)
+  ✔ every move after placing is recorded once, with its actor, request and rule: payment, hold, order, fulfilment (172.7134ms)
+  ✔ the trail explains the order's current state: each event starts where the last one ended (129.7002ms)
+✔ CHV-S13-M08 every sensitive transition has an auditable origin (1360.1112ms)
+▶ CHV-S13-M08 no origin, no change
+  ✔ a direct status change without a declared origin is refused, for orders, payments and holds (188.0192ms)
+  ✔ an origin missing its actor or correlation id does not count, and an origin never outlives its transaction (144.02ms)
+  ✔ the trail is append-only and refuses personal data (190.319ms)
+✔ CHV-S13-M08 no origin, no change (522.7156ms)
+▶ CHV-S13-M08 retries never duplicate events
+  ✔ replays with the same key or the same quote add no second placement (154.7534ms)
+  ✔ parallel submissions of one quote leave exactly one placement event (165.8177ms)
+  ✔ a repeated move (a retried callback or job) is a no-op and adds nothing (125.7176ms)
+  ✔ the database itself refuses a second placement event (108.6342ms)
+✔ CHV-S13-M08 retries never duplicate events (555.3457ms)
+▶ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone
+  ✔ a complete payment callback captures the payment and confirms the order; fulfilment does not move (146.5547ms)
+  ✔ the payment provider cannot pack, hand over or complete an order, whatever it claims (22.782ms)
+  ✔ one write cannot both confirm an order and move its fulfilment (39.727ms)
+  ✔ shipping happens only through its own steps, after payment, by staff and the courier (71.5106ms)
+✔ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone (672.5979ms)
+▶ CHV-S13-M07 payments move on their own provider's events only
+  ✔ a courier, staff or a customer cannot capture a payment; a system job only where the machine allows (39.0301ms)
+  ✔ one provider's event never moves another provider's payment; an unknown provider moves nothing (12.9997ms)
+  ✔ a courier cannot confirm payment for an order (6.7067ms)
+  ✔ the database allows exactly the payment machine's moves, and the actor table covers each of them (384.0257ms)
+  ✔ repeats are harmless: the same callback twice changes nothing more (18.8073ms)
+  ✔ actors are classed by kind and provider name (0.16ms)
+✔ CHV-S13-M07 payments move on their own provider's events only (462.2469ms)
+▶ CHV-S13-M01 an order placed from a quote carries everything it was sold on
+  ✔ identifiers: a UUID id and a CHV- number from the sequence, both unique (244.293ms)
+  ✔ the order is the quote, copied: totals, lines, tax classification, customer, tax basis, delivery and fingerprint (147.5434ms)
+  ✔ the snapshot is a copy: changing the quote object afterwards changes nothing (77.4495ms)
+✔ CHV-S13-M01 an order placed from a quote carries everything it was sold on (1065.9654ms)
+▶ CHV-S13-M01 later catalogue edits do not alter a placed order
+  ✔ price, titles, SKU, handle, photo, weight, restriction, tax rate and HSN, promotion and address all change; the order does not (139.0438ms)
+  ✔ archiving or deleting the variant keeps the snapshot; only the link to a deleted variant clears (97.9955ms)
+✔ CHV-S13-M01 later catalogue edits do not alter a placed order (237.3408ms)
+▶ CHV-S13-M01 the database refuses any edit of what was sold
+  ✔ money, email, address, snapshots, fingerprint, number and tax setting cannot be changed on the order (229.5316ms)
+  ✔ a line's price, tax, quantity or tax classification cannot be changed (122.816ms)
+  ✔ status, fulfilment and account links still move: a guest claims the order, and deletions clear links (146.9453ms)
+  ✔ an order from a quote must carry every snapshot, consistent with its own columns; the number has its format (117.984ms)
+  ✔ the same submit key never makes a second order (84.7237ms)
+✔ CHV-S13-M01 the database refuses any edit of what was sold (702.4561ms)
+▶ CHV-S13-M01 the snapshot is copied faithfully or not at all
+  ✔ no fingerprint, no catalogue facts for a line, no lines, or lines taxed by two profiles are refused (72.3541ms)
+  ✔ a signed-in customer's order is recorded as a customer's (82.375ms)
+✔ CHV-S13-M01 the snapshot is copied faithfully or not at all (154.9838ms)
+▶ CHV-S13-M06 an invalid jump from pending to shipped is rejected
+  ✔ a pending order cannot be handed to the courier, packed or completed: not by the API, not by a direct write (185.6417ms)
+  ✔ the full path works one step at a time, by the right actors (57.105ms)
+  ✔ an order is completed only after it was handed over (16.3476ms)
+✔ CHV-S13-M06 an invalid jump from pending to shipped is rejected (605.9766ms)
+▶ CHV-S13-M06 the database allows exactly the machines' moves
+  ✔ every order status pair: allowed if and only if it is a transition of ORDER_MACHINE (147.98ms)
+  ✔ every fulfilment pair on a confirmed order: allowed if and only if it is a transition of FULFILMENT_MACHINE (155.8735ms)
+  ✔ every transition has its actors listed, and every listed move is a transition (0.3502ms)
+✔ CHV-S13-M06 the database allows exactly the machines' moves (304.5137ms)
+▶ CHV-S13-M06 only the allowed actors may ask for a move
+  ✔ a customer, a guest or staff cannot confirm a payment; only the provider or a system job can (28.4377ms)
+  ✔ only staff resolve a review; a system job cannot (12.4434ms)
+  ✔ the customer (or guest) may cancel before dispatch; a system job may not (28.269ms)
+  ✔ only the courier hands a parcel over; staff pack it (19.1947ms)
+  ✔ facts the order row holds cannot be supplied by the caller (6.0365ms)
+✔ CHV-S13-M06 only the allowed actors may ask for a move (95.0029ms)
+▶ CHV-S13-M06 moves are compare-and-set and repeat safely
+  ✔ asking for the state it is already in is a no-op; a stale 'from' is refused (12.8096ms)
+  ✔ two simultaneous moves from the same state: exactly one applies (15.2406ms)
+✔ CHV-S13-M06 moves are compare-and-set and repeat safely (28.2754ms)
+ℹ tests 57
+ℹ suites 16
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34598.1757

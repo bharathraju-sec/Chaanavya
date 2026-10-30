@@ -1,0 +1,61 @@
+▶ CHV-S13-M13 only admins and owners act, and only from the admin site
+  ✔ visitors 401; customers and STAFF 403; no two-factor 403 mfa_required; cross-site 403; nothing written (358.2579ms)
+  ✔ the action routes declare orders.manage (0.7182ms)
+  ✔ an unknown or malformed order id is 404 and writes nothing (40.0355ms)
+✔ CHV-S13-M13 only admins and owners act, and only from the admin site (2437.8502ms)
+▶ CHV-S13-M13 hold and release: checked, audited, and safe to repeat
+  ✔ a hold needs If-Match and a reason; it is applied once, audited and on the order's trail (274.167ms)
+  ✔ a repeated hold is refused with nothing written; a retry with the same key returns the first result (226.053ms)
+  ✔ two staff holding at once: one succeeds, the other is refused, one record (186.5201ms)
+  ✔ release: refused when not held, applied once when held, and the order can move again (204.512ms)
+  ✔ only an open order can be held (152.0312ms)
+  ✔ a held order's fulfilment cannot move forward, in the API or the database; release lifts it; cancelling stays possible (386.718ms)
+  ✔ a hold changes no money, payment or stock (161.4121ms)
+✔ CHV-S13-M13 hold and release: checked, audited, and safe to repeat (1592.1509ms)
+▶ CHV-S13-M13 internal notes: checked, audited without their text, never added twice
+  ✔ a note needs an Idempotency-Key and 1 to 1000 plain characters (162.7984ms)
+  ✔ a note is added once and audited by id and length; a retry returns the same note; a reused key is refused (215.4609ms)
+  ✔ staff actions are append-only in the database (161.2548ms)
+✔ CHV-S13-M13 internal notes: checked, audited without their text, never added twice (539.8682ms)
+▶ CHV-S13-M15 no overselling in tested races
+  ✔ eight shoppers race for the last two units: two orders, each paid by replayed and concurrent captures, allocated once (661.6942ms)
+  ✔ multi-item bags race: a bag is held whole or not at all, and the scarce item is sold once (378.1895ms)
+  ✔ payment, hold expiry, window end and the shopper's cancel all race on one order: one consistent outcome, ten times (10891.7832ms)
+  ✔ a late payment after the last unit was resold: the second buyer keeps it, the first goes to review, no re-reservation (359.9427ms)
+  ✔ an order with a payment still open is never cancelled or its outcome guessed; the stock goes back only once (178.1713ms)
+  ✔ cancelling twice, expiring twice and re-running every job change nothing more (2172.1593ms)
+✔ CHV-S13-M15 no overselling in tested races (15256.3285ms)
+▶ CHV-S13-M15 no unpaid fulfilment
+  ✔ unpaid, under review and cancelled orders cannot be packed through the API or the database (407.4728ms)
+  ✔ a paid order packs once its payment confirmed it; packing races apply once; a held order waits (342.7161ms)
+  ✔ after every race above, reconciliation finds the stuck orders without changing any of them (73.11ms)
+✔ CHV-S13-M15 no unpaid fulfilment (823.6857ms)
+▶ CHV-S13-M14 stuck orders are surfaced, and nothing else changes
+  ✔ a fresh pending order is not stuck (227.4996ms)
+  ✔ a pending order past its window: a case for a person, and the order, hold and ledger untouched (211.8486ms)
+  ✔ a payment in flight is never guessed: the case says to ask the provider, and the payment stays as it is (217.6952ms)
+  ✔ a captured payment on an unconfirmed order is surfaced, not confirmed (178.9963ms)
+  ✔ an order and its hold that disagree: confirmed with stock unallocated, cancelled still holding stock (328.4188ms)
+  ✔ an order left in review for a day is surfaced (302.5663ms)
+  ✔ the worker job runs the same reconciliation on its own clock (175.5096ms)
+✔ CHV-S13-M14 stuck orders are surfaced, and nothing else changes (3091.7543ms)
+▶ CHV-S13-M14 runs are idempotent, overlap safely, and close cases correctly
+  ✔ repeated and overlapping runs keep one open case per order and kind, opened and audited once (262.4405ms)
+  ✔ a case clears when its condition goes: the order was cancelled by the expiry path (317.4546ms)
+  ✔ a resolved case does not come back with the same facts, and opens again when something changes (309.3171ms)
+  ✔ findingsFor is pure: the same order at the same time gives the same findings (0.3069ms)
+✔ CHV-S13-M14 runs are idempotent, overlap safely, and close cases correctly (889.9242ms)
+▶ CHV-S13-M14 staff see and resolve cases; resolving changes nothing on the order
+  ✔ visitors 401, customers 403; staff list; only admins and owners resolve; cross-site refused (263.7917ms)
+  ✔ resolving needs a reason, is audited, is refused the second time, and leaves the order alone (249.176ms)
+  ✔ the routes declare their capabilities, and bad filters are refused (37.9124ms)
+  ✔ the database keeps cases honest: closed cases do not change, nothing is deleted, facts carry nothing personal (232.8818ms)
+✔ CHV-S13-M14 staff see and resolve cases; resolving changes nothing on the order (784.1167ms)
+ℹ tests 37
+ℹ suites 8
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 41045.0192

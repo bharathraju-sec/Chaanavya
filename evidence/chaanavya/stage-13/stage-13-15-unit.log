@@ -1,0 +1,147 @@
+
+> chaanavya-storefront@2.0.0 test
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test "tests/contracts/*.test.mjs" "tests/ops/*.test.mjs" "tests/catalogue/*.test.mjs"
+
+✔ CHV-S10-M07 a published product maps to the storefront shape with exact prices and the API's availability (99.3293ms)
+✔ CHV-S10-M07 a product with no photos maps to no image, never a placeholder (0.2276ms)
+▶ money and handles
+  ✔ paise are whole numbers only, never floats (2.4685ms)
+  ✔ rupee amounts from a spreadsheet convert by string arithmetic (0.5426ms)
+  ✔ handles from titles (1.8629ms)
+✔ money and handles (6.402ms)
+▶ variants
+  ✔ option names come from the fixed list and values are unique (0.4073ms)
+  ✔ option keys ignore case and order (0.2354ms)
+  ✔ SKUs are normalised and unique; combinations unique; compare-at above price (1.0122ms)
+✔ variants (2.0487ms)
+▶ publish checks
+  ✔ a complete product has no blockers (0.5735ms)
+  ✔ each missing piece blocks publishing (0.4276ms)
+  ✔ fragrance and jewellery need their shipping restriction; synthetic data never publishes (0.2881ms)
+  ✔ the checklist asks about sizing only for apparel, and every item must be true (0.3393ms)
+✔ publish checks (1.9544ms)
+▶ CSV
+  ✔ quotes, commas, doubled quotes, CRLF and a byte-order mark (1.2715ms)
+  ✔ formula cells are neutralised on export and restored on import (0.3059ms)
+✔ CSV (1.7094ms)
+▶ photo checks
+  ✔ a real PNG passes with its dimensions (12.575ms)
+  ✔ types come from the bytes, not the label (5.0813ms)
+  ✔ size, checksum, dimensions and completeness are all checked (40.1282ms)
+✔ photo checks (58.0365ms)
+✔ CHV-S10-M09 choosing a size resolves to that size's own price, compare-at price and stock (88.3962ms)
+✔ CHV-S10-M09 before a choice the price shown is the first buyable variant's, and a sold-out choice shows its own price (0.3819ms)
+✔ CHV-S10-M09 a size is offered only while a variant with it can be bought (0.7017ms)
+✔ CHV-S10-M09 a shared variant link preselects that variant's options and ignores other IDs (0.1619ms)
+✔ CHV-S10-M09 a product with one variant and no real choice resolves at once (0.2601ms)
+▶ CHV-S02-003 duplicate provider events
+  ✔ classification: new, duplicate, conflicting (0.736ms)
+  ✔ a duplicated capture has one financial effect (0.827ms)
+  ✔ out-of-order events never move the status backwards (0.1676ms)
+  ✔ a second event ID for the state we are already in is a no-op (0.1812ms)
+  ✔ same event ID with a different body is a conflict and changes nothing (1.499ms)
+  ✔ replaying the whole stream gives the same final state (0.3465ms)
+  ✔ events after a terminal state are ignored (0.2686ms)
+✔ CHV-S02-003 duplicate provider events (6.6502ms)
+▶ CHV-S02-002 server-set prices
+  ✔ honest request is priced from the catalogue (1.5076ms)
+  ✔ client-supplied prices, totals and currency are ignored (1.4871ms)
+  ✔ client echo of a lower total is rejected, never adopted (0.414ms)
+  ✔ invalid quantities, unknown or unsellable variants and duplicates are refused (1.8367ms)
+  ✔ money stays in integer paise (0.241ms)
+✔ CHV-S02-002 server-set prices (6.9586ms)
+▶ no overselling
+  ✔ the last unit can be reserved once (2.0139ms)
+  ✔ a multi-SKU shortage reserves nothing (0.1561ms)
+  ✔ negative or inconsistent balances are refused (0.1412ms)
+✔ no overselling (2.5839ms)
+▶ CHV-S02-001 every transition declares a precondition
+  ✔ order: transitions are well formed (2.8544ms)
+  ✔ order: every state is reachable and every non-terminal state has an exit (0.2078ms)
+  ✔ payment: transitions are well formed (0.1666ms)
+  ✔ payment: every state is reachable and every non-terminal state has an exit (0.1043ms)
+  ✔ reservation: transitions are well formed (0.1537ms)
+  ✔ reservation: every state is reachable and every non-terminal state has an exit (0.1002ms)
+  ✔ fulfilment: transitions are well formed (0.1273ms)
+  ✔ fulfilment: every state is reachable and every non-terminal state has an exit (0.0657ms)
+  ✔ shipment: transitions are well formed (0.1677ms)
+  ✔ shipment: every state is reachable and every non-terminal state has an exit (0.4225ms)
+  ✔ return: transitions are well formed (0.2355ms)
+  ✔ return: every state is reachable and every non-terminal state has an exit (0.0763ms)
+  ✔ refund: transitions are well formed (0.1573ms)
+  ✔ refund: every state is reachable and every non-terminal state has an exit (0.0486ms)
+  ✔ illegal and unknown transitions are rejected, replays are no-ops (1.2194ms)
+✔ CHV-S02-001 every transition declares a precondition (7.9863ms)
+▶ commerce invariants encoded as guards
+  ✔ verified payment before confirmation (0.2542ms)
+  ✔ amount mismatch or late capture becomes an exception, never a confirmation (0.1036ms)
+  ✔ no unpaid fulfilment (0.0971ms)
+  ✔ payment alone never ships: handover needs a courier pickup scan with an AWB (0.0796ms)
+  ✔ stock is never released while a capture exists (0.0484ms)
+  ✔ only verified provider facts move payment status (0.0453ms)
+  ✔ order and shipment statuses stay separate (0.1156ms)
+✔ commerce invariants encoded as guards (0.9564ms)
+▶ CHV-S03-002 required secrets per target
+  ✔ development needs nothing: the placeholder catalogue runs with an empty environment (2.5044ms)
+  ✔ production refuses each missing required setting (database, auth, URLs, API key, photo storage) (3.1752ms)
+  ✔ staging refuses each missing server secret, and payment secrets once a key is set (0.681ms)
+  ✔ the CLI exits 1 on a missing secret and prints no values (118.4816ms)
+✔ CHV-S03-002 required secrets per target (126.5317ms)
+▶ Stage 07 service scopes
+  ✔ each service is checked only for its own settings (0.4345ms)
+  ✔ the web host refuses database and sign-in secrets outside development (0.1777ms)
+  ✔ photo storage addresses: https in production, the public base ends in /, the upload origin is an origin only (0.2217ms)
+  ✔ the API address must be https in production and the internal key long and random (0.1607ms)
+✔ Stage 07 service scopes (1.2789ms)
+▶ test and live separation
+  ✔ live payment keys are refused outside production (0.2458ms)
+  ✔ test payment keys are refused in production (0.3486ms)
+  ✔ a test credential hidden in any other setting is still refused in production (0.2324ms)
+  ✔ development and staging cannot point at a production-looking database; production cannot use a local one (0.1496ms)
+  ✔ APP_ENV=production is refused on a Vercel preview deployment (0.1646ms)
+✔ test and live separation (1.4081ms)
+▶ secrets never reach the browser
+  ✔ secret-looking NEXT_PUBLIC_ settings are refused (0.4234ms)
+  ✔ a public setting may not carry a server secret's value (0.1377ms)
+  ✔ reports contain names and statuses, never values (0.2213ms)
+✔ secrets never reach the browser (0.9021ms)
+▶ environment resolution and secret classification
+  ✔ VERCEL_ENV maps preview to staging (0.0917ms)
+  ✔ secret names (0.1105ms)
+✔ environment resolution and secret classification (0.3884ms)
+▶ sign-in settings (Stage 05)
+  ✔ the auth secret must be long and the production URL must use https (0.6111ms)
+  ✔ the admin URL must be https in production and on its own host (0.1934ms)
+✔ sign-in settings (Stage 05) (0.9015ms)
+▶ free-text redaction
+  ✔ card numbers (PAN) are removed, other long numbers are kept (1.1852ms)
+  ✔ tokens and provider keys are masked (0.2285ms)
+  ✔ emails and Indian mobile numbers are masked (0.1652ms)
+✔ free-text redaction (2.961ms)
+▶ structured redaction
+  ✔ secret keys are dropped at any depth (3.8492ms)
+  ✔ street address is removed; city, state and PIN code stay for support (0.2228ms)
+  ✔ email and phone fields are masked, not dropped (0.2225ms)
+  ✔ errors keep name and redacted message, never the stack (0.162ms)
+  ✔ cycles, arrays and primitives are handled (0.1837ms)
+✔ structured redaction (5.0322ms)
+▶ logger
+  ✔ writes one JSON object per line with time, level, event and correlation ID (4.3353ms)
+  ✔ respects the level threshold and routes errors and warnings (0.3185ms)
+  ✔ child loggers keep the correlation ID and add fields (0.176ms)
+  ✔ nothing sensitive reaches the written line (0.3035ms)
+✔ logger (5.3902ms)
+▶ correlation IDs
+  ✔ reuse a well-formed inbound ID, then Vercel's, else create one (4.814ms)
+  ✔ a logger without an ID creates a UUID (0.1729ms)
+✔ correlation IDs (5.147ms)
+✔ a Shopify products export becomes drafts, a count sheet and a mapping report (129.4143ms)
+✔ the converter never contacts Shopify and has no Shopify dependency (1.2353ms)
+ℹ tests 95
+ℹ suites 20
+ℹ pass 95
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 436.4247

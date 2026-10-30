@@ -37,7 +37,7 @@ export function SiteHeader({ searchEntries, account }: { searchEntries: SearchEn
   return (
     <>
       <div className="bg-ink px-4 py-2.5 text-center text-[11px] leading-normal font-medium tracking-[0.14em] text-on-dark uppercase max-sm:text-[10px] max-sm:tracking-[0.1em]">
-        Free shipping across India
+        Delivery across India
         <span className="px-3 text-gold-on-dark max-sm:hidden" aria-hidden>
           /
         </span>

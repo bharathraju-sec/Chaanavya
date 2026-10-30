@@ -1,0 +1,137 @@
+▶ CHV-S02-003 duplicate provider events
+  ✔ classification: new, duplicate, conflicting (0.5202ms)
+  ✔ a duplicated capture has one financial effect (1.1766ms)
+  ✔ out-of-order events never move the status backwards (0.1728ms)
+  ✔ a second event ID for the state we are already in is a no-op (0.1724ms)
+  ✔ same event ID with a different body is a conflict and changes nothing (0.1228ms)
+  ✔ replaying the whole stream gives the same final state (0.1307ms)
+  ✔ events after a terminal state are ignored (0.079ms)
+✔ CHV-S02-003 duplicate provider events (3.1634ms)
+▶ CHV-S02-001 every transition declares a precondition
+  ✔ order: transitions are well formed (0.7564ms)
+  ✔ order: every state is reachable and every non-terminal state has an exit (0.1071ms)
+  ✔ payment: transitions are well formed (0.095ms)
+  ✔ payment: every state is reachable and every non-terminal state has an exit (0.0626ms)
+  ✔ reservation: transitions are well formed (0.0918ms)
+  ✔ reservation: every state is reachable and every non-terminal state has an exit (0.0619ms)
+  ✔ fulfilment: transitions are well formed (0.0705ms)
+  ✔ fulfilment: every state is reachable and every non-terminal state has an exit (0.0421ms)
+  ✔ shipment: transitions are well formed (0.0937ms)
+  ✔ shipment: every state is reachable and every non-terminal state has an exit (0.0938ms)
+  ✔ return: transitions are well formed (0.1206ms)
+  ✔ return: every state is reachable and every non-terminal state has an exit (0.0351ms)
+  ✔ refund: transitions are well formed (0.0743ms)
+  ✔ refund: every state is reachable and every non-terminal state has an exit (0.0258ms)
+  ✔ illegal and unknown transitions are rejected, replays are no-ops (0.5869ms)
+✔ CHV-S02-001 every transition declares a precondition (3.2139ms)
+▶ commerce invariants encoded as guards
+  ✔ verified payment before confirmation (0.1412ms)
+  ✔ amount mismatch or late capture becomes an exception, never a confirmation (0.0595ms)
+  ✔ no unpaid fulfilment (0.0642ms)
+  ✔ payment alone never ships: handover needs a courier pickup scan with an AWB (0.0451ms)
+  ✔ stock is never released while a capture exists (0.0381ms)
+  ✔ only verified provider facts move payment status (0.0351ms)
+  ✔ order and shipment statuses stay separate (0.0627ms)
+✔ commerce invariants encoded as guards (0.5727ms)
+▶ CHV-S13-M09 a retry or race cannot double-release stock
+  ✔ the shopper cancels: the hold is released once, the order cancelled once, each with its origin (323.5813ms)
+  ✔ a repeated cancel changes nothing: no second release, no second event (218.8538ms)
+  ✔ eight parallel cancels by the shopper release the stock exactly once (260.2275ms)
+  ✔ the expiry job racing the shopper, and overlapping job runs, still release once (212.8228ms)
+  ✔ the expiry job cancels orders whose window has ended, and only those, once across overlapping runs (398.177ms)
+✔ CHV-S13-M09 a retry or race cannot double-release stock (2069.5114ms)
+▶ CHV-S13-M09 a payment in flight is never cut off
+  ✔ an open (created) payment past the window is sent for reconciliation; the order and its stock wait (169.8805ms)
+  ✔ an authorized or reconciling payment keeps the order; the shopper cannot cancel it away either (340.7118ms)
+  ✔ a failed or expired payment no longer holds the order back (379.3051ms)
+  ✔ a captured payment is never cancelled here (161.0952ms)
+✔ CHV-S13-M09 a payment in flight is never cut off (1051.4948ms)
+▶ CHV-S13-M09 only the shopper's own unpaid order
+  ✔ another shopper, an unknown id or a malformed id gets 404 and nothing is released (328.5954ms)
+  ✔ a confirmed order cannot be cancelled through this route (146.4796ms)
+  ✔ the route is closed in production (139.2243ms)
+✔ CHV-S13-M09 only the shopper's own unpaid order (614.5884ms)
+▶ CHV-S13-M10 a capture allocates the held stock and confirms the order, once
+  ✔ one capture: payment captured, stock reserved -> allocated through the Stage 09 ledger, order confirmed, nothing shipped (461.7707ms)
+  ✔ the same event replayed changes nothing: no second allocation, no second event (275.7573ms)
+  ✔ a second event for the same capture (gateways send several) applies nothing new (241.5487ms)
+  ✔ many events at once, replays and new ids mixed, allocate exactly once (272.57ms)
+✔ CHV-S13-M10 a capture allocates the held stock and confirms the order, once (1798.4159ms)
+▶ CHV-S13-M10 only an authoritative, matching capture allocates
+  ✔ the same event id with a different body is a conflict and is never applied (438.9304ms)
+  ✔ another payment provider's event, a courier, or an unknown name allocates nothing (181.8617ms)
+  ✔ a captured amount that does not match the order sends it to review; the stock stays held, neither allocated nor released (188.147ms)
+  ✔ a capture after the hold was released allocates nothing and sends the order to review (13.11 decides) (216.2182ms)
+  ✔ a failed or expired payment cannot be captured by a stray event (215.6653ms)
+  ✔ the bridge reuses the Stage 09 settlement and ledger: it does no stock arithmetic of its own (0.581ms)
+✔ CHV-S13-M10 only an authoritative, matching capture allocates (1241.9225ms)
+▶ CHV-S13-M08 every sensitive transition has an auditable origin
+  ✔ placing an order records one 'placed' event: the guest, the request's correlation id, and a redacted context (249.0153ms)
+  ✔ a signed-in customer's placement names the customer's account (210.7781ms)
+  ✔ every move after placing is recorded once, with its actor, request and rule: payment, hold, order, fulfilment (196.9555ms)
+  ✔ the trail explains the order's current state: each event starts where the last one ended (167.3388ms)
+✔ CHV-S13-M08 every sensitive transition has an auditable origin (1410.0698ms)
+▶ CHV-S13-M08 no origin, no change
+  ✔ a direct status change without a declared origin is refused, for orders, payments and holds (181.7346ms)
+  ✔ an origin missing its actor or correlation id does not count, and an origin never outlives its transaction (148.2556ms)
+  ✔ the trail is append-only and refuses personal data (183.2581ms)
+✔ CHV-S13-M08 no origin, no change (513.6359ms)
+▶ CHV-S13-M08 retries never duplicate events
+  ✔ replays with the same key or the same quote add no second placement (142.4858ms)
+  ✔ parallel submissions of one quote leave exactly one placement event (197.4512ms)
+  ✔ a repeated move (a retried callback or job) is a no-op and adds nothing (164.7633ms)
+  ✔ the database itself refuses a second placement event (115.0736ms)
+✔ CHV-S13-M08 retries never duplicate events (620.2004ms)
+▶ CHV-S13-M11 a capture after expiry does not oversell
+  ✔ the last unit: A's hold expires, B buys it, then A's money arrives; A goes to review and the unit is sold once (552.3845ms)
+  ✔ the late payment replayed, or reported again, changes nothing and records one exception (295.25ms)
+  ✔ no one confirms a late order without stock allocated again, even by claiming it is (280.1515ms)
+  ✔ a second payment for an order already confirmed is an exception: nothing allocated twice (379.2847ms)
+✔ CHV-S13-M11 a capture after expiry does not oversell (2101.9346ms)
+▶ CHV-S13-M11 a capture racing the expiry jobs ends one way, never both
+  ✔ capture against the Stage 09 expiry job at the same moment: allocated and confirmed, or released and reviewed (1724.996ms)
+  ✔ capture against the 13.09 order-expiry job at the same moment: no deadlock, and a paid order is never cancelled (1362.2207ms)
+✔ CHV-S13-M11 a capture racing the expiry jobs ends one way, never both (3087.607ms)
+▶ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone
+  ✔ a complete payment callback captures the payment and confirms the order; fulfilment does not move (222.1845ms)
+  ✔ the payment provider cannot pack, hand over or complete an order, whatever it claims (32.0988ms)
+  ✔ one write cannot both confirm an order and move its fulfilment (55.1447ms)
+  ✔ shipping happens only through its own steps, after payment, by staff and the courier (81.0818ms)
+✔ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone (905.026ms)
+▶ CHV-S13-M07 payments move on their own provider's events only
+  ✔ a courier, staff or a customer cannot capture a payment; a system job only where the machine allows (83.3901ms)
+  ✔ a provider not on the launch list moves nothing (PhonePe until the shop signs up); an unknown provider moves nothing (29.7412ms)
+  ✔ a courier cannot confirm payment for an order (8.2131ms)
+  ✔ the database allows exactly the payment machine's moves, and the actor table covers each of them (444.8045ms)
+  ✔ repeats are harmless: the same callback twice changes nothing more (21.47ms)
+  ✔ actors are classed by kind and provider name (0.1668ms)
+✔ CHV-S13-M07 payments move on their own provider's events only (588.3979ms)
+▶ CHV-S13-M06 an invalid jump from pending to shipped is rejected
+  ✔ a pending order cannot be handed to the courier, packed or completed: not by the API, not by a direct write (230.7973ms)
+  ✔ the full path works one step at a time, by the right actors (67.6022ms)
+  ✔ an order is completed only after it was handed over (19.7661ms)
+✔ CHV-S13-M06 an invalid jump from pending to shipped is rejected (892.9814ms)
+▶ CHV-S13-M06 the database allows exactly the machines' moves
+  ✔ every order status pair: allowed if and only if it is a transition of ORDER_MACHINE (154.1335ms)
+  ✔ every fulfilment pair on a confirmed order: allowed if and only if it is a transition of FULFILMENT_MACHINE (130.2399ms)
+  ✔ every transition has its actors listed, and every listed move is a transition (0.5473ms)
+✔ CHV-S13-M06 the database allows exactly the machines' moves (285.2421ms)
+▶ CHV-S13-M06 only the allowed actors may ask for a move
+  ✔ a customer, a guest or staff cannot confirm a payment; only the provider or a system job can (32.5918ms)
+  ✔ only staff resolve a review; a system job cannot (12.7487ms)
+  ✔ a paid order is cancelled by staff only, before dispatch; the buyer and a system job may not (42.8067ms)
+  ✔ only the courier hands a parcel over; staff pack it (20.2098ms)
+  ✔ facts the order row holds cannot be supplied by the caller (6.1631ms)
+✔ CHV-S13-M06 only the allowed actors may ask for a move (115.1349ms)
+▶ CHV-S13-M06 moves are compare-and-set and repeat safely
+  ✔ asking for the state it is already in is a no-op; a stale 'from' is refused (11.6983ms)
+  ✔ two simultaneous moves from the same state: exactly one applies (14.4514ms)
+✔ CHV-S13-M06 moves are compare-and-set and repeat safely (26.413ms)
+ℹ tests 91
+ℹ suites 19
+ℹ pass 91
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 49913.0308

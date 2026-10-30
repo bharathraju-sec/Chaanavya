@@ -1,0 +1,43 @@
+# CHV-S13-M07 focused run (tests/security/orders/payment-fulfilment.test.mjs with transitions.test.mjs), 29 October 2026
+  ✔ a complete payment callback captures the payment and confirms the order; fulfilment does not move (224.8245ms)
+  ✔ the payment provider cannot pack, hand over or complete an order, whatever it claims (28.4057ms)
+  ✔ one write cannot both confirm an order and move its fulfilment (48.4382ms)
+  ✔ shipping happens only through its own steps, after payment, by staff and the courier (60.3566ms)
+✔ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone (5764.7034ms)
+▶ CHV-S13-M07 payments move on their own provider's events only
+  ✔ a courier, staff or a customer cannot capture a payment; a system job only where the machine allows (38.1987ms)
+  ✔ one provider's event never moves another provider's payment; an unknown provider moves nothing (14.9673ms)
+  ✔ a courier cannot confirm payment for an order (6.7822ms)
+  ✔ the database allows exactly the payment machine's moves, and the actor table covers each of them (724.8886ms)
+  ✔ repeats are harmless: the same callback twice changes nothing more (31.5821ms)
+  ✔ actors are classed by kind and provider name (0.1592ms)
+✔ CHV-S13-M07 payments move on their own provider's events only (817.1769ms)
+▶ CHV-S13-M06 an invalid jump from pending to shipped is rejected
+  ✔ a pending order cannot be handed to the courier, packed or completed: not by the API, not by a direct write (184.4309ms)
+  ✔ the full path works one step at a time, by the right actors (66.4957ms)
+  ✔ an order is completed only after it was handed over (18.4316ms)
+✔ CHV-S13-M06 an invalid jump from pending to shipped is rejected (724.1963ms)
+▶ CHV-S13-M06 the database allows exactly the machines' moves
+  ✔ every order status pair: allowed if and only if it is a transition of ORDER_MACHINE (236.3629ms)
+  ✔ every fulfilment pair on a confirmed order: allowed if and only if it is a transition of FULFILMENT_MACHINE (247.3813ms)
+  ✔ every transition has its actors listed, and every listed move is a transition (0.3903ms)
+✔ CHV-S13-M06 the database allows exactly the machines' moves (484.4464ms)
+▶ CHV-S13-M06 only the allowed actors may ask for a move
+  ✔ a customer, a guest or staff cannot confirm a payment; only the provider or a system job can (41.0086ms)
+  ✔ only staff resolve a review; a system job cannot (10.5761ms)
+  ✔ the customer (or guest) may cancel before dispatch; a system job may not (32.9836ms)
+  ✔ only the courier hands a parcel over; staff pack it (22.5052ms)
+  ✔ facts the order row holds cannot be supplied by the caller (7.7699ms)
+✔ CHV-S13-M06 only the allowed actors may ask for a move (115.4589ms)
+▶ CHV-S13-M06 moves are compare-and-set and repeat safely
+  ✔ asking for the state it is already in is a no-op; a stale 'from' is refused (20.4948ms)
+  ✔ two simultaneous moves from the same state: exactly one applies (18.9964ms)
+✔ CHV-S13-M06 moves are compare-and-set and repeat safely (39.8559ms)
+ℹ tests 23
+ℹ suites 6
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29851.6958

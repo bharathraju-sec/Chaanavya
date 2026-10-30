@@ -196,3 +196,14 @@ export async function signInStaff(ctx, email, password, secret, { ip = newIp() }
 }
 
 export { orderData }
+
+/**
+ * Runs `fn(tx)` in a transaction that has declared an origin, as every status change must since Stage
+ * 13.08 (apps/api/src/db/origin.ts). For tests that set up or exercise a status directly.
+ */
+export function withOrigin(db, fn, origin = { actorKind: "system", actorId: null, correlationId: "test-fixture", reason: "test fixture" }) {
+  return db.$transaction(async tx => {
+    await tx.$queryRaw`SELECT set_config('chaanavya.origin', ${JSON.stringify(origin)}, true)`
+    return fn(tx)
+  })
+}

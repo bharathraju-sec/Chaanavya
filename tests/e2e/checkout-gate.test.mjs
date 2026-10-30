@@ -341,8 +341,15 @@ describe("CHV-S12-M13 payment stays disabled", () => {
     const api = JSON.parse(readFileSync(join(ROOT, "packages/contracts/openapi/api.json"), "utf8"))
     assert.deepEqual(Object.keys(api.paths).filter(p => /payment|webhook|checkout|confirm/i.test(p)), [])
     assert.deepEqual(Object.keys(api.paths).filter(p => /quote/.test(p)).sort(), ["/api/v1/cart/quote", "/api/v1/cart/quote/{quoteId}"])
-    // Orders can only be read; the one write is claiming an existing guest order into an account (Stage 07), which creates none.
-    assert.deepEqual(Object.entries(api.paths).filter(([p, ops]) => /order/.test(p) && Object.keys(ops).some(m => m !== "get")).map(([p]) => p), ["/api/v1/account/claim-order"])
+    // Order writes: claiming an existing guest order into an account (Stage 07), and since Stage 13.02 the
+    // order intent, which places a pending order from a checked quote outside production only and takes
+    // no payment (tests/security/orders/intent.test.mjs), and since 13.09 the shopper's cancellation of an
+    // unpaid order (tests/security/orders/cancel.test.mjs). The staff contact read (13.12) is a POST only so it
+    // passes the same-origin check; it changes no order, only records who read the buyer's details
+    // (tests/security/orders/admin-orders.test.mjs). Since 13.13 admins and owners can hold, release and
+    // note an order; none of these moves its status, payment or stock (tests/security/orders/admin-actions.test.mjs).
+    // Since 13.14 they can close an order recovery case, which changes nothing on the order (recovery.test.mjs).
+    assert.deepEqual(Object.entries(api.paths).filter(([p, ops]) => /order/.test(p) && Object.keys(ops).some(m => m !== "get")).map(([p]) => p).sort(), ["/api/v1/account/claim-order", "/api/v1/admin/order-recovery/cases/{caseId}/resolve", "/api/v1/admin/orders/{orderId}/contact", "/api/v1/admin/orders/{orderId}/hold", "/api/v1/admin/orders/{orderId}/notes", "/api/v1/admin/orders/{orderId}/release", "/api/v1/cart/order", "/api/v1/cart/order/{orderId}/cancel"])
     for (const server of [DEV, PROD]) {
       for (const path of ["/payment", "/api/payments", "/api/checkout", "/api/cart/checkout", "/api/cart/quote/confirm", "/api/orders", "/api/webhooks/razorpay"]) {
         const res = await new Browser(server).call(path.startsWith("/api") ? "POST" : "GET", path, path.startsWith("/api") ? {} : undefined)

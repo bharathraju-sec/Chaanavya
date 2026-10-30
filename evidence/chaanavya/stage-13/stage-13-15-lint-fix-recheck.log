@@ -1,0 +1,42 @@
+▶ CHV-S13-M04 a pending order holds its stock through the Stage 09 reservation
+  ✔ placing an order makes one reservation for every line, with one ledger movement each (366.977ms)
+  ✔ a replay or the same quote again never holds twice (180.771ms)
+  ✔ parallel submissions of one quote hold the stock exactly once (218.9331ms)
+✔ CHV-S13-M04 a pending order holds its stock through the Stage 09 reservation (1658.1676ms)
+▶ CHV-S13-M04 the order and its hold commit together or not at all
+  ✔ two shoppers race for the last unit: one order holds it; the other is refused and nothing of theirs is written (264.4356ms)
+  ✔ when the hold fails after the order row is written, the order is rolled back too (133.765ms)
+  ✔ the hold lasts for the payment window, within the Stage 09 limits (131.0469ms)
+✔ CHV-S13-M04 the order and its hold commit together or not at all (529.649ms)
+▶ CHV-S13-M04 the Stage 09 interface is reused, not copied
+  ✔ reserveStock keeps its behaviour: holds, replays with its key, refuses a reused key (156.2586ms)
+  ✔ the order code does no stock arithmetic: it calls the reservation code and nothing else touches balances or movements (11.6517ms)
+✔ CHV-S13-M04 the Stage 09 interface is reused, not copied (168.1874ms)
+▶ CHV-S13-M01 an order placed from a quote carries everything it was sold on
+  ✔ identifiers: a UUID id and a CHV- number from the sequence, both unique (302.1723ms)
+  ✔ the order is the quote, copied: totals, lines, tax classification, customer, tax basis, delivery and fingerprint (171.4422ms)
+  ✔ the snapshot is a copy: changing the quote object afterwards changes nothing (85.3374ms)
+✔ CHV-S13-M01 an order placed from a quote carries everything it was sold on (1224.4067ms)
+▶ CHV-S13-M01 later catalogue edits do not alter a placed order
+  ✔ price, titles, SKU, handle, photo, weight, restriction, tax rate and HSN, promotion and address all change; the order does not (147.9126ms)
+  ✔ archiving or deleting the variant keeps the snapshot; only the link to a deleted variant clears (99.4293ms)
+✔ CHV-S13-M01 later catalogue edits do not alter a placed order (247.6748ms)
+▶ CHV-S13-M01 the database refuses any edit of what was sold
+  ✔ money, email, address, snapshots, fingerprint, number and tax setting cannot be changed on the order (281.6587ms)
+  ✔ a line's price, tax, quantity or tax classification cannot be changed (143.1598ms)
+  ✔ status, fulfilment and account links still move: a guest claims the order, and deletions clear links (163.5677ms)
+  ✔ an order from a quote must carry every snapshot, consistent with its own columns; the number has its format (145.7573ms)
+  ✔ the same submit key never makes a second order (98.4934ms)
+✔ CHV-S13-M01 the database refuses any edit of what was sold (833.2426ms)
+▶ CHV-S13-M01 the snapshot is copied faithfully or not at all
+  ✔ no fingerprint, no catalogue facts for a line, no lines, or lines taxed by two profiles are refused (85.828ms)
+  ✔ a signed-in customer's order is recorded as a customer's (103.6899ms)
+✔ CHV-S13-M01 the snapshot is copied faithfully or not at all (189.8077ms)
+ℹ tests 20
+ℹ suites 7
+ℹ pass 20
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15691.6665

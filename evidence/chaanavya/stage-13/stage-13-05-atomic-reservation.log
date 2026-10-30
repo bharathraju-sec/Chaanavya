@@ -1,0 +1,21 @@
+# CHV-S13-M05 focused run (tests/security/orders/atomic-reservation.test.mjs), 29 October 2026
+  ✔ ten shoppers check out the last unit at once: one order holds it, nine are refused (1016.4888ms)
+  ✔ a bag of the last unit and a plentiful item: the losers hold neither (637.9491ms)
+  ✔ the scarce item is the second line for some and the first for others: still all or none (656.1104ms)
+✔ CHV-S13-M05 last-unit simultaneous checkouts yield only one valid reservation (3161.4701ms)
+▶ CHV-S13-M05 opposite-order bags never deadlock
+  ✔ bags holding the same two items in opposite order race repeatedly and always finish (1233.5085ms)
+✔ CHV-S13-M05 opposite-order bags never deadlock (1233.715ms)
+▶ CHV-S13-M05 a refused checkout leaves nothing behind
+  ✔ after every race, refused shoppers have no order, no hold and no movement, and their quotes were not used up (374.4095ms)
+✔ CHV-S13-M05 a refused checkout leaves nothing behind (374.6295ms)
+ℹ tests 5
+ℹ suites 3
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10526.6282
+
+# Two further runs of the same test: 5 of 5 each (races vary between runs)

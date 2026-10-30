@@ -1,0 +1,28 @@
+# CHV-S13-M09 focused run (tests/security/orders/cancel.test.mjs), 29 October 2026
+  ✔ the shopper cancels: the hold is released once, the order cancelled once, each with its origin (451.9715ms)
+  ✔ a repeated cancel changes nothing: no second release, no second event (231.7223ms)
+  ✔ eight parallel cancels by the shopper release the stock exactly once (299.3888ms)
+  ✔ the expiry job racing the shopper, and overlapping job runs, still release once (378.8291ms)
+  ✔ the expiry job cancels orders whose window has ended, and only those, once across overlapping runs (537.0298ms)
+✔ CHV-S13-M09 a retry or race cannot double-release stock (2614.6974ms)
+▶ CHV-S13-M09 a payment in flight is never cut off
+  ✔ an open (created) payment past the window is sent for reconciliation; the order and its stock wait (209.1119ms)
+  ✔ an authorized or reconciling payment keeps the order; the shopper cannot cancel it away either (390.4133ms)
+  ✔ a failed or expired payment no longer holds the order back (391.2169ms)
+  ✔ a captured payment is never cancelled here (163.1869ms)
+✔ CHV-S13-M09 a payment in flight is never cut off (1154.4929ms)
+▶ CHV-S13-M09 only the shopper's own unpaid order
+  ✔ another shopper, an unknown id or a malformed id gets 404 and nothing is released (371.4351ms)
+  ✔ a confirmed order cannot be cancelled through this route (184.0869ms)
+  ✔ the route is closed in production (164.5465ms)
+✔ CHV-S13-M09 only the shopper's own unpaid order (720.3669ms)
+ℹ tests 12
+ℹ suites 3
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10120.5937
+
+# A second run of the same test: 12 of 12 (races vary between runs)

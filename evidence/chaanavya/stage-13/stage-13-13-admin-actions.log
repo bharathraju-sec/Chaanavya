@@ -1,0 +1,98 @@
+▶ CHV-S13-M13 only admins and owners act, and only from the admin site
+  ✔ visitors 401; customers and STAFF 403; no two-factor 403 mfa_required; cross-site 403; nothing written (432.1942ms)
+  ✔ the action routes declare orders.manage (1.2562ms)
+  ✔ an unknown or malformed order id is 404 and writes nothing (47.4512ms)
+✔ CHV-S13-M13 only admins and owners act, and only from the admin site (4047.0369ms)
+▶ CHV-S13-M13 hold and release: checked, audited, and safe to repeat
+  ✔ a hold needs If-Match and a reason; it is applied once, audited and on the order's trail (311.7135ms)
+  ✔ a repeated hold is refused with nothing written; a retry with the same key returns the first result (256.3538ms)
+  ✔ two staff holding at once: one succeeds, the other is refused, one record (242.2196ms)
+  ✔ release: refused when not held, applied once when held, and the order can move again (321.8554ms)
+  ✔ only an open order can be held (237.6495ms)
+  ✔ a held order's fulfilment cannot move forward, in the API or the database; release lifts it; cancelling stays possible (539.0119ms)
+  ✔ a hold changes no money, payment or stock (187.046ms)
+✔ CHV-S13-M13 hold and release: checked, audited, and safe to repeat (2096.755ms)
+▶ CHV-S13-M13 internal notes: checked, audited without their text, never added twice
+  ✔ a note needs an Idempotency-Key and 1 to 1000 plain characters (183.6091ms)
+  ✔ a note is added once and audited by id and length; a retry returns the same note; a reused key is refused (251.1407ms)
+  ✔ staff actions are append-only in the database (173.4337ms)
+✔ CHV-S13-M13 internal notes: checked, audited without their text, never added twice (608.5394ms)
+▶ CHV-S13-M12 staff permission boundaries hold on direct API calls
+  ✔ visitors 401; customers 403, even the order's own buyer; staff without two-factor 403 (112.9383ms)
+  ✔ a cross-site contact read is refused before anything is read or recorded, even with an owner's session (8.9422ms)
+  ✔ staff, admins and owners read the list and an order; the routes are read-only (119.443ms)
+  ✔ an unknown or malformed order id is the same 404 (55.362ms)
+  ✔ the contact route requires customers.read; the list and order need only orders.read (1.1843ms)
+✔ CHV-S13-M12 staff permission boundaries hold on direct API calls (4348.3015ms)
+▶ CHV-S13-M12 personal data is masked, and full contact reads are on record
+  ✔ the list and the order show the buyer masked: no full name, email, phone or street anywhere (32.3015ms)
+  ✔ the order view carries what staff need: items, totals in paise, payment, stock hold and its trail (16.2216ms)
+  ✔ the full contact, for admins and owners (customers.read); every read writes an audit event naming who looked (36.4023ms)
+  ✔ STAFF see the buyer masked only: a STAFF contact read is 403 and nothing is recorded (15.0886ms)
+  ✔ a refused contact read is not recorded as a view (39.1462ms)
+✔ CHV-S13-M12 personal data is masked, and full contact reads are on record (139.8846ms)
+▶ CHV-S13-M12 filters are checked and pages are stable
+  ✔ status, payment status and order number filters (64.1432ms)
+  ✔ a bad filter is refused, not ignored (79.5628ms)
+  ✔ paging one at a time visits each order once, newest first (23.951ms)
+✔ CHV-S13-M12 filters are checked and pages are stable (168.0533ms)
+▶ CHV-S13-M08 every sensitive transition has an auditable origin
+  ✔ placing an order records one 'placed' event: the guest, the request's correlation id, and a redacted context (697.4833ms)
+  ✔ a signed-in customer's placement names the customer's account (552.6274ms)
+  ✔ every move after placing is recorded once, with its actor, request and rule: payment, hold, order, fulfilment (416.7415ms)
+  ✔ the trail explains the order's current state: each event starts where the last one ended (312.7494ms)
+✔ CHV-S13-M08 every sensitive transition has an auditable origin (3184.6277ms)
+▶ CHV-S13-M08 no origin, no change
+  ✔ a direct status change without a declared origin is refused, for orders, payments and holds (360.504ms)
+  ✔ an origin missing its actor or correlation id does not count, and an origin never outlives its transaction (222.6035ms)
+  ✔ the trail is append-only and refuses personal data (277.828ms)
+✔ CHV-S13-M08 no origin, no change (861.6411ms)
+▶ CHV-S13-M08 retries never duplicate events
+  ✔ replays with the same key or the same quote add no second placement (211.5515ms)
+  ✔ parallel submissions of one quote leave exactly one placement event (250.6095ms)
+  ✔ a repeated move (a retried callback or job) is a no-op and adds nothing (205.4933ms)
+  ✔ the database itself refuses a second placement event (162.0184ms)
+✔ CHV-S13-M08 retries never duplicate events (830.1903ms)
+▶ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone
+  ✔ a complete payment callback captures the payment and confirms the order; fulfilment does not move (300.5916ms)
+  ✔ the payment provider cannot pack, hand over or complete an order, whatever it claims (45.8775ms)
+  ✔ one write cannot both confirm an order and move its fulfilment (88.5328ms)
+  ✔ shipping happens only through its own steps, after payment, by staff and the courier (205.5054ms)
+✔ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone (1498.4441ms)
+▶ CHV-S13-M07 payments move on their own provider's events only
+  ✔ a courier, staff or a customer cannot capture a payment; a system job only where the machine allows (147.241ms)
+  ✔ one provider's event never moves another provider's payment; an unknown provider moves nothing (59.8941ms)
+  ✔ a courier cannot confirm payment for an order (18.0493ms)
+  ✔ the database allows exactly the payment machine's moves, and the actor table covers each of them (827.296ms)
+  ✔ repeats are harmless: the same callback twice changes nothing more (33.2542ms)
+  ✔ actors are classed by kind and provider name (0.4218ms)
+✔ CHV-S13-M07 payments move on their own provider's events only (1087.0223ms)
+▶ CHV-S13-M06 an invalid jump from pending to shipped is rejected
+  ✔ a pending order cannot be handed to the courier, packed or completed: not by the API, not by a direct write (340.595ms)
+  ✔ the full path works one step at a time, by the right actors (158.3856ms)
+  ✔ an order is completed only after it was handed over (60.0861ms)
+✔ CHV-S13-M06 an invalid jump from pending to shipped is rejected (1423.4364ms)
+▶ CHV-S13-M06 the database allows exactly the machines' moves
+  ✔ every order status pair: allowed if and only if it is a transition of ORDER_MACHINE (446.3664ms)
+  ✔ every fulfilment pair on a confirmed order: allowed if and only if it is a transition of FULFILMENT_MACHINE (368.3921ms)
+  ✔ every transition has its actors listed, and every listed move is a transition (0.5231ms)
+✔ CHV-S13-M06 the database allows exactly the machines' moves (815.9172ms)
+▶ CHV-S13-M06 only the allowed actors may ask for a move
+  ✔ a customer, a guest or staff cannot confirm a payment; only the provider or a system job can (59.9532ms)
+  ✔ only staff resolve a review; a system job cannot (30.2674ms)
+  ✔ the customer (or guest) may cancel before dispatch; a system job may not (75.1838ms)
+  ✔ only the courier hands a parcel over; staff pack it (47.3455ms)
+  ✔ facts the order row holds cannot be supplied by the caller (19.3942ms)
+✔ CHV-S13-M06 only the allowed actors may ask for a move (233.2462ms)
+▶ CHV-S13-M06 moves are compare-and-set and repeat safely
+  ✔ asking for the state it is already in is a no-op; a stale 'from' is refused (27.7154ms)
+  ✔ two simultaneous moves from the same state: exactly one applies (32.3512ms)
+✔ CHV-S13-M06 moves are compare-and-set and repeat safely (60.6041ms)
+ℹ tests 60
+ℹ suites 15
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16410.3401

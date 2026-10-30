@@ -1,0 +1,25 @@
+# CHV-S13-M03 focused run (tests/security/orders/checkout-session.test.mjs), 28 October 2026
+  ✔ a placed order names its bag, and is payable until its quote's expiry (193.919ms)
+  ✔ the shopper who placed it can continue it (117.9692ms)
+✔ CHV-S13-M03 an order is bound to the checkout it came from (5811.2567ms)
+▶ CHV-S13-M03 a customer cannot reuse someone else's order id
+  ✔ another guest, a signed-in customer and a signed-out visitor all get the same 404 as an unknown id (303.2527ms)
+  ✔ a foreign order cannot be placed again, replayed or continued with its own key or quote (262.6326ms)
+  ✔ a guest's order stays with the guest session: after signing in it is not the customer's to continue (179.2806ms)
+  ✔ a customer's order is theirs alone: another customer and the customer's earlier guest session are refused (200.7508ms)
+✔ CHV-S13-M03 a customer cannot reuse someone else's order id (946.3165ms)
+▶ CHV-S13-M03 the checkout must still be live
+  ✔ at or after the payment window the order cannot be continued (101.958ms)
+  ✔ an order that is no longer pending cannot be continued (112.8052ms)
+  ✔ when the bag it came from is gone, the checkout has ended (94.9945ms)
+  ✔ the bag link and payment window are frozen: they cannot be moved or extended (208.9978ms)
+  ✔ the route is closed in production (118.6759ms)
+✔ CHV-S13-M03 the checkout must still be live (637.8657ms)
+ℹ tests 11
+ℹ suites 3
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23508.5538

@@ -1,0 +1,49 @@
+# CHV-S13-M06 focused run (tests/security/orders/transitions.test.mjs with snapshot.test.mjs), 29 October 2026
+  ✔ identifiers: a UUID id and a CHV- number from the sequence, both unique (307.3255ms)
+  ✔ the order is the quote, copied: totals, lines, tax classification, customer, tax basis, delivery and fingerprint (156.9374ms)
+  ✔ the snapshot is a copy: changing the quote object afterwards changes nothing (76.8609ms)
+✔ CHV-S13-M01 an order placed from a quote carries everything it was sold on (1731.7624ms)
+▶ CHV-S13-M01 later catalogue edits do not alter a placed order
+  ✔ price, titles, SKU, handle, photo, weight, restriction, tax rate and HSN, promotion and address all change; the order does not (150.2308ms)
+  ✔ archiving or deleting the variant keeps the snapshot; only the link to a deleted variant clears (96.3244ms)
+✔ CHV-S13-M01 later catalogue edits do not alter a placed order (246.8572ms)
+▶ CHV-S13-M01 the database refuses any edit of what was sold
+  ✔ money, email, address, snapshots, fingerprint, number and tax setting cannot be changed on the order (221.7988ms)
+  ✔ a line's price, tax, quantity or tax classification cannot be changed (125.9391ms)
+  ✔ status, fulfilment and account links still move: a guest claims the order, and deletions clear links (146.421ms)
+  ✔ an order from a quote must carry every snapshot, consistent with its own columns; the number has its format (125.1788ms)
+  ✔ the same submit key never makes a second order (87.2755ms)
+✔ CHV-S13-M01 the database refuses any edit of what was sold (707.1434ms)
+▶ CHV-S13-M01 the snapshot is copied faithfully or not at all
+  ✔ no fingerprint, no catalogue facts for a line, no lines, or lines taxed by two profiles are refused (75.9091ms)
+  ✔ a signed-in customer's order is recorded as a customer's (88.3266ms)
+✔ CHV-S13-M01 the snapshot is copied faithfully or not at all (164.6107ms)
+▶ CHV-S13-M06 an invalid jump from pending to shipped is rejected
+  ✔ a pending order cannot be handed to the courier, packed or completed: not by the API, not by a direct write (181.8584ms)
+  ✔ the full path works one step at a time, by the right actors (49.23ms)
+  ✔ an order is completed only after it was handed over (15.101ms)
+✔ CHV-S13-M06 an invalid jump from pending to shipped is rejected (648.3108ms)
+▶ CHV-S13-M06 the database allows exactly the machines' moves
+  ✔ every order status pair: allowed if and only if it is a transition of ORDER_MACHINE (212.8835ms)
+  ✔ every fulfilment pair on a confirmed order: allowed if and only if it is a transition of FULFILMENT_MACHINE (227.7983ms)
+  ✔ every transition has its actors listed, and every listed move is a transition (0.3362ms)
+✔ CHV-S13-M06 the database allows exactly the machines' moves (441.288ms)
+▶ CHV-S13-M06 only the allowed actors may ask for a move
+  ✔ a customer, a guest or staff cannot confirm a payment; only the provider or a system job can (34.6926ms)
+  ✔ only staff resolve a review; a system job cannot (10.1704ms)
+  ✔ the customer (or guest) may cancel before dispatch; a system job may not (24.4338ms)
+  ✔ only the courier hands a parcel over; staff pack it (16.5744ms)
+  ✔ facts the order row holds cannot be supplied by the caller (5.2106ms)
+✔ CHV-S13-M06 only the allowed actors may ask for a move (91.6864ms)
+▶ CHV-S13-M06 moves are compare-and-set and repeat safely
+  ✔ asking for the state it is already in is a no-op; a stale 'from' is refused (11.6003ms)
+  ✔ two simultaneous moves from the same state: exactly one applies (12.8634ms)
+✔ CHV-S13-M06 moves are compare-and-set and repeat safely (24.6946ms)
+ℹ tests 25
+ℹ suites 8
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15967.9308

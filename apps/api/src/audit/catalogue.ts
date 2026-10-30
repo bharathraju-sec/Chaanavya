@@ -46,6 +46,13 @@ export type AdminAuditAction = Extract<
   | "tax_profile.updated"
   | "tax_profile.approved"
   | "tax_profile.activated"
+  | "customer.contact_viewed"
+  | "order.held"
+  | "order.released"
+  | "order.note_added"
+  | "order.recovery_case_opened"
+  | "order.recovery_case_cleared"
+  | "order.recovery_case_resolved"
 >
 
 type Rule = { entity: string; reason: boolean; before?: readonly string[]; after?: readonly string[] }
@@ -90,6 +97,16 @@ export const ADMIN_AUDIT_RULES: Readonly<Record<AdminAuditAction, Rule>> = {
   "tax_profile.updated": { entity: "tax_profile", reason: false, after: ["sellerStateCode", "rates"] },
   "tax_profile.approved": { entity: "tax_profile", reason: true, after: ["signedName", "advisorReference", "rates"] },
   "tax_profile.activated": { entity: "tax_profile", reason: true, before: ["activeProfileId"], after: ["activeProfileId"] },
+  // Orders (Stage 13.12): every read of a buyer's full contact details is on record.
+  "customer.contact_viewed": { entity: "order", reason: false, after: ["fields"] },
+  // Staff order actions (Stage 13.13): a hold or release needs a reason; a note is recorded by id and length, never its text.
+  "order.held": { entity: "order", reason: true, before: ["held"], after: ["held"] },
+  "order.released": { entity: "order", reason: true, before: ["held"], after: ["held"] },
+  "order.note_added": { entity: "order", reason: false, after: ["noteId", "length"] },
+  // Order recovery (Stage 13.14): the reconciliation job opens and clears cases; staff resolve them with a reason.
+  "order.recovery_case_opened": { entity: "order_recovery_case", reason: false, after: ["orderId", "kind"] },
+  "order.recovery_case_cleared": { entity: "order_recovery_case", reason: false, after: ["orderId", "kind"] },
+  "order.recovery_case_resolved": { entity: "order_recovery_case", reason: true, before: ["status"], after: ["status"] },
 }
 
 export type AdminActor = { kind: "staff"; id: string } | { kind: "system"; process: string }

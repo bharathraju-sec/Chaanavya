@@ -1,0 +1,57 @@
+# CHV-S13-M01 focused run (tests/security/orders/snapshot.test.mjs), 27 October 2026
+  ✔ identifiers: a UUID id and a CHV- number from the sequence, both unique (324.9066ms)
+  ✔ the order is the quote, copied: totals, lines, tax classification, customer, tax basis, delivery and fingerprint (195.2805ms)
+  ✔ the snapshot is a copy: changing the quote object afterwards changes nothing (90.8562ms)
+✔ CHV-S13-M01 an order placed from a quote carries everything it was sold on (1289.882ms)
+▶ CHV-S13-M01 later catalogue edits do not alter a placed order
+  ✔ price, titles, SKU, handle, photo, weight, restriction, tax rate and HSN, promotion and address all change; the order does not (159.8747ms)
+  ✔ archiving or deleting the variant keeps the snapshot; only the link to a deleted variant clears (116.3119ms)
+✔ CHV-S13-M01 later catalogue edits do not alter a placed order (276.4605ms)
+▶ CHV-S13-M01 the database refuses any edit of what was sold
+  ✔ money, email, address, snapshots, fingerprint, number and tax setting cannot be changed on the order (238.6817ms)
+  ✔ a line's price, tax, quantity or tax classification cannot be changed (152.8356ms)
+  ✔ status, fulfilment and account links still move: a guest claims the order, and deletions clear links (168.5937ms)
+  ✔ an order from a quote must carry every snapshot, consistent with its own columns; the number has its format (130.9159ms)
+  ✔ the same submit key never makes a second order (102.9624ms)
+✔ CHV-S13-M01 the database refuses any edit of what was sold (794.5275ms)
+▶ CHV-S13-M01 the snapshot is copied faithfully or not at all
+  ✔ no fingerprint, no catalogue facts for a line, no lines, or lines taxed by two profiles are refused (76.5213ms)
+  ✔ a signed-in customer's order is recorded as a customer's (90.8027ms)
+✔ CHV-S13-M01 the snapshot is copied faithfully or not at all (167.5701ms)
+ℹ tests 12
+ℹ suites 4
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7698.7357
+
+# Mutation checks
+﻿== M1 order row not frozen
+ℹ pass 10
+ℹ fail 2
+== M2 order can move to another account
+ℹ pass 11
+ℹ fail 1
+== M3 line tax classification not frozen
+ℹ pass 11
+ℹ fail 1
+== M4 quote order without snapshots allowed
+ℹ pass 11
+ℹ fail 1
+== M5 delivery snapshot may disagree with the fee
+ℹ pass 11
+ℹ fail 1
+== M6 snapshot shares the quote's objects
+ℹ pass 11
+ℹ fail 1
+== M7 lines without catalogue facts accepted
+ℹ pass 11
+ℹ fail 1
+== M8 test delivery rates recorded as live
+ℹ pass 11
+ℹ fail 1
+== restored
+ℹ pass 12
+ℹ fail 0

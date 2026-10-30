@@ -1,0 +1,41 @@
+# CHV-S13-M04 focused run (tests/security/orders/reservation.test.mjs with intent.test.mjs), 28 October 2026
+  ✔ the first submission places one pending order copied from the quote; the quote is used up (290.4907ms)
+  ✔ the same key again returns the same order, unchanged, as a replay (181.525ms)
+  ✔ the same quote under a new key (a double click after a reload) returns the same order (164.0645ms)
+  ✔ a replay is answered without checking again: it still returns the order after prices and stock change (168.4841ms)
+  ✔ parallel submissions, with one key or many, make exactly one order and all get it (505.4023ms)
+✔ CHV-S13-M02 a duplicate submission returns the original order (1989.1082ms)
+▶ CHV-S13-M02 keys, totals and quotes are checked
+  ✔ a key reused for another quote is refused; keys belong to their shopper (283.1465ms)
+  ✔ another shopper's quote, an unknown quote or no session places nothing (212.0455ms)
+  ✔ a total that differs from the quote places nothing and leaves the quote usable (165.8582ms)
+  ✔ prices, totals or items sent in the body are ignored: the order is the quote's (118.8534ms)
+  ✔ a bag changed after quoting, or an expired quote, places nothing (210.2365ms)
+  ✔ the request must carry a key and a well-formed body (81.1497ms)
+✔ CHV-S13-M02 keys, totals and quotes are checked (1071.9356ms)
+▶ CHV-S13-M02 orders are placed only where checkout is open
+  ✔ production answers 404 and places nothing, even for a valid quote (72.4767ms)
+  ✔ stored keys are per-shopper digests, never the key itself (128.1078ms)
+✔ CHV-S13-M02 orders are placed only where checkout is open (200.8342ms)
+▶ CHV-S13-M04 a pending order holds its stock through the Stage 09 reservation
+  ✔ placing an order makes one reservation for every line, with one ledger movement each (302.6141ms)
+  ✔ a replay or the same quote again never holds twice (147.3248ms)
+  ✔ parallel submissions of one quote hold the stock exactly once (218.5914ms)
+✔ CHV-S13-M04 a pending order holds its stock through the Stage 09 reservation (1237.9628ms)
+▶ CHV-S13-M04 the order and its hold commit together or not at all
+  ✔ two shoppers race for the last unit: one order holds it; the other is refused and nothing of theirs is written (215.9562ms)
+  ✔ when the hold fails after the order row is written, the order is rolled back too (119.679ms)
+  ✔ the hold lasts for the payment window, within the Stage 09 limits (115.1979ms)
+✔ CHV-S13-M04 the order and its hold commit together or not at all (451.229ms)
+▶ CHV-S13-M04 the Stage 09 interface is reused, not copied
+  ✔ reserveStock keeps its behaviour: holds, replays with its key, refuses a reused key (147.2045ms)
+  ✔ the order code does no stock arithmetic: it calls the reservation code and nothing else touches balances or movements (0.9855ms)
+✔ CHV-S13-M04 the Stage 09 interface is reused, not copied (148.4653ms)
+ℹ tests 21
+ℹ suites 6
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15201.5759

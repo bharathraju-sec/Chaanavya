@@ -297,3 +297,72 @@ export const InventorySchemas = {
     etag: string,
   }),
 } satisfies Record<string, SchemaObject>
+
+// ---- orders (Stage 13.12) ------------------------------------------------------------------
+
+const orderStatus: SchemaObject = { type: "string", enum: ["pending_payment", "needs_review", "confirmed", "completed", "cancelled"] }
+const fulfilmentStatus: SchemaObject = { type: "string", enum: ["unfulfilled", "packing", "packed", "handed_over", "cancelled"] }
+const paymentStatus: SchemaObject = { type: "string", enum: ["created", "authorized", "captured", "pending_reconciliation", "failed", "expired", "partially_refunded", "refunded"] }
+const maskedBuyer = object({ kind: { type: "string", enum: ["customer", "guest"] }, name: { type: "string", description: "First name and last initial" }, email: { type: "string", description: "First letter and domain only" }, phone: { type: "string", description: "Last four digits only" } })
+const place = object({ city: string, stateCode: string, pinCode: string })
+const fullAddress = object({ name: string, phone: string, line1: string, line2: nullable(string), landmark: nullable(string), city: string, district: string, stateCode: string, pinCode: string })
+const caseKind: SchemaObject = { type: "string", enum: ["pending_past_window", "captured_not_confirmed", "hold_overdue", "hold_mismatch", "review_waiting"] }
+const caseStatus: SchemaObject = { type: "string", enum: ["open", "resolved", "cleared"] }
+const staffAction = object({ id: uuid, kind: { type: "string", enum: ["hold", "release", "note"] }, text: { type: "string", description: "The staff reason or the internal note; never shown to the buyer" }, actorId: uuid, createdAt: time })
+
+export const OrderAdminSchemas = {
+  listItem: object({
+    id: uuid,
+    number: string,
+    status: orderStatus,
+    fulfilmentStatus,
+    paymentStatus: nullable(paymentStatus),
+    grandTotal: Schemas.money,
+    lines: int,
+    held: { type: "boolean" },
+    buyer: maskedBuyer,
+    deliverTo: place,
+    payableUntil: nullable(time),
+    createdAt: time,
+  }),
+  order: object({
+    id: uuid,
+    number: string,
+    status: orderStatus,
+    fulfilmentStatus,
+    buyer: maskedBuyer,
+    deliverTo: place,
+    totals: object({ subtotal: Schemas.money, discount: Schemas.money, shipping: Schemas.money, tax: Schemas.money, grandTotal: Schemas.money, pricesIncludeTax: { type: "boolean" } }),
+    items: { type: "array", items: object({ sku: string, productTitle: string, variantTitle: string, hsnCode: nullable(string), quantity: int, unitPricePaise: int, discountPaise: int, taxPaise: int, lineTotalPaise: int }) },
+    delivery: nullable(object({ courierName: nullable(string), mode: nullable(string), estimatedDeliveryDays: nullable(int) })),
+    payments: { type: "array", items: object({ id: uuid, provider: string, mode: string, status: paymentStatus, amountPaise: int, capturedAmountPaise: nullable(int), createdAt: time }) },
+    stockHold: nullable(object({ status: { type: "string", enum: ["active", "allocated", "released", "fulfilled"] }, expiresAt: time })),
+    exceptions: { type: "array", items: object({ reason: string, paymentAttemptId: nullable(uuid), capturedAmountPaise: nullable(int), occurredAt: time }) },
+    events: { type: "array", items: object({ kind: string, fromState: nullable(string), toState: string, actorKind: string, reason: string, occurredAt: time }) },
+    hold: nullable(object({ heldAt: time, heldBy: uuid })),
+    staffActions: { type: "array", items: staffAction },
+    recoveryCases: { type: "array", items: object({ id: uuid, kind: caseKind, status: caseStatus, check: string, detectedAt: time, closedAt: nullable(time) }) },
+    payableUntil: nullable(time),
+    createdAt: time,
+    etag: { type: "string", description: "Send as If-Match to hold or release" },
+  }),
+  holdInput: object({ reason: { type: "string", minLength: 3, maxLength: 500 } }),
+  hold: object({ held: { type: "boolean" }, heldAt: nullable(time), heldBy: nullable(uuid), etag: string }),
+  noteInput: object({ text: { type: "string", minLength: 1, maxLength: 1000 } }),
+  note: staffAction,
+  recoveryCase: object({
+    id: uuid,
+    orderId: uuid,
+    orderNumber: string,
+    kind: caseKind,
+    status: caseStatus,
+    check: { type: "string", description: "What a person should check first; never a payment outcome" },
+    facts: { type: "object", description: "Order, payment and stock hold statuses and deadlines as seen; nothing personal", additionalProperties: true },
+    detectedAt: time,
+    lastSeenAt: time,
+    closedAt: nullable(time),
+    closedBy: nullable(uuid),
+    resolution: nullable(string),
+  }),
+  contact: object({ name: string, email: string, phone: string, shippingAddress: nullable(fullAddress), billingAddress: nullable(fullAddress) }),
+} satisfies Record<string, SchemaObject>

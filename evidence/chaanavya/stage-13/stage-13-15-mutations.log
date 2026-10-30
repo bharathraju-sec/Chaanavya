@@ -1,0 +1,13 @@
+1. A late capture confirms the order instead of sending it to review: 6 of 15 failing
+2. Stock ledger lets availability go below zero: 1 of 9 failing
+3. A held order's fulfilment may move in the API: 2 of 22 failing
+4. A held order's fulfilment may move in the database: 2 of 22 failing
+5. A buyer may cancel a paid order: 1 of 13 failing
+6. Hold and release accept a stale If-Match: build failed (caught by the compiler)
+7. A note retried with the same key is added again: 0 of 13 failing
+8. Reconciliation reopens a case staff resolved: 1 of 15 failing
+9. Reconciliation ignores the grace period: 1 of 15 failing
+10. Contact reads open to orders.read (STAFF): 3 of 13 failing
+restored
+6. Hold and release accept a stale If-Match: 1 of 13 failing
+restored

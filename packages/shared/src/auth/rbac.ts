@@ -40,9 +40,11 @@ export const CAPABILITIES = [
 ] as const
 export type Capability = (typeof CAPABILITIES)[number]
 
-const STAFF: readonly Capability[] = ["orders.read", "orders.pack", "customers.read", "catalogue.read", "inventory.read", "shipments.manage", "returns.inspect"]
+// STAFF see buyers masked; a buyer's full contact (customers.read) is for ADMIN and OWNER (owner decision, Stage 13.12).
+const STAFF: readonly Capability[] = ["orders.read", "orders.pack", "catalogue.read", "inventory.read", "shipments.manage", "returns.inspect"]
 const ADMIN: readonly Capability[] = [
   ...STAFF,
+  "customers.read",
   "orders.manage",
   "catalogue.write",
   "inventory.adjust",
