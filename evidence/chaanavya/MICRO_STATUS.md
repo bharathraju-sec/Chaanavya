@@ -15,6 +15,9 @@
 - **Handoff:**
 
 ```text
+After Stage 13 | PASS | Next.js 16.4.0 to 16.4.3 (critical advisory), committed on its own | package.json, package-lock.json, evidence/chaanavya/* | unit 95/95, db 61/61, security 581/581, e2e 79/79 on rerun (one intermittent catalogue-refresh failure), build passes first time | NestJS and Prisma audit findings await the owner; 7-day returns confirmed; GST test values and weights later | Stage 14
+```
+```text
 Stage 13.15 | PASS (gate) | not committed (awaiting owner approval to commit Stage 13) | tests/security/orders/gate.test.mjs, tests/integration/database/schema.test.mjs, tests/security/orders/{reservation,snapshot}.test.mjs, evidence/chaanavya/* | gate 9/9; security 581/581; db 61/61; unit 95/95; e2e 79/79; typecheck, lint, build pass; mutations 9 caught + 1 held by DB unique key | Next.js security upgrade, "7-day returns" claim and Stage 12 business inputs for the owner | Stage 14
 ```
 ```text

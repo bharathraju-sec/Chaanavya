@@ -837,3 +837,39 @@ Payment itself stays disabled and production checkout stays closed. Placing orde
 - the Next.js security upgrade (not run, per the project rule)
 - the header's "7-day returns" claim (no approved returns policy)
 - the Stage 12 business inputs: real GST values and the advisor's sign-off, courier set-up, product weights, message wording, and the Stage 11 carry-overs
+
+## After the gate: owner decisions and the Next.js security patch, 30 October 2026
+
+**Owner decisions:**
+
+- **Next.js:** patch to the latest 16.x in its own step, by editing `package.json` (never `next upgrade`).
+- **Returns:** "7-day returns" in the header is the shop's returns policy, confirmed by the owner. The returns stage builds to a 7-day window.
+- **GST:** Stage 14 keeps the synthetic tax values. Production stays closed until the tax advisor signs off the real rates and HSN codes.
+- **Product weights:** items without a weight stay unquotable, as built. The owner adds real weights in the admin before launch.
+
+**Next.js 16.4.0 to 16.4.3:**
+
+- **Why:** `npm audit` rated Next.js 16.0.0 to 16.4.0 critical:
+  - remote code execution in the image optimisation API with SVG files;
+  - remote code execution in `use cache` functions returning typed arrays;
+  - a denial of service through server actions.
+
+  The fix is the patch release 16.4.3 (published 23 October 2026).
+- **Change:** `next` and `eslint-config-next` 16.4.0 to 16.4.3 in `package.json`, then `npm install`, which updated `package-lock.json`. After this, `npm audit --omit=dev` no longer lists Next.js.
+- **Not changed (for the owner):** the same audit still reports high-severity issues in the NestJS web layer (`@nestjs/platform-express` 11.1.2 to 12.2.0, through `multer` and `body-parser`) and in Prisma (`prisma` and `@prisma/config` up to 7.10.0, through `deepmerge-ts` and `mysql2`), plus moderate ones in `qs` and `fast-uri`. Each has a non-breaking fix (`@nestjs/platform-express` 12.3.2, `prisma` 7.10.1). They were left for the owner to approve.
+
+**Tests on Next.js 16.4.3** (log `next-16-4-3-all-tests.log`):
+
+| Check | Result |
+|---|---|
+| `npm run build:api`, `npm run typecheck` | clean |
+| `npm run lint` | 0 errors, the 2 existing warnings |
+| `npm test` | 95 of 95 |
+| `npm run test:db` | 61 of 61 |
+| `npm run test:security` | 581 of 581 |
+| `npm run build` | passes on the first run: the security stop no longer triggers |
+| `npm run test:e2e` | 78 of 79, then 79 of 79 on a full rerun (log `next-16-4-3-e2e-rerun.log`) |
+
+**The one e2e failure:** "CHV-S10-M10 an unpublish removes the product after the worker delivers it" (`tests/e2e/catalogue-refresh.test.mjs`) once still saw the unpublished product on the home page right after the refresh was delivered. It then passed three times on its own and in the full rerun. It is treated as intermittent: the test reads the page immediately after delivery. It should be watched; if it fails again, the test should retry the read for a short time.
+
+**Vercel:** the preview of 0300956 on the upgrade branch failed with "npm run build exited with 1". That build log needs team access this connection does not have. The cause is almost certainly this security stop: the same code builds locally on a second run, and every earlier upgrade preview on 16.4.0 built before the stop appeared. The 16.4.3 patch builds on the first run.

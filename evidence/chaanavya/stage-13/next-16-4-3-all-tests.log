@@ -1,0 +1,1446 @@
+=== next version
+16.4.3
+=== exit 0
+=== build:api
+
+> chaanavya-storefront@2.0.0 build:api
+> npm run --workspace @chaanavya/api build
+
+
+> @chaanavya/api@0.1.0 build
+> prisma generate && tsc -p tsconfig.build.json
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.0) to .\src\db\generated in 264ms
+
+=== exit 0
+=== typecheck
+
+> chaanavya-storefront@2.0.0 typecheck
+> next typegen && tsc --noEmit && npm run --workspace @chaanavya/api typecheck && npm run --workspace @chaanavya/worker typecheck
+
+Generating route types...
+✓ Types generated successfully
+
+> @chaanavya/api@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+
+> @chaanavya/worker@0.1.0 typecheck
+> tsc -p tsconfig.json --noEmit
+
+=== exit 0
+=== lint
+
+> chaanavya-storefront@2.0.0 lint
+> eslint
+
+
+F:\Chaanavya\backup\upgrade\tests\e2e\catalogue-gate.test.mjs
+  18:10  warning  'visibleCollections' is defined but never used  @typescript-eslint/no-unused-vars
+
+F:\Chaanavya\backup\upgrade\tests\security\catalogue\refresh.test.mjs
+  55:3  warning  'stock' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 2 problems (0 errors, 2 warnings)
+
+=== exit 0
+=== unit (npm test)
+
+> chaanavya-storefront@2.0.0 test
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test "tests/contracts/*.test.mjs" "tests/ops/*.test.mjs" "tests/catalogue/*.test.mjs"
+
+✔ CHV-S10-M07 a published product maps to the storefront shape with exact prices and the API's availability (75.9197ms)
+✔ CHV-S10-M07 a product with no photos maps to no image, never a placeholder (0.1807ms)
+▶ money and handles
+  ✔ paise are whole numbers only, never floats (1.5316ms)
+  ✔ rupee amounts from a spreadsheet convert by string arithmetic (0.2981ms)
+  ✔ handles from titles (1.6037ms)
+✔ money and handles (4.3137ms)
+▶ variants
+  ✔ option names come from the fixed list and values are unique (0.2234ms)
+  ✔ option keys ignore case and order (0.1484ms)
+  ✔ SKUs are normalised and unique; combinations unique; compare-at above price (0.6642ms)
+✔ variants (1.2297ms)
+▶ publish checks
+  ✔ a complete product has no blockers (0.3581ms)
+  ✔ each missing piece blocks publishing (0.2885ms)
+  ✔ fragrance and jewellery need their shipping restriction; synthetic data never publishes (0.1861ms)
+  ✔ the checklist asks about sizing only for apparel, and every item must be true (0.214ms)
+✔ publish checks (1.273ms)
+▶ CSV
+  ✔ quotes, commas, doubled quotes, CRLF and a byte-order mark (0.4526ms)
+  ✔ formula cells are neutralised on export and restored on import (0.1723ms)
+✔ CSV (0.7417ms)
+▶ photo checks
+  ✔ a real PNG passes with its dimensions (6.8989ms)
+  ✔ types come from the bytes, not the label (3.2902ms)
+  ✔ size, checksum, dimensions and completeness are all checked (31.7302ms)
+✔ photo checks (42.1044ms)
+✔ CHV-S10-M09 choosing a size resolves to that size's own price, compare-at price and stock (50.3375ms)
+✔ CHV-S10-M09 before a choice the price shown is the first buyable variant's, and a sold-out choice shows its own price (0.3666ms)
+✔ CHV-S10-M09 a size is offered only while a variant with it can be bought (0.5853ms)
+✔ CHV-S10-M09 a shared variant link preselects that variant's options and ignores other IDs (0.151ms)
+✔ CHV-S10-M09 a product with one variant and no real choice resolves at once (0.2252ms)
+▶ CHV-S02-003 duplicate provider events
+  ✔ classification: new, duplicate, conflicting (0.6072ms)
+  ✔ a duplicated capture has one financial effect (0.6484ms)
+  ✔ out-of-order events never move the status backwards (0.1206ms)
+  ✔ a second event ID for the state we are already in is a no-op (0.1002ms)
+  ✔ same event ID with a different body is a conflict and changes nothing (0.7846ms)
+  ✔ replaying the whole stream gives the same final state (0.2055ms)
+  ✔ events after a terminal state are ignored (0.1127ms)
+✔ CHV-S02-003 duplicate provider events (3.5325ms)
+▶ CHV-S02-002 server-set prices
+  ✔ honest request is priced from the catalogue (0.7153ms)
+  ✔ client-supplied prices, totals and currency are ignored (0.6051ms)
+  ✔ client echo of a lower total is rejected, never adopted (0.3622ms)
+  ✔ invalid quantities, unknown or unsellable variants and duplicates are refused (0.2955ms)
+  ✔ money stays in integer paise (0.1619ms)
+✔ CHV-S02-002 server-set prices (3.2228ms)
+▶ no overselling
+  ✔ the last unit can be reserved once (1.0417ms)
+  ✔ a multi-SKU shortage reserves nothing (0.246ms)
+  ✔ negative or inconsistent balances are refused (0.1402ms)
+✔ no overselling (1.668ms)
+▶ CHV-S02-001 every transition declares a precondition
+  ✔ order: transitions are well formed (1.8117ms)
+  ✔ order: every state is reachable and every non-terminal state has an exit (0.1918ms)
+  ✔ payment: transitions are well formed (0.1346ms)
+  ✔ payment: every state is reachable and every non-terminal state has an exit (0.1771ms)
+  ✔ reservation: transitions are well formed (0.2205ms)
+  ✔ reservation: every state is reachable and every non-terminal state has an exit (0.1191ms)
+  ✔ fulfilment: transitions are well formed (0.1469ms)
+  ✔ fulfilment: every state is reachable and every non-terminal state has an exit (0.0718ms)
+  ✔ shipment: transitions are well formed (0.1472ms)
+  ✔ shipment: every state is reachable and every non-terminal state has an exit (0.163ms)
+  ✔ return: transitions are well formed (0.1575ms)
+  ✔ return: every state is reachable and every non-terminal state has an exit (0.0494ms)
+  ✔ refund: transitions are well formed (0.0738ms)
+  ✔ refund: every state is reachable and every non-terminal state has an exit (0.0326ms)
+  ✔ illegal and unknown transitions are rejected, replays are no-ops (0.7889ms)
+✔ CHV-S02-001 every transition declares a precondition (5.6894ms)
+▶ commerce invariants encoded as guards
+  ✔ verified payment before confirmation (0.1696ms)
+  ✔ amount mismatch or late capture becomes an exception, never a confirmation (0.1379ms)
+  ✔ no unpaid fulfilment (0.0828ms)
+  ✔ payment alone never ships: handover needs a courier pickup scan with an AWB (0.0688ms)
+  ✔ stock is never released while a capture exists (0.0431ms)
+  ✔ only verified provider facts move payment status (0.0433ms)
+  ✔ order and shipment statuses stay separate (0.0774ms)
+✔ commerce invariants encoded as guards (0.7869ms)
+▶ CHV-S03-002 required secrets per target
+  ✔ development needs nothing: the placeholder catalogue runs with an empty environment (1.4805ms)
+  ✔ production refuses each missing required setting (database, auth, URLs, API key, photo storage) (1.5488ms)
+  ✔ staging refuses each missing server secret, and payment secrets once a key is set (0.3814ms)
+  ✔ the CLI exits 1 on a missing secret and prints no values (85.0667ms)
+✔ CHV-S03-002 required secrets per target (89.3909ms)
+▶ Stage 07 service scopes
+  ✔ each service is checked only for its own settings (0.2867ms)
+  ✔ the web host refuses database and sign-in secrets outside development (0.1357ms)
+  ✔ photo storage addresses: https in production, the public base ends in /, the upload origin is an origin only (0.1822ms)
+  ✔ the API address must be https in production and the internal key long and random (0.1201ms)
+✔ Stage 07 service scopes (0.9382ms)
+▶ test and live separation
+  ✔ live payment keys are refused outside production (0.1797ms)
+  ✔ test payment keys are refused in production (0.2038ms)
+  ✔ a test credential hidden in any other setting is still refused in production (0.1238ms)
+  ✔ development and staging cannot point at a production-looking database; production cannot use a local one (0.0914ms)
+  ✔ APP_ENV=production is refused on a Vercel preview deployment (0.0754ms)
+✔ test and live separation (0.8347ms)
+▶ secrets never reach the browser
+  ✔ secret-looking NEXT_PUBLIC_ settings are refused (0.2912ms)
+  ✔ a public setting may not carry a server secret's value (0.1005ms)
+  ✔ reports contain names and statuses, never values (0.1725ms)
+✔ secrets never reach the browser (0.6615ms)
+▶ environment resolution and secret classification
+  ✔ VERCEL_ENV maps preview to staging (0.0893ms)
+  ✔ secret names (0.1097ms)
+✔ environment resolution and secret classification (0.2668ms)
+▶ sign-in settings (Stage 05)
+  ✔ the auth secret must be long and the production URL must use https (0.561ms)
+  ✔ the admin URL must be https in production and on its own host (0.122ms)
+✔ sign-in settings (Stage 05) (0.7542ms)
+▶ free-text redaction
+  ✔ card numbers (PAN) are removed, other long numbers are kept (0.8884ms)
+  ✔ tokens and provider keys are masked (0.1258ms)
+  ✔ emails and Indian mobile numbers are masked (0.1153ms)
+✔ free-text redaction (1.9897ms)
+▶ structured redaction
+  ✔ secret keys are dropped at any depth (1.8457ms)
+  ✔ street address is removed; city, state and PIN code stay for support (0.166ms)
+  ✔ email and phone fields are masked, not dropped (0.1656ms)
+  ✔ errors keep name and redacted message, never the stack (0.1409ms)
+  ✔ cycles, arrays and primitives are handled (0.1485ms)
+✔ structured redaction (2.7437ms)
+▶ logger
+  ✔ writes one JSON object per line with time, level, event and correlation ID (1.5825ms)
+  ✔ respects the level threshold and routes errors and warnings (0.2402ms)
+  ✔ child loggers keep the correlation ID and add fields (0.1632ms)
+  ✔ nothing sensitive reaches the written line (0.205ms)
+✔ logger (2.4121ms)
+▶ correlation IDs
+  ✔ reuse a well-formed inbound ID, then Vercel's, else create one (4.1108ms)
+  ✔ a logger without an ID creates a UUID (0.0985ms)
+✔ correlation IDs (4.3903ms)
+✔ a Shopify products export becomes drafts, a count sheet and a mapping report (68.7657ms)
+✔ the converter never contacts Shopify and has no Shopify dependency (0.9775ms)
+ℹ tests 95
+ℹ suites 20
+ℹ pass 95
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 260.238
+=== exit 0
+=== database (npm run test:db)
+
+> chaanavya-storefront@2.0.0 test:db
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test --test-concurrency=1 "tests/integration/database/*.test.mjs"
+
+▶ CHV-S09-001 no overselling
+  ✔ 100 concurrent requests for the last unit: exactly one hold succeeds (655.9423ms)
+  ✔ a hold covers every line or none (76.1125ms)
+  ✔ uncounted, draft or archived SKUs are never held; the same key returns the same hold (82.75ms)
+  ✔ the database itself refuses a negative balance (24.9901ms)
+✔ CHV-S09-001 no overselling (840.7391ms)
+▶ CHV-S09-002 holds end exactly once
+  ✔ an expired hold is released once, even with ten settlers racing (118.3008ms)
+  ✔ a cancelled order's hold is released once; a hold that has not expired stays (72.0925ms)
+  ✔ a captured payment for the full amount allocates the units instead of releasing them (63.4665ms)
+  ✔ a payment still in flight keeps its hold through the grace period, then the hold is released (61.8534ms)
+  ✔ a capture that arrives after release sends the order to review and never grabs stock (108.6768ms)
+✔ CHV-S09-002 holds end exactly once (424.9991ms)
+▶ CHV-S09-005 worker failure and retry
+  ✔ a crash after settling rolls the settlement back; the retry releases exactly once and the books agree (166.9182ms)
+  ✔ reconciliation reports a balance that disagrees with the ledger, once, and changes nothing (40.7813ms)
+✔ CHV-S09-005 worker failure and retry (207.9683ms)
+▶ CHV-S04-002 conversions
+  ✔ bigint and number paise convert exactly within the safe range (0.5358ms)
+✔ CHV-S04-002 conversions (0.8749ms)
+▶ CHV-S04-002 storage
+  ✔ extreme amounts round-trip through bigint columns unchanged (154.7476ms)
+  ✔ sums are exact where floats drift (95.3977ms)
+  ✔ fractional or negative amounts are refused by the database (347.5116ms)
+  ✔ order totals must add up in paise (29.82ms)
+  ✔ order numbers come from the database sequence (16.3124ms)
+✔ CHV-S04-002 storage (644.3846ms)
+▶ application role
+  ✔ can insert and read rows (789.0099ms)
+  ✔ cannot update or delete audit events, or truncate ledgers (1009.7933ms)
+  ✔ cannot change the schema or read migration history (999.1879ms)
+✔ application role (2798.7068ms)
+▶ read-only role
+  ✔ can read but not write (648.1557ms)
+✔ read-only role (648.3178ms)
+▶ synthetic seed
+  ✔ loads, and a second run changes nothing (3026.2972ms)
+  ✔ refuses to run against production (154.3923ms)
+✔ synthetic seed (3181.2059ms)
+▶ backup and restore of a migrated database
+  ✔ the restored copy has identical data and an up-to-date migration history (4584.9666ms)
+  ✔ the rollback scripts, newest first, remove the schema, and migrations re-apply cleanly (11385.0592ms)
+✔ backup and restore of a migrated database (15970.2572ms)
+▶ CHV-S04-001 empty database migrates
+  ✔ migrate deploy applies the init migration and status is clean (750.5441ms)
+  ✔ the migrated database matches schema.prisma (no drift) (800.7734ms)
+  ✔ all 44 tables exist (402.4854ms)
+  ✔ hand-written constraints, indexes and triggers are present (1180.9447ms)
+✔ CHV-S04-001 empty database migrates (3135.4084ms)
+▶ CHV-S04-001 duplicate active SKUs are rejected
+  ✔ a second active variant with the same SKU fails (132.2147ms)
+  ✔ an archived variant frees its SKU for a replacement, and history keeps the old row (44.1015ms)
+  ✔ product handles and option combinations are unique (38.3474ms)
+  ✔ handles must be URL-safe slugs (11.7322ms)
+✔ CHV-S04-001 duplicate active SKUs are rejected (226.959ms)
+▶ constraints back the Stage 02 invariants
+  ✔ stock can never go negative or below reservations (30.5078ms)
+  ✔ a cart has exactly one owner and sane quantities (39.5357ms)
+  ✔ a promotion is a percentage or a fixed amount, not both (32.1365ms)
+  ✔ provider events are unique per provider and event ID (5.7694ms)
+✔ constraints back the Stage 02 invariants (108.44ms)
+▶ append-only ledgers
+  ✔ audit events cannot be updated, deleted or truncated (283.339ms)
+  ✔ inventory movements cannot be updated or deleted (39.6212ms)
+✔ append-only ledgers (323.3008ms)
+▶ one vocabulary: database enums equal the Stage 02 state machines
+  ✔ OrderStatus matches ORDER_STATUSES (0.799ms)
+  ✔ PaymentStatus matches PAYMENT_STATUSES (0.0518ms)
+  ✔ ReservationStatus matches RESERVATION_STATUSES (0.0463ms)
+  ✔ FulfilmentStatus matches FULFILMENT_STATUSES (0.0529ms)
+  ✔ ShipmentStatus matches SHIPMENT_STATUSES (0.0254ms)
+  ✔ ReturnStatus matches RETURN_STATUSES (0.023ms)
+  ✔ RefundStatus matches REFUND_STATUSES (0.0195ms)
+✔ one vocabulary: database enums equal the Stage 02 state machines (1.1754ms)
+▶ CHV-S04-003 order item snapshots
+  ✔ renaming, repricing, re-SKUing and archiving the product leaves the order item untouched (160.854ms)
+  ✔ deleting the variant keeps the snapshot and clears only the link (30.662ms)
+  ✔ the frozen shipping address is independent of the address book (13.7021ms)
+✔ CHV-S04-003 order item snapshots (206.0529ms)
+▶ CHV-S04-004 rollback
+  ✔ a shortage on the second SKU undoes the order, the reservation and the first SKU's stock (169.2942ms)
+  ✔ a database constraint failure mid-transaction also rolls everything back (30.1065ms)
+  ✔ the happy path commits every write together (30.8508ms)
+✔ CHV-S04-004 rollback (231.1947ms)
+▶ transaction-safe status transitions
+  ✔ a transition and its audit event commit together (24.2042ms)
+  ✔ a stale writer loses: the second transition from the same state is refused (14.8019ms)
+  ✔ an illegal or unproven transition writes nothing (7.7371ms)
+  ✔ if the audit write fails, the status change is rolled back (8.936ms)
+  ✔ replaying a transition already applied is a no-op (6.6593ms)
+✔ transaction-safe status transitions (62.848ms)
+▶ worker housekeeping
+  ✔ deletes expired sessions, expired codes and idle counters; keeps everything still usable (158.5055ms)
+  ✔ a second instance skips the job while the first holds its lock (12.5068ms)
+✔ worker housekeeping (171.6303ms)
+▶ Stage 08 worker jobs
+  ✔ outbox delivery: delivered once, failures retried later with the error kept (35.5525ms)
+  ✔ media clean-up deletes abandoned uploads and photos removed more than 7 days ago, nothing else (43.459ms)
+✔ Stage 08 worker jobs (79.2706ms)
+ℹ tests 61
+ℹ suites 19
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 53624.8535
+=== exit 0
+=== security (npm run test:security)
+
+> chaanavya-storefront@2.0.0 test:security
+> npm run build:api && node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/security/**/*.test.mjs"
+
+
+> chaanavya-storefront@2.0.0 build:api
+> npm run --workspace @chaanavya/api build
+
+
+> @chaanavya/api@0.1.0 build
+> prisma generate && tsc -p tsconfig.build.json
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma\schema.prisma.
+
+✔ Generated Prisma Client (7.10.0) to .\src\db\generated in 224ms
+
+▶ CHV-S06-001 customers cannot reach admin APIs
+  ✔ every Stage 06 admin API refuses a signed-in customer and a visitor (102.5238ms)
+✔ CHV-S06-001 customers cannot reach admin APIs (2890.4408ms)
+▶ CHV-S06-002 staff limits
+  ✔ STAFF and ADMIN cannot change roles or deactivate anyone (133.4864ms)
+  ✔ STAFF and ADMIN cannot open owner settings (24.2738ms)
+  ✔ refund approval limits: STAFF none, ADMIN up to the threshold, OWNER any amount (2.3363ms)
+  ✔ an owner cannot change their own access, and the last active owner is protected (158.048ms)
+✔ CHV-S06-002 staff limits (318.641ms)
+▶ CHV-S06-003 canonical audit events
+  ✔ granting a role records actor, entity, time, reason and correlation ID from the session (25.6854ms)
+  ✔ revoking a role signs the person out and is audited with the role and session count (26.9045ms)
+  ✔ deactivation and sign-out-everywhere are audited (399.0611ms)
+  ✔ a change without a reason is refused and leaves no trace (17.2194ms)
+  ✔ the audit catalogue rejects incomplete events (0.9595ms)
+✔ CHV-S06-003 canonical audit events (470.2365ms)
+▶ API patterns
+  ✔ mutations need the current ETag: missing is 428, stale is 412 (68.1443ms)
+  ✔ bad input gets a structured 400 (34.8641ms)
+  ✔ the audit list pages with a cursor and filters (24.2025ms)
+✔ API patterns (127.5398ms)
+▶ admin on its own host
+  ✔ with ADMIN_URL set, admin APIs answer only on the admin host (6.613ms)
+  ✔ host helpers (1.012ms)
+✔ admin on its own host (7.7589ms)
+▶ CHV-S07-001 the API starts on its own; readiness follows the database
+  ✔ liveness and readiness answer without the key and without the web host (81.7693ms)
+  ✔ with the database unreachable the process stays alive but is not ready (503) (1613.2499ms)
+  ✔ outside development it refuses to start with incomplete configuration, naming settings but no values (1431.985ms)
+✔ CHV-S07-001 the API starts on its own; readiness follows the database (4663.7472ms)
+▶ only the web host can call the API
+  ✔ no key, a wrong key or a key of the wrong length: 401 on API and sign-in routes alike (15.7721ms)
+  ✔ the right key opens the API; browsers get no CORS permission (16.6543ms)
+✔ only the web host can call the API (32.8739ms)
+▶ request pipeline
+  ✔ a well-formed correlation ID is echoed; anything else is replaced (4.1118ms)
+  ✔ unknown routes and malformed IDs answer the not-found envelope, without stack traces (4.2344ms)
+  ✔ security headers on every answer, and no framework fingerprint (1.0823ms)
+✔ request pipeline (9.8819ms)
+▶ rate limits
+  ✔ a fourth sign-in code request within a minute from one address is refused (278.9778ms)
+[2m2026-10-30T03:55:31.376Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-30T03:55:31.455Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-30T03:55:31.547Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-30T03:55:31.622Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-30T03:55:31.695Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+  ✔ password guessing is limited to five tries a minute (488.0425ms)
+  ✔ limits are kept in the database, shared by every server instance (3.7298ms)
+✔ rate limits (1206.6644ms)
+▶ enumeration resistance
+  ✔ asking for a code looks the same for known and unknown addresses (86.5553ms)
+[2m2026-10-30T03:55:31.936Z[0m [33mWARN[0m [1m[Better Auth]:[0m Invalid password
+[2m2026-10-30T03:55:32.005Z[0m [33mWARN[0m [1m[Better Auth]:[0m User not found
+  ✔ a wrong password and an unknown email get the same answer (211.0923ms)
+  ✔ public password sign-up is closed (14.0682ms)
+✔ enumeration resistance (312.1516ms)
+▶ claiming a guest order
+  ✔ the verified owner of the order's email can claim it, exactly once (82.6049ms)
+  ✔ someone else's order, a missing order and a malformed number all look the same (66.9868ms)
+  ✔ an old sign-in must be renewed before claiming (52.0102ms)
+  ✔ a guest without an account cannot claim (4.7399ms)
+✔ claiming a guest order (206.8224ms)
+▶ identity events are auditable
+  ✔ sign-ins, sign-outs, role grants and denials are recorded, without codes or full emails (52.5767ms)
+✔ identity events are auditable (52.7686ms)
+▶ cookies over https
+  ✔ an https site gets Secure, __Secure- prefixed session cookies (46.5379ms)
+✔ cookies over https (46.7506ms)
+▶ CHV-S05-002 customers cannot reach admin APIs
+  ✔ no session: 401 on every admin route (9.2906ms)
+  ✔ a signed-in customer: 403 on every admin route, and nothing changes (39.2125ms)
+  ✔ denials are audited without personal data (4.1753ms)
+  ✔ a forged cookie or a bearer-style header does not help (2.8411ms)
+✔ CHV-S05-002 customers cannot reach admin APIs (1858.7477ms)
+▶ roles limit capabilities
+  ✔ STAFF can read their profile but cannot read the audit log or manage staff (26.0823ms)
+  ✔ ADMIN reads the audit log but cannot manage staff; OWNER can (36.3684ms)
+  ✔ staff with orders.read can read any order; a customer only their own (33.2757ms)
+✔ roles limit capabilities (96.0774ms)
+▶ request protections
+  ✔ cross-site writes are refused before any permission check (3.3089ms)
+[2m2026-10-30T03:55:39.143Z[0m [31mERROR[0m [1m[Better Auth]:[0m Invalid origin: https://evil.example
+  ✔ Better Auth refuses sign-in requests from another origin (7.7307ms)
+✔ request protections (11.2554ms)
+▶ static check: privileged routes are always guarded
+  ✔ every API route declares an access rule (the guard refuses routes without one) (2.6798ms)
+  ✔ every admin route requires a staff capability; account routes a signed-in customer (2.0003ms)
+  ✔ the order route decides ownership itself; only the health probes skip every check (1.5221ms)
+  ✔ the web host holds no API logic: only the forwarder, the chat route and the cache refresh route, no database or sign-in imports (59.397ms)
+✔ static check: privileged routes are always guarded (65.813ms)
+▶ CHV-S05-001 guest isolation
+  ✔ a guest reads their own order (16.1402ms)
+  ✔ a guest cannot read another guest's order, and the refusal looks like a missing order (10.6821ms)
+  ✔ no cookie, a made-up token or a malformed token reads nothing (14.1631ms)
+  ✔ the database hash alone is not a working cookie (5.3967ms)
+  ✔ expired or revoked guest sessions read nothing (30.3382ms)
+  ✔ guests and customers cannot read each other's orders (34.8305ms)
+  ✔ cart ownership follows the same rule (0.818ms)
+  ✔ a guest is never staff: admin and account routes refuse a guest cookie (3.5367ms)
+✔ CHV-S05-001 guest isolation (693.9077ms)
+▶ CHV-S05-003 privileged actions require MFA
+  ✔ an ADMIN who has not enrolled two-factor is refused with mfa_required (317.5484ms)
+  ✔ with two-factor enrolled, password sign-in stops at the TOTP challenge and creates no session (519.5344ms)
+  ✔ a staff member signing in with an email code is only a customer, even after entering a TOTP code (445.4727ms)
+  ✔ sessions record how they were created (1.3344ms)
+  ✔ disabling two-factor removes admin access (502.5252ms)
+[2m2026-10-30T03:55:52.339Z[0m [31mERROR[0m [1m[Better Auth]:[0m Failed to create session
+  ✔ losing the role or being disabled ends access immediately (844.2762ms)
+  ✔ backup codes work once each (592.9103ms)
+✔ CHV-S05-003 privileged actions require MFA (3623.726ms)
+▶ CHV-S05-004 expired codes and sessions are refused
+  ✔ an expired sign-in code is refused (198.4279ms)
+  ✔ codes expire after five minutes by configuration (22.2703ms)
+  ✔ an expired password-reset code is refused and the password is unchanged (197.0911ms)
+  ✔ a valid reset code works once and signs the user out everywhere (287.4621ms)
+  ✔ a sign-in code works once (45.8809ms)
+  ✔ three wrong attempts burn the code, even for the right value afterwards (64.9232ms)
+  ✔ codes are stored hashed, never as the six digits (9.0784ms)
+  ✔ an expired session is refused (57.1947ms)
+  ✔ signing out ends the session (43.8608ms)
+✔ CHV-S05-004 expired codes and sessions are refused (1320.4708ms)
+✔ the switch is off unless it is set to off in development (586.4763ms)
+✔ the switch is ignored outside development, however the environment is named (0.372ms)
+✔ the configuration check refuses off outside development and anything but on or off (1.2397ms)
+✔ by default a password sign-in alone is refused: two-factor is required (155.9562ms)
+✔ with the switch off in development a password sign-in reaches the admin, and the session says so (108.5928ms)
+✔ the switch is not sticky: turning it off again refuses the same session (102.0339ms)
+✔ outside development the switch does nothing even if it is set (97.2612ms)
+▶ CHV-S11-M04 add cart item
+  ✔ a price, total, currency, title or cart id sent by the browser is ignored (95.2749ms)
+  ✔ the bag shows the catalogue's current price, not the price when it was added (56.4694ms)
+  ✔ the variant ID and quantity are validated, and a refused add starts no guest session (52.0931ms)
+  ✔ only variants on sale now can be added: drafts, unpublished, uncounted and withdrawn sizes read as missing (25.4761ms)
+  ✔ availability is read on the server at the moment of the add, after stock held for orders (81.204ms)
+  ✔ an add needs an Idempotency-Key; a missing or malformed one changes nothing (7.9686ms)
+  ✔ a retried add with the same key counts once and returns the same bag (102.4877ms)
+  ✔ the same key sent several times at once is applied exactly once (132.0147ms)
+  ✔ a key belongs to its own bag: another shopper using the same key value is unaffected (74.8514ms)
+  ✔ racing adds never put more in one bag than the shop has free (112.8224ms)
+✔ CHV-S11-M04 add cart item (1350.9871ms)
+▶ CHV-S11-M03 authenticated cart persistence
+  ✔ a customer's bag is attached to their account, not to a guest session (4.0404ms)
+  ✔ another account cannot read the bag by its id: the same 404 as a made-up id (63.62ms)
+  ✔ a guest or anonymous visitor holding the id gets the same 404 (40.6101ms)
+  ✔ another account cannot change the bag's lines, even with the exact line id (27.0472ms)
+  ✔ the bag follows the account: a new sign-in on another device sees the same bag (54.55ms)
+  ✔ two devices of one customer changing the bag at once both land in the one bag (141.3302ms)
+  ✔ an account whose email is not verified does not own a bag: it shops as a guest (83.5555ms)
+  ✔ a customer bag becomes unreachable once the account is unverified or disabled, even by its id (116.4467ms)
+  ✔ a customer never takes over the guest bag itself: since 11.08 its items are copied into the account's own bag (142.1972ms)
+✔ CHV-S11-M03 authenticated cart persistence (1572.4672ms)
+▶ CHV-S11-M02 guest cart persistence
+  ✔ browsing never starts a guest session: an empty bag is null and sets no cookie (31.3412ms)
+  ✔ the first add starts a guest session with a secure, unguessable cookie (69.4643ms)
+  ✔ over https the guest cookie is Secure (24.8624ms)
+  ✔ the bag survives a reload: the same cookie reads back the same cart and lines (61.9122ms)
+  ✔ nothing in a cart response names the shopper (33.7245ms)
+  ✔ another browser sees no bag, and another guest cannot read or change this one (80.5062ms)
+  ✔ a made-up, revoked or expired guest cookie reads no bag and is cleared (85.1158ms)
+  ✔ prices come from the catalogue: a price sent by the browser is ignored (24.461ms)
+  ✔ only what the shop is selling can be added, in sensible quantities, and a refusal starts no session (18.1699ms)
+  ✔ a cross-site request cannot add to a shopper's bag (31.8391ms)
+  ✔ quantities change, cap at the limit, and 0 removes; a replayed change is harmless (107.3085ms)
+  ✔ concurrent adds to one bag all land, one after another (151.3065ms)
+  ✔ a product taken down after it was added stays in the bag, flagged and not charged (67.425ms)
+  ✔ a signed-in customer's bag is theirs, with no guest cookie (96.5431ms)
+✔ CHV-S11-M02 guest cart persistence (1480.1863ms)
+▶ CHV-S11-F01 one live cart per owner
+  ✔ F01-A: parallel first adds for one verified account leave exactly one live cart holding every add (244.3615ms)
+  ✔ F01-A: the same for a guest session: parallel first adds with one cookie give one cart (115.8273ms)
+  ✔ F01-B: guest adds racing the sign-in merge, and account adds racing it, leave one account cart and no deadlock (128.8007ms)
+✔ CHV-S11-F01 one live cart per owner (1007.8202ms)
+▶ CHV-S11-F02 idempotent add replays
+  ✔ F02-A: an add retried with the same key and body after stock runs out is a successful no-op (50.6375ms)
+  ✔ F02-B: the same retry after the product is unpublished or archived is a no-op; a fresh key still fails (108.2765ms)
+  ✔ F02-C: the same key with a different body is 409, and parallel identical requests apply once (142.3782ms)
+  ✔ F02: a replay never creates a guest session or a cart, and a body missing quantity matches quantity 1 (38.2187ms)
+✔ CHV-S11-F02 idempotent add replays (340.0133ms)
+▶ CHV-S11-F03 promo code through sign-in
+  ✔ F03-A: a guest-only code survives sign-in and is checked as the account (119.407ms)
+  ✔ F03-A: a carried code the account may not use shows with its reason and gives no discount (170.7403ms)
+  ✔ F03-B: the account's own code wins over the guest's, and codes never stack (197.5653ms)
+  ✔ F03-B: an expired carried code never discounts (104.9453ms)
+  ✔ F03-C: repeated and concurrent merges carry the code once and duplicate no lines (150.7607ms)
+  ✔ F03: carrying only a code still bumps the account revision (182.4052ms)
+✔ CHV-S11-F03 promo code through sign-in (926.3399ms)
+▶ CHV-S11-F04 malformed guest cookies
+  ✔ F04-A: malformed, truncated or arbitrary guest cookies give normal anonymous behaviour, never a 500 (261.7502ms)
+  ✔ F04-B: a valid guest cookie still finds its own cart (32.7207ms)
+✔ CHV-S11-F04 malformed guest cookies (294.6825ms)
+▶ CHV-S11-M08 transactional cart merge
+  ✔ signing in merges the guest bag into the account, empties it, ends the guest session and retires the cookie (229.9872ms)
+  ✔ repeating the merge does not duplicate quantities: a second sign-in with the same guest cookie adds nothing (160.4093ms)
+  ✔ the same guest bag merged many times at once is merged exactly once (130.1112ms)
+  ✔ two different guest bags merged into one account at once give one cart with the larger quantities (196.2033ms)
+  ✔ an existing account bag keeps its items, and the same item keeps the larger quantity (269.29ms)
+  ✔ a guest bag never passes to the next user of the same browser (172.0742ms)
+  ✔ after signing out, an anonymous add starts a brand-new guest, not the old one (113.3641ms)
+  ✔ an unverified or disabled account merges nothing and the guest keeps its bag (76.7725ms)
+  ✔ a made-up guest cookie at sign-in merges nothing, is cleared, and sign-in still works (40.9208ms)
+  ✔ an emptied guest bag ends the session without creating an account bag (102.406ms)
+  ✔ over the line limit, account lines stay and the rest are reported as left behind (1092.9093ms)
+✔ CHV-S11-M08 transactional cart merge (3155.2972ms)
+▶ CHV-S11-M07 guest-to-customer merge policy
+  ✔ the same item keeps the larger quantity, from whichever side (1.1828ms)
+  ✔ quantities stay within 1 to the per-line limit (0.1853ms)
+  ✔ guest items for new variants are added after the account's, newest first (0.1072ms)
+  ✔ unavailable guest items are brought over like any other line (the bag flags them) (0.0946ms)
+  ✔ under the line limit, every account line stays and the newest guest items fill the room (0.3631ms)
+  ✔ a full account bag keeps all its lines and leaves every new guest item behind (0.1649ms)
+  ✔ an empty guest bag, or one already covered, changes nothing (0.137ms)
+  ✔ merging the same guest bag twice gives the same bag (no doubling) (0.1363ms)
+  ✔ deterministic: the input order never changes the result, and creation-time ties fall back to the line id (0.6246ms)
+  ✔ the plan says nothing about owners, carts or prices: only variants and quantities move (0.221ms)
+  ✔ 300 seeded random bags: every rule holds every time (18.2416ms)
+✔ CHV-S11-M07 guest-to-customer merge policy (76.9411ms)
+▶ CHV-S11-M01 cart ownership
+  ✔ each guest opens their own cart, and opening again returns the same one (6.9002ms)
+  ✔ another guest holding the cart id gets nothing, the same as a cart that does not exist (6.6437ms)
+  ✔ another guest cannot change the cart, even with its exact revision (7.0059ms)
+  ✔ guests and customers never reach each other's carts (4.223ms)
+  ✔ a signed-in shopper shops as the customer even with a guest cookie still present (0.6359ms)
+  ✔ malformed and made-up cart ids read nothing and never reach the database as a query error (0.1427ms)
+  ✔ a revoked guest session loses its cart, and a fresh session for the same browser starts empty (18.1806ms)
+  ✔ an expired guest session loses its cart even while the cart row is unexpired (11.6979ms)
+  ✔ an expired cart reads as missing to its own guest, and opening starts a new one (13.1358ms)
+  ✔ a guest cart never outlives its guest session; a change renews the expiry (11.5685ms)
+  ✔ two writers on the same revision: exactly one wins (replayed change is refused) (12.7978ms)
+  ✔ racing guests opening carts at once each get only their own (49.0303ms)
+  ✔ abandoned is a reporting state only and grants nothing (0.3588ms)
+  ✔ the database refuses a cart with two owners or none (7.6543ms)
+  ✔ the shared ownership rule agrees: a guest record never matches another guest (0.2581ms)
+  ✔ the guest cookie still resolves to its own session only (1.9829ms)
+✔ CHV-S11-M01 cart ownership (761.8877ms)
+▶ CHV-S11-M10 coupon application
+  ✔ a percentage code: discount and total come from the server, rounded down to the paisa (149.2946ms)
+  ✔ a fixed-amount code never takes off more than the subtotal, and the total is never negative (106.3752ms)
+  ✔ totals are recomputed on every change and read, and the same bag always gives the same totals (359.0513ms)
+  ✔ reduced items are discounted too (owner decision) (51.4169ms)
+  ✔ expired, not started, switched-off and unknown codes are refused and the bag is unchanged (127.3464ms)
+  ✔ one code per bag: a valid new code replaces the old one, and discounts never stack (103.7167ms)
+  ✔ a bag below a code's minimum spend cannot take it (33.4271ms)
+  ✔ a qualifying bag keeps a minimum-spend code while it qualifies and loses only the discount when it does not (84.3762ms)
+  ✔ items no longer on sale are left out of the discount base (84.6957ms)
+  ✔ a per-customer limit is enforced through the bag, for guests by guest session (139.9009ms)
+  ✔ a discount or total sent by the browser is ignored (61.3441ms)
+  ✔ removing the code is idempotent and restores the full total (71.1098ms)
+  ✔ a code is applied only to the caller's own bag; no bag means 404 and no guest session (86.1176ms)
+  ✔ guessing codes is rate limited: the 11th try in a minute from one address is refused (147.1014ms)
+  ✔ over many random bags, the discount is whole paise, never above the subtotal, and total = subtotal - discount (1254.1246ms)
+✔ CHV-S11-M10 coupon application (3436.2682ms)
+▶ CHV-S11-M06 remove and clear
+  ✔ removing a line takes out only that line and recomputes the subtotal (163.7054ms)
+  ✔ removing the same line again, several times, changes nothing and leaves the bag intact (150.7844ms)
+  ✔ the same removal sent many times at once applies once and corrupts nothing (195.4053ms)
+  ✔ removing never reaches another shopper's line: the caller's own bag comes back unchanged (323.9014ms)
+  ✔ a malformed line id is 404; a shopper with no bag gets null and no guest session (90.499ms)
+  ✔ clearing empties the bag but keeps it; clearing again changes nothing (157.1966ms)
+  ✔ clearing touches only the caller's bag (166.6188ms)
+  ✔ an add replayed after a clear is not applied again, while a new add works (66.8954ms)
+  ✔ clears, removals and adds racing on one bag leave it consistent (178.9227ms)
+  ✔ a cross-site request cannot remove or clear (80.0425ms)
+  ✔ after a removal the line is gone for every route: changing it is 404, removing it again is harmless (101.8671ms)
+✔ CHV-S11-M06 remove and clear (2223.2774ms)
+▶ CHV-S11-M05 update quantity
+  ✔ an invalid quantity is refused and nothing is stored: the line and the revision stay as they were (145.7623ms)
+  ✔ the database refuses an out-of-range quantity even if the API were bypassed (60.2486ms)
+  ✔ valid quantities from 1 to 10 are stored, and the bag's totals are recomputed on the server (133.2977ms)
+  ✔ 0 removes the line, and the subtotal drops with it (73.9838ms)
+  ✔ only the owner can change a line: another guest, another account or no session gets 404 (182.2083ms)
+  ✔ raising needs free stock now; lowering always works (109.4756ms)
+  ✔ an item taken off sale can be lowered or removed, but not raised (69.0211ms)
+  ✔ setting the same quantity again changes nothing; a change to a removed line stays refused (69.1523ms)
+  ✔ concurrent changes apply one after another and never pass the free stock (85.3719ms)
+✔ CHV-S11-M05 update quantity (1460.2704ms)
+(node:4748) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ CHV-S08-001 only the right staff can create, edit and publish
+  ✔ visitors get 401 and customers 403 on every catalogue admin route (356.0994ms)
+  ✔ STAFF can read the catalogue but not create, edit, upload, import or publish (203.9849ms)
+  ✔ ADMIN edits drafts but cannot publish, approve photos or change a live product (208.1886ms)
+  ✔ publishing needs a reason, the current ETag and every checklist item (193.8609ms)
+  ✔ publish checks: real description, tax category, approved photo with alt text, shipping restriction, sizes (103.1665ms)
+  ✔ synthetic and placeholder products can never be published (126.1807ms)
+  ✔ once live, the handle is fixed and edits need the owner's reason (179.524ms)
+✔ CHV-S08-001 only the right staff can create, edit and publish (6874.1464ms)
+▶ CHV-S08-002 SKU and option clashes are refused, with no partial writes
+  ✔ the same SKU or the same options twice in one save is refused (28.1799ms)
+  ✔ a SKU used by another product refuses the whole save: earlier rows are not written (182.9564ms)
+  ✔ variants can swap SKUs, removed variants are archived and their options reused (105.7612ms)
+  ✔ a stale ETag is refused: two editors cannot overwrite each other (55.7505ms)
+  ✔ stock is never written by variant saves or imports (133.531ms)
+✔ CHV-S08-002 SKU and option clashes are refused, with no partial writes (506.6293ms)
+▶ CHV-S08-003 nothing unapproved reaches public reads
+  ✔ drafts, archived products and unknown handles read the same 404; live products are listed (321.376ms)
+  ✔ pending, rejected and removed photos are never public; approved ones are (344.9335ms)
+  ✔ hidden collections and their products stay out of public reads (25.9017ms)
+  ✔ catalogue events: none for draft edits, one per live change, carrying handles only (185.1684ms)
+  ✔ storefront categories keep their URLs (34.6188ms)
+✔ CHV-S08-003 nothing unapproved reaches public reads (912.3533ms)
+▶ CHV-S08-004 upload abuse is refused
+  ✔ unsupported types, oversized files and malformed checksums are refused before any upload (43.1772ms)
+  ✔ the signed upload fixes type, exact length and checksum, expires in 10 minutes and targets private staging (48.4885ms)
+  ✔ a file that is not the image it claims is refused and deleted, leaving no photo (165.3142ms)
+  ✔ intents belong to their creator, work once and expire (99.5578ms)
+  ✔ approving and rejecting photos needs catalogue.publish; open intents are limited (667.407ms)
+✔ CHV-S08-004 upload abuse is refused (1047.5483ms)
+▶ CHV-S08-005 price edits never change order snapshots
+  ✔ repricing a live variant is audited and leaves earlier order lines untouched (270.4419ms)
+  ✔ the database refuses any change to an order line's snapshot (186.6745ms)
+✔ CHV-S08-005 price edits never change order snapshots (457.3319ms)
+▶ CSV import and export
+  ✔ preview reports every error and writes nothing; stock columns are refused (21.183ms)
+  ✔ a clean file is previewed, then committed in one transaction as drafts; a changed catalogue needs a new preview (114.0385ms)
+  ✔ live products are not imported over; export guards against spreadsheet formulas (173.6012ms)
+✔ CSV import and export (309.0827ms)
+✔ CHV-S10-M06 no web host source imports a database driver, Prisma or API code (64.3296ms)
+✔ CHV-S10-M06 the catalogue client and storefront pages never read database settings (8.8086ms)
+✔ CHV-S10-M06 a read is a plain GET to the API with the internal key and nothing about the visitor (14.3776ms)
+{"time":"2026-10-30T03:57:34.805Z","level":"warn","event":"catalogue.client_error_status","correlationId":"79bc041d-e990-4821-8667-fc7e6207685f","path":"/api/v1/catalogue/products","status":500}
+{"time":"2026-10-30T03:57:34.806Z","level":"warn","event":"catalogue.client_error_status","correlationId":"0ae1e796-7c37-4c84-8a3b-9b7dde50e047","path":"/api/v1/catalogue/products/kurta","status":500}
+{"time":"2026-10-30T03:57:34.806Z","level":"warn","event":"catalogue.client_error_status","correlationId":"1f6ea00a-7e3c-4d4f-9205-113077fcbae1","path":"/api/v1/catalogue/collections/ethnic-festive","status":500}
+{"time":"2026-10-30T03:57:34.807Z","level":"warn","event":"catalogue.client_error_status","correlationId":"2f456b17-b4ec-4a44-ae50-5b73840b3fa2","path":"/api/v1/catalogue/collections","status":500}
+{"time":"2026-10-30T03:57:34.808Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"eb0c95a9-3ef8-4f79-a61e-41c79308b55c","path":"/api/v1/catalogue/products"}
+{"time":"2026-10-30T03:57:34.809Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"d13cbf34-82f5-4138-bbc7-9434724975ee","path":"/api/v1/catalogue/products/kurta"}
+{"time":"2026-10-30T03:57:34.810Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"9b996b11-edee-4e80-a886-6baea069daac","path":"/api/v1/catalogue/collections/ethnic-festive"}
+{"time":"2026-10-30T03:57:34.811Z","level":"warn","event":"catalogue.client_bad_body","correlationId":"117b4717-eae6-483b-af61-548f6c81a3bb","path":"/api/v1/catalogue/collections"}
+{"time":"2026-10-30T03:57:34.811Z","level":"warn","event":"catalogue.client_error_status","correlationId":"ef8fe666-4c4c-465b-ac05-8b6764ac5a8a","path":"/api/v1/catalogue/products","status":302}
+{"time":"2026-10-30T03:57:34.812Z","level":"warn","event":"catalogue.client_error_status","correlationId":"8d07613b-8f51-4ebf-8e03-5e0038626d9c","path":"/api/v1/catalogue/products/kurta","status":302}
+{"time":"2026-10-30T03:57:34.812Z","level":"warn","event":"catalogue.client_error_status","correlationId":"a48966a1-dd98-4667-997d-411dde2b5270","path":"/api/v1/catalogue/collections/ethnic-festive","status":302}
+{"time":"2026-10-30T03:57:34.813Z","level":"warn","event":"catalogue.client_error_status","correlationId":"21b49708-a4a6-4b83-9cd9-eb70e4713fc7","path":"/api/v1/catalogue/collections","status":302}
+{"time":"2026-10-30T03:57:34.816Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"a9b3a770-ef7b-437c-8846-55dae2756e39","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T03:57:34.818Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"7bd08a64-860e-4123-8b46-9058ae4e02e5","path":"/api/v1/catalogue/products/kurta","reason":"network"}
+{"time":"2026-10-30T03:57:34.820Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"6e361590-d198-49ae-a02e-3a06929a68e7","path":"/api/v1/catalogue/collections/ethnic-festive","reason":"network"}
+{"time":"2026-10-30T03:57:34.822Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"f248c00c-b2c9-40d6-bd50-730fe251c872","path":"/api/v1/catalogue/collections","reason":"network"}
+✔ CHV-S10-M06 a missing or hidden answer is not_found; other failures are unavailable, never an exception (23.0294ms)
+{"time":"2026-10-30T03:57:35.083Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"6661ba97-2e3a-479e-8393-90a56b3710df","path":"/api/v1/catalogue/products","reason":"timeout"}
+{"time":"2026-10-30T03:57:35.084Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"dc824121-14b8-4c8d-b07e-26327c8a47a7","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T03:57:35.084Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"f8ef2c9c-4913-4d1b-a784-e1db28a2a580","path":"/api/v1/catalogue/collections","reason":"network"}
+✔ CHV-S10-M06 a slow API is cut off at the timeout, and an unreachable one is unavailable (261.1945ms)
+✔ CHV-S10-M06 without an API address outside development the client is unavailable, not a crash (0.6583ms)
+✔ CHV-S10-M06 malformed handles, variants and page options are refused before any request (0.2047ms)
+✔ CHV-S10-M06 the data cache time is 60 seconds unless a valid override is set (0.1097ms)
+(node:60352) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M06 against the real API, a process with no database settings reads published data and nothing hidden (6209.572ms)
+(node:46468) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M05 a collection returns only its published members, newest first, ties by ID (7155.1725ms)
+✔ CHV-S10-M05 membership is per collection, and a hidden collection is never named (11.3499ms)
+✔ CHV-S10-M05 pages are bounded and walk the members once in order (59.7942ms)
+✔ CHV-S10-M05 query parameters cannot widen the filter or reorder the members (32.3884ms)
+✔ CHV-S10-M05 hidden and unknown collections are the same 404, and the key is required (12.9575ms)
+(node:5676) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M04 a published handle loads with the first variant that can be bought now (6784.176ms)
+✔ CHV-S10-M04 the shopper's chosen variant is selected, even when it is sold out (4.3421ms)
+✔ CHV-S10-M04 a variant from another or hidden product, or an unknown one, falls back and reveals nothing (20.991ms)
+✔ CHV-S10-M04 a published product with nothing to buy is found and marked unavailable (4.0743ms)
+✔ CHV-S10-M04 hidden handles do not load and read exactly like a missing one (83.6754ms)
+✔ CHV-S10-M04 without the web host's key the details are refused (0.8075ms)
+(node:7752) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M03 the API refuses callers without the web host's key (6940.5884ms)
+✔ CHV-S10-M03 called directly, the list holds only published, counted products, newest first (10.8671ms)
+✔ CHV-S10-M03 query parameters cannot widen the publication filter (64.2268ms)
+✔ CHV-S10-M03 paging one at a time visits each public product once and nothing else (33.3ms)
+✔ CHV-S10-M03 a forged cursor is refused or only moves the position (18.0487ms)
+✔ CHV-S10-M03 a signed-in owner gets the same public list, and hidden handles are a plain 404 (38.594ms)
+(node:18280) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M02 the public product, variant and photo DTOs hold exactly the contract's fields (5530.9712ms)
+✔ CHV-S10-M02 private columns never leave the API, even though the rows hold them (10.078ms)
+✔ CHV-S10-M02 drafts, archived variants and unapproved photos are not in the projection (17.7048ms)
+✔ CHV-S10-M02 the published OpenAPI schema is closed and matches the contract's field lists (0.2634ms)
+(node:6192) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M10 a publish and a signed count each announce, and a burst of stock changes is one event (5499.7371ms)
+✔ CHV-S10-M10 a signed count that moves no stock still announces, because it can make the product public (247.6371ms)
+✔ CHV-S10-M10 an unpublish announces, and nothing is announced for a product that is not live (342.2713ms)
+✔ CHV-S10-M10 the handler makes one key-protected request that carries nothing about the catalogue (35.1541ms)
+✔ CHV-S10-M10 an error answer, an unreachable web host and a missing setting fail the event so it is retried (2.2861ms)
+✔ CHV-S10-M10 the delivery job refreshes once for many events, keeps events when the web host is down and delivers them when it is back (256.8318ms)
+(node:58144) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M01 a public SKU and variant are the database's rows, with price and availability from their source columns (5440.8957ms)
+✔ CHV-S10-M01 an unpublished item is absent from public reads but traceable to its row by staff (24.9985ms)
+✔ CHV-S10-M01 the storefront still reads only the placeholder module, so no demo product reaches the API (6.2752ms)
+▶ CHV-S12-M03 ownership
+  ✔ customer A cannot see, edit, delete or make default customer B's address (80.6895ms)
+  ✔ A's edits to its own address never touch B's (37.75ms)
+  ✔ signed out is 401, an unverified email is 403, another site is refused, malformed ids are 404 (74.0686ms)
+✔ CHV-S12-M03 ownership (848.6965ms)
+▶ CHV-S12-M03 create, edit, delete, default
+  ✔ an invalid address is refused with its fields named and nothing is saved (47.0207ms)
+  ✔ an edit is checked as a whole; a bad edit changes nothing (40.9644ms)
+  ✔ the first address is the default, one default at a time, and deleting the default promotes the newest (123.1422ms)
+  ✔ the database allows only one default per customer (5.7768ms)
+  ✔ an address book holds up to 20 addresses (266.0639ms)
+✔ CHV-S12-M03 create, edit, delete, default (483.4638ms)
+▶ CHV-S12-M03 parallel requests
+  ✔ parallel first saves and default changes leave exactly one default (130.8067ms)
+  ✔ B racing A's own edits and deletes cannot change A's address (27.4956ms)
+✔ CHV-S12-M03 parallel requests (158.5865ms)
+▶ CHV-S12-M01 address check
+  ✔ a complete address is cleaned: E.164 mobile, upper-case state, India, spaces collapsed (0.949ms)
+  ✔ each mandatory field missing or blank is named as required (0.4776ms)
+  ✔ every problem is reported at once (0.0809ms)
+  ✔ malformed PIN codes are refused (0.1109ms)
+  ✔ phones that are not Indian mobiles are refused; usual ways of writing one are accepted (0.1472ms)
+  ✔ state codes not shaped IN-XX, other countries, wrong types, control characters and over-long text are refused (0.1927ms)
+✔ CHV-S12-M01 address check (365.8231ms)
+▶ CHV-S12-M01 saving
+  ✔ a valid address is saved to the customer's address book, cleaned (112.229ms)
+  ✔ an invalid address is refused and nothing is written (11.2446ms)
+  ✔ the database refuses invalid mandatory data written directly (128.0917ms)
+✔ CHV-S12-M01 saving (251.9651ms)
+▶ CHV-S12-M01 guest snapshot and saved address are separate
+  ✔ a guest's address is checked and returned as a snapshot; the address book is untouched (2.762ms)
+  ✔ a snapshot of a saved address carries no id or owner and does not follow later edits (14.8358ms)
+  ✔ an address book entry needs a customer: there is no guest owner column (10.6031ms)
+✔ CHV-S12-M01 guest snapshot and saved address are separate (28.4838ms)
+▶ CHV-S12-M12 an unserviceable route stops checkout
+  ✔ a PIN the courier does not serve: no option, no quote stored, 'we don't deliver' with change-address (141.4724ms)
+  ✔ a courier outage: 'could not check', with retry; never worded as delivering or refusing; retry recovers (116.842ms)
+  ✔ a restricted item: no option, 'can't be sent' with edit-bag (72.4685ms)
+  ✔ the restricted item is named: only the items no courier carries, by their title (223.3265ms)
+  ✔ a bag with no weight: 'can't price delivery', with contact (80.0015ms)
+  ✔ a served address goes on: a quote, no issue, a total (67.1126ms)
+  ✔ moving a quoted bag to an unserviceable PIN invalidates the earlier quote; the new route gets none (104.2472ms)
+  ✔ a live courier that says not serviceable, or fails, is treated the same; production without a courier cannot quote (103.5826ms)
+✔ CHV-S12-M12 an unserviceable route stops checkout (1536.0278ms)
+▶ CHV-S12-M12 the review never shows a total or a delivery claim it does not have
+  ✔ rates that could not be loaded are an outage, not a refusal; no issue only with a served answer (0.2157ms)
+  ✔ the restricted message lists the items in plain English; with none known it stays general (0.1692ms)
+  ✔ a quote that arrives while delivery is blocked still cannot go on (rates failed, the quote call a moment later did not) (59.8938ms)
+  ✔ the page shows the issue, hides the total and keeps the order button disabled while delivery is blocked (0.5893ms)
+✔ CHV-S12-M12 the review never shows a total or a delivery claim it does not have (61.0808ms)
+▶ CHV-S12-M04 a guest completes the contact step without an account
+  ✔ email and delivery address are saved for the guest's bag; no account, order or reservation is created (151.3936ms)
+  ✔ missing or invalid fields are all named and nothing is stored (46.0124ms)
+  ✔ marketing sign-up is not offered: a yes is refused and nothing is stored; no or absent is fine (47.4947ms)
+  ✔ without a bag there is nothing to attach details to: 404, and no guest session is started (7.5994ms)
+  ✔ an emptied bag cannot take contact details (53.127ms)
+  ✔ another site is refused (32.9489ms)
+✔ CHV-S12-M04 a guest completes the contact step without an account (896.111ms)
+▶ CHV-S12-M04 isolation
+  ✔ one guest never sees or changes another guest's details (86.4818ms)
+  ✔ the database refuses malformed details written directly (51.0629ms)
+✔ CHV-S12-M04 isolation (137.902ms)
+▶ CHV-S12-M04 customers and sign-in
+  ✔ a customer's order email is the account email; a different one is refused (161.7085ms)
+  ✔ signing in merges the guest bag and clears the guest's contact details (103.1349ms)
+✔ CHV-S12-M04 customers and sign-in (265.1373ms)
+▶ CHV-S12-M02 format is not delivery
+  ✔ a well-formed PIN no courier has answered for is unknown and not deliverable (1.0522ms)
+  ✔ an address with a well-formed but unknown PIN is accepted as an address, yet still not deliverable (0.3588ms)
+  ✔ only a courier answer of serviceable makes a PIN deliverable (0.1331ms)
+  ✔ a malformed PIN is invalid and never deliverable, even if a courier said yes (0.134ms)
+✔ CHV-S12-M02 format is not delivery (392.321ms)
+▶ CHV-S12-M02 state codes
+  ✔ the list holds the 36 current states and union territories (0.3705ms)
+  ✔ known codes are accepted in any case; replaced codes become the current one (0.2191ms)
+  ✔ well-shaped but unknown codes, and names instead of codes, are refused (0.6048ms)
+  ✔ the database refuses a saved address with an unknown or replaced state code (239.1415ms)
+✔ CHV-S12-M02 state codes (240.6907ms)
+▶ CHV-S12-M10 an unchanged quote stays valid until it expires
+  ✔ a fresh quote checks as valid, any number of times, and checking changes nothing (210.2915ms)
+  ✔ it expires at 15 minutes exactly: valid a millisecond before, refused at expiry, then discarded (102.6089ms)
+  ✔ a title or photo change does not matter: only what is charged is bound (88.3482ms)
+✔ CHV-S12-M10 an unchanged quote stays valid until it expires (957.2441ms)
+▶ CHV-S12-M10 a quote is bound to its owner and is the bag's latest
+  ✔ another shopper, an unknown id or a malformed id gets 404, and the owner's quote is untouched (133.5019ms)
+  ✔ a newer quote replaces the old one: the old id is 404 (119.7618ms)
+  ✔ signing in makes the shopper a customer: the guest's quote no longer belongs to them (181.6449ms)
+  ✔ a changed fingerprint version is never matched (69.9255ms)
+✔ CHV-S12-M10 a quote is bound to its owner and is the bag's latest (505.2572ms)
+▶ CHV-S12-M10 any change to what the quote was priced from invalidates it
+  ✔ bag contents: a quantity change or another item (217.9073ms)
+  ✔ price: the catalogue price changed (93.2157ms)
+  ✔ promotion: the applied code stops applying (151.0828ms)
+  ✔ address: the delivery address changed (112.5477ms)
+  ✔ delivery: the courier's rate changed (a heavier parcel) (94.5988ms)
+  ✔ tax: the tax profile's rate changed (93.3259ms)
+  ✔ tax: the profile no longer has a rate for the bag's category (94.5563ms)
+  ✔ stock: units taken by someone else, or the item withdrawn (148.6023ms)
+  ✔ a refused quote is replaced by asking again, priced from the new inputs (117.3894ms)
+✔ CHV-S12-M10 any change to what the quote was priced from invalidates it (1123.8622ms)
+▶ CHV-S12-M10 the fingerprint covers every part and the owner
+  ✔ each part changes the fingerprint; the owner changes it too (55.9955ms)
+✔ CHV-S12-M10 the fingerprint covers every part and the owner (56.1372ms)
+▶ CHV-S12-M09 the server prices the bag
+  ✔ catalogue price, sandbox delivery and GST (fee included) add up; a test quote says why (145.9349ms)
+  ✔ delivery outside the seller's state is IGST on goods and fee; the shopper may pick another offer (61.5294ms)
+  ✔ the applied promotion is checked again and its discount comes from the server (88.8455ms)
+  ✔ the price is the catalogue's now: a price change shows in the next quote (81.9585ms)
+✔ CHV-S12-M09 the server prices the bag (974.9142ms)
+▶ CHV-S12-M09 tampered input never changes the quote
+  ✔ prices, discounts, fees, taxes and totals in the body, the query or headers are ignored (105.2204ms)
+  ✔ a delivery option the courier did not offer is refused, never priced (88.8746ms)
+  ✔ a stale bag revision is refused, and a quote is stored only for the bag it priced (86.0315ms)
+  ✔ only the latest quote is kept; parallel quotes leave exactly one row, one of theirs (127.5868ms)
+✔ CHV-S12-M09 tampered input never changes the quote (408.1018ms)
+▶ CHV-S12-M09 a bag that cannot be sold as it is gets no quote
+  ✔ no bag, no address, empty bag, short or uncounted stock, a withdrawn item (226.0391ms)
+  ✔ production has no courier and never uses a draft tax profile (79.317ms)
+✔ CHV-S12-M09 a bag that cannot be sold as it is gets no quote (305.6838ms)
+▶ CHV-S12-M09 GST on the delivery fee is shared by value
+  ✔ the fee is split by line value after discount and each share is taxed at its line's rate (0.4132ms)
+  ✔ with GST-inclusive prices the fee includes its GST; a fee larger than the goods still splits (0.1141ms)
+  ✔ a fully discounted bag shares the fee by list price; a zero fee adds nothing; a negative fee is refused (0.2406ms)
+✔ CHV-S12-M09 GST on the delivery fee is shared by value (0.8951ms)
+(node:17304) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+▶ permissions and record rules
+  ✔ visitors 401, customers 403, STAFF read only, ADMIN cannot approve stocktakes (444.395ms)
+  ✔ changes need a reason and the current ETag; an Idempotency-Key makes a retry harmless (249.3871ms)
+✔ permissions and record rules (6508.4795ms)
+▶ CHV-S09-003 stock change, ledger and audit are one unit
+  ✔ receive, adjust and write-off each write one ledger row with the balance after it, and one audit event (230.9753ms)
+  ✔ a change that fails part-way leaves no ledger row, no audit event and the same balance (185.8313ms)
+  ✔ the ledger cannot be edited or deleted, and a signed stocktake cannot change (274.2043ms)
+✔ CHV-S09-003 stock change, ledger and audit are one unit (691.3876ms)
+▶ stocktakes and the public-display gate
+  ✔ a live product stays off the shop until its stock is counted and signed; discrepancies must each be accepted (413.3147ms)
+  ✔ approval needs the statement and a typed name; a count below units held for orders is refused (438.6269ms)
+  ✔ SKU search, never-counted and low-stock filters (394.1979ms)
+✔ stocktakes and the public-display gate (1246.6322ms)
+▶ CHV-S09-004 imports are idempotent and never make demo goods live
+  ✔ the same count file twice returns the same stocktake; approving it twice is impossible (304.6895ms)
+  ✔ a Shopify export is reference only: counts start at zero and differences are reported (216.6674ms)
+  ✔ synthetic, placeholder and unknown SKUs are refused; nothing is created (48.9554ms)
+✔ CHV-S09-004 imports are idempotent and never make demo goods live (570.688ms)
+▶ CHV-S13-M13 only admins and owners act, and only from the admin site
+  ✔ visitors 401; customers and STAFF 403; no two-factor 403 mfa_required; cross-site 403; nothing written (312.7778ms)
+  ✔ the action routes declare orders.manage (0.702ms)
+  ✔ an unknown or malformed order id is 404 and writes nothing (31.5457ms)
+✔ CHV-S13-M13 only admins and owners act, and only from the admin site (2173.2103ms)
+▶ CHV-S13-M13 hold and release: checked, audited, and safe to repeat
+  ✔ a hold needs If-Match and a reason; it is applied once, audited and on the order's trail (209.9401ms)
+  ✔ a repeated hold is refused with nothing written; a retry with the same key returns the first result (192.4988ms)
+  ✔ two staff holding at once: one succeeds, the other is refused, one record (168.608ms)
+  ✔ release: refused when not held, applied once when held, and the order can move again (184.3858ms)
+  ✔ only an open order can be held (144.517ms)
+  ✔ a held order's fulfilment cannot move forward, in the API or the database; release lifts it; cancelling stays possible (337.2609ms)
+  ✔ a hold changes no money, payment or stock (149.1243ms)
+✔ CHV-S13-M13 hold and release: checked, audited, and safe to repeat (1386.9775ms)
+▶ CHV-S13-M13 internal notes: checked, audited without their text, never added twice
+  ✔ a note needs an Idempotency-Key and 1 to 1000 plain characters (140.4298ms)
+  ✔ a note is added once and audited by id and length; a retry returns the same note; a reused key is refused (162.6339ms)
+  ✔ staff actions are append-only in the database (138.1106ms)
+✔ CHV-S13-M13 internal notes: checked, audited without their text, never added twice (441.4386ms)
+▶ CHV-S13-M12 staff permission boundaries hold on direct API calls
+  ✔ visitors 401; customers 403, even the order's own buyer; staff without two-factor 403 (103.7562ms)
+  ✔ a cross-site contact read is refused before anything is read or recorded, even with an owner's session (7.3974ms)
+  ✔ staff, admins and owners read the list and an order; the routes are read-only (96.2499ms)
+  ✔ an unknown or malformed order id is the same 404 (42.7872ms)
+  ✔ the contact route requires customers.read; the list and order need only orders.read (0.7306ms)
+✔ CHV-S13-M12 staff permission boundaries hold on direct API calls (2640.7113ms)
+▶ CHV-S13-M12 personal data is masked, and full contact reads are on record
+  ✔ the list and the order show the buyer masked: no full name, email, phone or street anywhere (21.6031ms)
+  ✔ the order view carries what staff need: items, totals in paise, payment, stock hold and its trail (13.2195ms)
+  ✔ the full contact, for admins and owners (customers.read); every read writes an audit event naming who looked (28.3732ms)
+  ✔ STAFF see the buyer masked only: a STAFF contact read is 403 and nothing is recorded (10.9543ms)
+  ✔ a refused contact read is not recorded as a view (34.4873ms)
+✔ CHV-S13-M12 personal data is masked, and full contact reads are on record (109.2141ms)
+▶ CHV-S13-M12 filters are checked and pages are stable
+  ✔ status, payment status and order number filters (51.6834ms)
+  ✔ a bad filter is refused, not ignored (58.4181ms)
+  ✔ paging one at a time visits each order once, newest first (17.9733ms)
+✔ CHV-S13-M12 filters are checked and pages are stable (128.3579ms)
+▶ CHV-S13-M05 last-unit simultaneous checkouts yield only one valid reservation
+  ✔ ten shoppers check out the last unit at once: one order holds it, nine are refused (893.6728ms)
+  ✔ a bag of the last unit and a plentiful item: the losers hold neither (616.6291ms)
+  ✔ the scarce item is the second line for some and the first for others: still all or none (638.1118ms)
+✔ CHV-S13-M05 last-unit simultaneous checkouts yield only one valid reservation (2704.4729ms)
+▶ CHV-S13-M05 opposite-order bags never deadlock
+  ✔ bags holding the same two items in opposite order race repeatedly and always finish (1149.4339ms)
+✔ CHV-S13-M05 opposite-order bags never deadlock (1149.7401ms)
+▶ CHV-S13-M05 a refused checkout leaves nothing behind
+  ✔ after every race, refused shoppers have no order, no hold and no movement, and their quotes were not used up (374.4939ms)
+✔ CHV-S13-M05 a refused checkout leaves nothing behind (374.7754ms)
+▶ CHV-S13-M09 a retry or race cannot double-release stock
+  ✔ the shopper cancels: the hold is released once, the order cancelled once, each with its origin (362.7057ms)
+  ✔ a repeated cancel changes nothing: no second release, no second event (245.1292ms)
+  ✔ eight parallel cancels by the shopper release the stock exactly once (270.7268ms)
+  ✔ the expiry job racing the shopper, and overlapping job runs, still release once (235.1147ms)
+  ✔ the expiry job cancels orders whose window has ended, and only those, once across overlapping runs (399.3799ms)
+✔ CHV-S13-M09 a retry or race cannot double-release stock (2126.161ms)
+▶ CHV-S13-M09 a payment in flight is never cut off
+  ✔ an open (created) payment past the window is sent for reconciliation; the order and its stock wait (162.2269ms)
+  ✔ an authorized or reconciling payment keeps the order; the shopper cannot cancel it away either (324.8665ms)
+  ✔ a failed or expired payment no longer holds the order back (380.5842ms)
+  ✔ a captured payment is never cancelled here (178.0564ms)
+✔ CHV-S13-M09 a payment in flight is never cut off (1046.1965ms)
+▶ CHV-S13-M09 only the shopper's own unpaid order
+  ✔ another shopper, an unknown id or a malformed id gets 404 and nothing is released (324.8113ms)
+  ✔ a confirmed order cannot be cancelled through this route (168.3435ms)
+  ✔ the route is closed in production (170.8218ms)
+✔ CHV-S13-M09 only the shopper's own unpaid order (664.3026ms)
+▶ CHV-S13-M10 a capture allocates the held stock and confirms the order, once
+  ✔ one capture: payment captured, stock reserved -> allocated through the Stage 09 ledger, order confirmed, nothing shipped (362.6792ms)
+  ✔ the same event replayed changes nothing: no second allocation, no second event (223.3041ms)
+  ✔ a second event for the same capture (gateways send several) applies nothing new (231.6187ms)
+  ✔ many events at once, replays and new ids mixed, allocate exactly once (258.4976ms)
+✔ CHV-S13-M10 a capture allocates the held stock and confirms the order, once (1669.2247ms)
+▶ CHV-S13-M10 only an authoritative, matching capture allocates
+  ✔ the same event id with a different body is a conflict and is never applied (381.6232ms)
+  ✔ another payment provider's event, a courier, or an unknown name allocates nothing (172.9414ms)
+  ✔ a captured amount that does not match the order sends it to review; the stock stays held, neither allocated nor released (168.4459ms)
+  ✔ a capture after the hold was released allocates nothing and sends the order to review (13.11 decides) (186.2992ms)
+  ✔ a failed or expired payment cannot be captured by a stray event (172.7039ms)
+  ✔ the bridge reuses the Stage 09 settlement and ledger: it does no stock arithmetic of its own (0.7236ms)
+✔ CHV-S13-M10 only an authoritative, matching capture allocates (1083.2305ms)
+▶ CHV-S13-M03 an order is bound to the checkout it came from
+  ✔ a placed order names its bag, and is payable until its quote's expiry (266.3696ms)
+  ✔ the shopper who placed it can continue it (138.4451ms)
+✔ CHV-S13-M03 an order is bound to the checkout it came from (909.9755ms)
+▶ CHV-S13-M03 a customer cannot reuse someone else's order id
+  ✔ another guest, a signed-in customer and a signed-out visitor all get the same 404 as an unknown id (321.1589ms)
+  ✔ a foreign order cannot be placed again, replayed or continued with its own key or quote (263.6229ms)
+  ✔ a guest's order stays with the guest session: after signing in it is not the customer's to continue (181.8116ms)
+  ✔ a customer's order is theirs alone: another customer and the customer's earlier guest session are refused (204.1926ms)
+✔ CHV-S13-M03 a customer cannot reuse someone else's order id (971.2288ms)
+▶ CHV-S13-M03 the checkout must still be live
+  ✔ at or after the payment window the order cannot be continued (125.8689ms)
+  ✔ an order that is no longer pending cannot be continued (123.1196ms)
+  ✔ when the bag it came from is gone, the checkout has ended (121.3309ms)
+  ✔ the bag link and payment window are frozen: they cannot be moved or extended (259.8923ms)
+  ✔ the route is closed in production (165.3413ms)
+✔ CHV-S13-M03 the checkout must still be live (796.0081ms)
+▶ CHV-S13-M08 every sensitive transition has an auditable origin
+  ✔ placing an order records one 'placed' event: the guest, the request's correlation id, and a redacted context (319.6102ms)
+  ✔ a signed-in customer's placement names the customer's account (229.4809ms)
+  ✔ every move after placing is recorded once, with its actor, request and rule: payment, hold, order, fulfilment (202.851ms)
+  ✔ the trail explains the order's current state: each event starts where the last one ended (155.9258ms)
+✔ CHV-S13-M08 every sensitive transition has an auditable origin (1565.0073ms)
+▶ CHV-S13-M08 no origin, no change
+  ✔ a direct status change without a declared origin is refused, for orders, payments and holds (171.0114ms)
+  ✔ an origin missing its actor or correlation id does not count, and an origin never outlives its transaction (144.4126ms)
+  ✔ the trail is append-only and refuses personal data (197.2602ms)
+✔ CHV-S13-M08 no origin, no change (513.0679ms)
+▶ CHV-S13-M08 retries never duplicate events
+  ✔ replays with the same key or the same quote add no second placement (156.9517ms)
+  ✔ parallel submissions of one quote leave exactly one placement event (221.5489ms)
+  ✔ a repeated move (a retried callback or job) is a no-op and adds nothing (161.1642ms)
+  ✔ the database itself refuses a second placement event (114.3651ms)
+✔ CHV-S13-M08 retries never duplicate events (654.4201ms)
+▶ CHV-S13-M15 no overselling in tested races
+  ✔ eight shoppers race for the last two units: two orders, each paid by replayed and concurrent captures, allocated once (691.6452ms)
+  ✔ multi-item bags race: a bag is held whole or not at all, and the scarce item is sold once (366.7744ms)
+  ✔ payment, hold expiry, window end and the shopper's cancel all race on one order: one consistent outcome, ten times (11765.6034ms)
+  ✔ a late payment after the last unit was resold: the second buyer keeps it, the first goes to review, no re-reservation (333.207ms)
+  ✔ an order with a payment still open is never cancelled or its outcome guessed; the stock goes back only once (158.7559ms)
+  ✔ cancelling twice, expiring twice and re-running every job change nothing more (180.8087ms)
+✔ CHV-S13-M15 no overselling in tested races (14102.7037ms)
+▶ CHV-S13-M15 no unpaid fulfilment
+  ✔ unpaid, under review and cancelled orders cannot be packed through the API or the database (424.8813ms)
+  ✔ a paid order packs once its payment confirmed it; packing races apply once; a held order waits (320.1646ms)
+  ✔ after every race above, reconciliation finds the stuck orders without changing any of them (72.498ms)
+✔ CHV-S13-M15 no unpaid fulfilment (817.9165ms)
+▶ CHV-S13-M02 a duplicate submission returns the original order
+  ✔ the first submission places one pending order copied from the quote; the quote is used up (233.2294ms)
+  ✔ the same key again returns the same order, unchanged, as a replay (132.0277ms)
+  ✔ the same quote under a new key (a double click after a reload) returns the same order (127.7875ms)
+  ✔ a replay is answered without checking again: it still returns the order after prices and stock change (132.4811ms)
+  ✔ parallel submissions, with one key or many, make exactly one order and all get it (422.4434ms)
+✔ CHV-S13-M02 a duplicate submission returns the original order (1650.1432ms)
+▶ CHV-S13-M02 keys, totals and quotes are checked
+  ✔ a key reused for another quote is refused; keys belong to their shopper (257.6273ms)
+  ✔ another shopper's quote, an unknown quote or no session places nothing (178.0317ms)
+  ✔ a total that differs from the quote places nothing and leaves the quote usable (146.8146ms)
+  ✔ prices, totals or items sent in the body are ignored: the order is the quote's (104.85ms)
+  ✔ a bag changed after quoting, or an expired quote, places nothing (176.1892ms)
+  ✔ the request must carry a key and a well-formed body (67.6598ms)
+✔ CHV-S13-M02 keys, totals and quotes are checked (931.6523ms)
+▶ CHV-S13-M02 orders are placed only where checkout is open
+  ✔ production answers 404 and places nothing, even for a valid quote (61.7159ms)
+  ✔ stored keys are per-shopper digests, never the key itself (109.8783ms)
+✔ CHV-S13-M02 orders are placed only where checkout is open (171.8207ms)
+▶ CHV-S13-M11 a capture after expiry does not oversell
+  ✔ the last unit: A's hold expires, B buys it, then A's money arrives; A goes to review and the unit is sold once (447.4479ms)
+  ✔ the late payment replayed, or reported again, changes nothing and records one exception (172.6813ms)
+  ✔ no one confirms a late order without stock allocated again, even by claiming it is (175.5769ms)
+  ✔ a second payment for an order already confirmed is an exception: nothing allocated twice (161.6676ms)
+✔ CHV-S13-M11 a capture after expiry does not oversell (1505.9041ms)
+▶ CHV-S13-M11 a capture racing the expiry jobs ends one way, never both
+  ✔ capture against the Stage 09 expiry job at the same moment: allocated and confirmed, or released and reviewed (1051.1492ms)
+  ✔ capture against the 13.09 order-expiry job at the same moment: no deadlock, and a paid order is never cancelled (1018.7224ms)
+✔ CHV-S13-M11 a capture racing the expiry jobs ends one way, never both (2070.1967ms)
+▶ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone
+  ✔ a complete payment callback captures the payment and confirms the order; fulfilment does not move (141.578ms)
+  ✔ the payment provider cannot pack, hand over or complete an order, whatever it claims (20.2568ms)
+  ✔ one write cannot both confirm an order and move its fulfilment (44.3007ms)
+  ✔ shipping happens only through its own steps, after payment, by staff and the courier (50.0412ms)
+✔ CHV-S13-M07 shipped state cannot be inferred from a payment callback alone (650.0024ms)
+▶ CHV-S13-M07 payments move on their own provider's events only
+  ✔ a courier, staff or a customer cannot capture a payment; a system job only where the machine allows (29.3892ms)
+  ✔ a provider not on the launch list moves nothing (PhonePe until the shop signs up); an unknown provider moves nothing (12.3372ms)
+  ✔ a courier cannot confirm payment for an order (5.196ms)
+  ✔ the database allows exactly the payment machine's moves, and the actor table covers each of them (296.0832ms)
+  ✔ repeats are harmless: the same callback twice changes nothing more (14.0674ms)
+  ✔ actors are classed by kind and provider name (0.219ms)
+✔ CHV-S13-M07 payments move on their own provider's events only (357.7449ms)
+▶ CHV-S13-M14 stuck orders are surfaced, and nothing else changes
+  ✔ a fresh pending order is not stuck (189.7834ms)
+  ✔ a pending order past its window: a case for a person, and the order, hold and ledger untouched (179.6804ms)
+  ✔ a payment in flight is never guessed: the case says to ask the provider, and the payment stays as it is (201.1128ms)
+  ✔ a captured payment on an unconfirmed order is surfaced, not confirmed (159.3811ms)
+  ✔ an order and its hold that disagree: confirmed with stock unallocated, cancelled still holding stock (328.6781ms)
+  ✔ an order left in review for a day is surfaced (250.5988ms)
+  ✔ the worker job runs the same reconciliation on its own clock (153.6944ms)
+✔ CHV-S13-M14 stuck orders are surfaced, and nothing else changes (2760.197ms)
+▶ CHV-S13-M14 runs are idempotent, overlap safely, and close cases correctly
+  ✔ repeated and overlapping runs keep one open case per order and kind, opened and audited once (236.0032ms)
+  ✔ a case clears when its condition goes: the order was cancelled by the expiry path (272.4341ms)
+  ✔ a resolved case does not come back with the same facts, and opens again when something changes (297.4208ms)
+  ✔ findingsFor is pure: the same order at the same time gives the same findings (0.2742ms)
+✔ CHV-S13-M14 runs are idempotent, overlap safely, and close cases correctly (806.4698ms)
+▶ CHV-S13-M14 staff see and resolve cases; resolving changes nothing on the order
+  ✔ visitors 401, customers 403; staff list; only admins and owners resolve; cross-site refused (226.9865ms)
+  ✔ resolving needs a reason, is audited, is refused the second time, and leaves the order alone (239.8436ms)
+  ✔ the routes declare their capabilities, and bad filters are refused (36.7259ms)
+  ✔ the database keeps cases honest: closed cases do not change, nothing is deleted, facts carry nothing personal (226.1941ms)
+✔ CHV-S13-M14 staff see and resolve cases; resolving changes nothing on the order (730.1063ms)
+▶ CHV-S13-M04 a pending order holds its stock through the Stage 09 reservation
+  ✔ placing an order makes one reservation for every line, with one ledger movement each (290.1637ms)
+  ✔ a replay or the same quote again never holds twice (135.7303ms)
+  ✔ parallel submissions of one quote hold the stock exactly once (187.4644ms)
+✔ CHV-S13-M04 a pending order holds its stock through the Stage 09 reservation (1152.4885ms)
+▶ CHV-S13-M04 the order and its hold commit together or not at all
+  ✔ two shoppers race for the last unit: one order holds it; the other is refused and nothing of theirs is written (204.5371ms)
+  ✔ when the hold fails after the order row is written, the order is rolled back too (119.6049ms)
+  ✔ the hold lasts for the payment window, within the Stage 09 limits (116.2674ms)
+✔ CHV-S13-M04 the order and its hold commit together or not at all (440.8014ms)
+▶ CHV-S13-M04 the Stage 09 interface is reused, not copied
+  ✔ reserveStock keeps its behaviour: holds, replays with its key, refuses a reused key (137.0626ms)
+  ✔ the order code does no stock arithmetic: it calls the reservation code and nothing else touches balances or movements (0.7345ms)
+✔ CHV-S13-M04 the Stage 09 interface is reused, not copied (138.0361ms)
+▶ CHV-S13-M01 an order placed from a quote carries everything it was sold on
+  ✔ identifiers: a UUID id and a CHV- number from the sequence, both unique (250.7494ms)
+  ✔ the order is the quote, copied: totals, lines, tax classification, customer, tax basis, delivery and fingerprint (138.9118ms)
+  ✔ the snapshot is a copy: changing the quote object afterwards changes nothing (69.2742ms)
+✔ CHV-S13-M01 an order placed from a quote carries everything it was sold on (1045.8878ms)
+▶ CHV-S13-M01 later catalogue edits do not alter a placed order
+  ✔ price, titles, SKU, handle, photo, weight, restriction, tax rate and HSN, promotion and address all change; the order does not (138.4756ms)
+  ✔ archiving or deleting the variant keeps the snapshot; only the link to a deleted variant clears (94.4706ms)
+✔ CHV-S13-M01 later catalogue edits do not alter a placed order (233.2461ms)
+▶ CHV-S13-M01 the database refuses any edit of what was sold
+  ✔ money, email, address, snapshots, fingerprint, number and tax setting cannot be changed on the order (217.0633ms)
+  ✔ a line's price, tax, quantity or tax classification cannot be changed (129.1716ms)
+  ✔ status, fulfilment and account links still move: a guest claims the order, and deletions clear links (149.4685ms)
+  ✔ an order from a quote must carry every snapshot, consistent with its own columns; the number has its format (113.6622ms)
+  ✔ the same submit key never makes a second order (85.9023ms)
+✔ CHV-S13-M01 the database refuses any edit of what was sold (695.7702ms)
+▶ CHV-S13-M01 the snapshot is copied faithfully or not at all
+  ✔ no fingerprint, no catalogue facts for a line, no lines, or lines taxed by two profiles are refused (73.6934ms)
+  ✔ a signed-in customer's order is recorded as a customer's (93.1055ms)
+✔ CHV-S13-M01 the snapshot is copied faithfully or not at all (167.0489ms)
+▶ CHV-S13-M06 an invalid jump from pending to shipped is rejected
+  ✔ a pending order cannot be handed to the courier, packed or completed: not by the API, not by a direct write (184.0568ms)
+  ✔ the full path works one step at a time, by the right actors (57.3134ms)
+  ✔ an order is completed only after it was handed over (15.776ms)
+✔ CHV-S13-M06 an invalid jump from pending to shipped is rejected (658.2718ms)
+▶ CHV-S13-M06 the database allows exactly the machines' moves
+  ✔ every order status pair: allowed if and only if it is a transition of ORDER_MACHINE (126.4712ms)
+  ✔ every fulfilment pair on a confirmed order: allowed if and only if it is a transition of FULFILMENT_MACHINE (113.3636ms)
+  ✔ every transition has its actors listed, and every listed move is a transition (0.4266ms)
+✔ CHV-S13-M06 the database allows exactly the machines' moves (240.53ms)
+▶ CHV-S13-M06 only the allowed actors may ask for a move
+  ✔ a customer, a guest or staff cannot confirm a payment; only the provider or a system job can (23.6404ms)
+  ✔ only staff resolve a review; a system job cannot (11.5726ms)
+  ✔ a paid order is cancelled by staff only, before dispatch; the buyer and a system job may not (33.0513ms)
+  ✔ only the courier hands a parcel over; staff pack it (17.3912ms)
+  ✔ facts the order row holds cannot be supplied by the caller (5.0615ms)
+✔ CHV-S13-M06 only the allowed actors may ask for a move (91.2226ms)
+▶ CHV-S13-M06 moves are compare-and-set and repeat safely
+  ✔ asking for the state it is already in is a no-op; a stale 'from' is refused (11.3097ms)
+  ✔ two simultaneous moves from the same state: exactly one applies (12.5755ms)
+✔ CHV-S13-M06 moves are compare-and-set and repeat safely (24.1082ms)
+▶ CHV-S11-M09 promotion validity
+  ✔ an expired code is rejected, from the exact end time on (0.6229ms)
+  ✔ a code that has not started is rejected until its start time (0.1668ms)
+  ✔ a switched-off or unknown code reads as not found (0.1803ms)
+  ✔ ineligible shoppers and bags are rejected (0.1664ms)
+  ✔ the discount is computed on the server in whole paise and never exceeds the subtotal (0.6444ms)
+  ✔ codes are normalised; anything that cannot be a code is not found (0.1522ms)
+  ✔ database path: real codes are found case-insensitively and the same rules apply (128.0845ms)
+  ✔ database path: a per-customer limit counts the shopper's orders with the code (by account, or by guest session), except cancelled ones (73.902ms)
+  ✔ the database refuses promotion rows the engine could not price safely (36.4583ms)
+✔ CHV-S11-M09 promotion validity (621.7341ms)
+▶ CHV-S12-M07 the parcel is built from catalogue data, never guessed
+  ✔ weights add up per unit, value is the goods' price, restrictions come from the products (0.7154ms)
+  ✔ a line without a weight or a reviewed restriction makes the parcel unsupported: no request, no quote (0.1534ms)
+  ✔ a malformed pickup or delivery address gives no request (0.1548ms)
+✔ CHV-S12-M07 the parcel is built from catalogue data, never guessed (1.5099ms)
+▶ CHV-S12-M07 only real offers that fit the parcel survive
+  ✔ well-formed offers come back exactly as the courier gave them, cheapest first (1.0522ms)
+  ✔ offers that cannot carry the parcel are dropped; none left is unavailable with no options (0.1618ms)
+  ✔ a restricted item is never offered a service that does not accept it (0.2413ms)
+  ✔ a restricted refusal names the restrictions no offer carries, and only those (0.1847ms)
+  ✔ malformed or made-up offers are dropped: wrong currency, fractional or negative paise, missing fields, bad dates (0.1753ms)
+  ✔ an unavailable answer never carries options, even when the courier attached some (0.1917ms)
+  ✔ returned offers are copies: changing the courier's objects afterwards changes nothing (0.1286ms)
+✔ CHV-S12-M07 only real offers that fit the parcel survive (2.409ms)
+▶ CHV-S12-M07 courier failures give no offer
+  ✔ a throw, a timeout or a malformed answer is provider_unavailable with no options (26.7299ms)
+✔ CHV-S12-M07 courier failures give no offer (27.017ms)
+▶ CHV-S12-M08 the sandbox courier is deterministic and only simulates
+  ✔ the same request always gets the same answer; prices follow zone and 500 g slabs (3.5767ms)
+  ✔ documented PINs simulate an unserviceable address and an outage; other couriers' work is not simulated (0.7506ms)
+  ✔ sandbox answers still pass the server's checks: perfume never goes by air, jewellery has no service (0.719ms)
+✔ CHV-S12-M08 the sandbox courier is deterministic and only simulates (818.8971ms)
+▶ CHV-S12-M08 simulation is kept apart from live eligibility
+  ✔ development and staging use the sandbox; production never does, even when it is handed one (0.3009ms)
+  ✔ the bag's rates come from the sandbox as test rates: delivery is simulated, never deliverable or eligible (127.7468ms)
+  ✔ the catalogue decides the parcel: perfume gets surface only, jewellery and unweighed items get no rate (158.2086ms)
+  ✔ an address the sandbox does not serve, or a simulated outage, gives no rate (82.059ms)
+  ✔ no bag is 404, no delivery address is 409; the browser cannot choose the courier or the parcel (70.6333ms)
+  ✔ only a live courier's answer makes a bag eligible; a live answer carrying a sandbox service is not trusted (54.9184ms)
+✔ CHV-S12-M08 simulation is kept apart from live eligibility (494.4077ms)
+▶ CHV-S12-M08 the bag shows test rates as test rates and live rates plainly
+  ✔ test rates carry the badge, the notice and a label on every price; delivery is worded as simulated (9.031ms)
+  ✔ live rates carry no test wording at all (0.3374ms)
+  ✔ the label follows the API's mode alone: a test answer dressed as live is still shown as a test (0.3159ms)
+  ✔ every delivery answer has its own wording; only a live deliverable answer says 'Delivers to' (0.5906ms)
+  ✔ no courier shows nothing; no rate shows the reason, never a price (0.2494ms)
+✔ CHV-S12-M08 the bag shows test rates as test rates and live rates plainly (10.7996ms)
+▶ CHV-S12-M06 worked examples (GST-inclusive prices)
+  ✔ E1 one line at 5% within Karnataka: CGST 45.21 + SGST 45.21 taken out of 1,899.00 (10.336ms)
+  ✔ E2 the same line delivered to Maharashtra: IGST 90.43 (one rounding instead of two) (0.2051ms)
+  ✔ E3 two lines, 5% and 12%, with a 100.00 bag discount shared 48.73 / 51.27 (0.2063ms)
+  ✔ E5 a fractional half rate (0.25%) and 3% on three units (0.1356ms)
+  ✔ E6 a 0.02 discount over three equal lines goes to the first two (ties to the earlier line) (0.1346ms)
+  ✔ a seller in a union territory without a legislature charges UTGST, not SGST (0.1498ms)
+✔ CHV-S12-M06 worked examples (GST-inclusive prices) (373.0291ms)
+▶ CHV-S12-M06 worked example (prices before tax)
+  ✔ E4 tax added on top, delivered out of state: IGST 92.51 and 233.61 (0.1835ms)
+✔ CHV-S12-M06 worked example (prices before tax) (0.3165ms)
+▶ CHV-S12-M06 determinism and integers
+  ✔ the same input always gives the same result, and line order is kept (1.3279ms)
+  ✔ every amount is a bigint; totals are the sums of the lines; discounts sum to the bag discount (13.6717ms)
+  ✔ half up: exactly half a paisa rounds up, just under half rounds down (0.5527ms)
+✔ CHV-S12-M06 determinism and integers (15.8242ms)
+▶ CHV-S12-M06 refusals and the quote snapshot
+  ✔ a category without a rate, a bad delivery state, a discount over the bag or a bad quantity is refused, never taxed at zero (0.3889ms)
+  ✔ each line carries the classification a quote freezes: profile, category, HSN, rate, supply, states, rounding (0.1643ms)
+  ✔ with the database: production refuses without an approved active profile; elsewhere a draft is used and marked unapproved (156.5571ms)
+✔ CHV-S12-M06 refusals and the quote snapshot (157.4252ms)
+▶ CHV-S12-M05 nothing is live without an approved profile
+  ✔ with no profile, live sales are blocked and production has no profile to use (24.193ms)
+  ✔ a draft cannot be activated, and production never falls back to it (40.8147ms)
+  ✔ the database refuses an active or approved profile that was never signed (44.7578ms)
+  ✔ only the owner may draft, approve or activate; admin and staff are refused, signed out is 401 (88.7761ms)
+✔ CHV-S12-M05 nothing is live without an approved profile (1838.6186ms)
+▶ CHV-S12-M05 approval checks
+  ✔ approval needs the advisor statement, the advisor's reference, a typed name and a reason (26.3372ms)
+  ✔ an incomplete profile cannot be approved: no GSTIN, no rates, or a sellable category without a rate (85.1342ms)
+  ✔ GSTINs must be well formed, carry the right check character and belong to the seller state (45.6344ms)
+  ✔ rates must name a real category once, a 4, 6 or 8 digit HSN code and 0% to 40% in whole basis points (6.2114ms)
+✔ CHV-S12-M05 approval checks (163.7058ms)
+▶ CHV-S12-M05 drafts can be edited and listed
+  ✔ editing a draft replaces its rates and is audited; nothing else is kept from before (48.3239ms)
+  ✔ only the owner lists profiles; the list is never cached (27.5111ms)
+✔ CHV-S12-M05 drafts can be edited and listed (76.0733ms)
+▶ CHV-S12-M05 approved and active
+  ✔ a signed, complete profile is approved, then active; sales are ready and production uses it (77.7811ms)
+  ✔ an approved profile never changes: no edit, no rate change, no deletion (54.285ms)
+  ✔ a new sellable category without a rate blocks sales again until a new profile covers it (28.9052ms)
+  ✔ activating a newer approved profile retires the old one; exactly one is ever active, even in parallel (100.0437ms)
+✔ CHV-S12-M05 approved and active (261.3311ms)
+ℹ tests 581
+ℹ suites 122
+ℹ pass 581
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 392425.3925
+=== exit 0
+=== storefront build
+
+> chaanavya-storefront@2.0.0 build
+> next build
+
+▲ Next.js 16.4.3 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 104ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.0s
+  Running TypeScript ...
+  Finished TypeScript in 4.1s ...
+  Collecting page data using 19 workers ...
+  Generating static pages using 19 workers (0/39) ...
+{"time":"2026-10-30T04:01:52.894Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"a681309b-c819-4bb3-b786-44d21f7f06cc","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:52.895Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"a1a3ace5-3f86-42f9-8125-425ed947c846","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:52.895Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"3c91d3c5-52c6-4014-bbd6-829ed6960039","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:52.896Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"afbd1232-c5ef-4f14-9387-78b492114901","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:52.896Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"6ae10dcb-0c15-4e51-bb44-53cfcf3604bc","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:52.896Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"98a013ae-9b20-41d0-b3a4-d527c4a89bcc","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:52.896Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"a3c1e03b-a588-4dda-b906-eac59430a7a9","path":"/api/v1/catalogue/products","reason":"network"}
+  Generating static pages using 19 workers (9/39) 
+  Generating static pages using 19 workers (19/39) 
+{"time":"2026-10-30T04:01:53.017Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"b1f73533-ecc0-4e57-93b4-7fe93213e3fd","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.030Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"fbc2eed4-be7a-4165-bc00-25ea3df2307c","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.030Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"718a7373-61ad-4943-99c3-72a2690ea5d5","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.030Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"7e412f21-de3c-4e71-9485-0bcc70f5e7c9","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.031Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"06eb2d6f-49d4-42a6-9cab-52293f9783c8","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.032Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"9b2bd6d2-a1ef-4a3a-a8a3-ec0ecbc440fe","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.032Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"f4c727f8-8a3c-480f-8a00-b13dbb4b02c7","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.032Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"e434e4f3-0674-49a1-8000-90c6f1a4b864","path":"/api/v1/catalogue/products","reason":"network"}
+  Generating static pages using 19 workers (29/39) 
+{"time":"2026-10-30T04:01:53.045Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"18aa4ea8-9499-4feb-86ac-61f90907ae59","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.072Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"cd8b4201-8304-4750-92bc-13e4d08e9aaf","path":"/api/v1/catalogue/products","reason":"network"}
+{"time":"2026-10-30T04:01:53.072Z","level":"warn","event":"catalogue.client_unreachable","correlationId":"ead73a0e-7958-4b6b-990c-4c614f553bf4","path":"/api/v1/catalogue/products","reason":"network"}
+✓ Generating static pages using 19 workers (39/39) in 293ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /[collection]
+├ ƒ /account
+├ ƒ /account/sign-in
+├ ƒ /admin
+├ ƒ /admin/[...rest]
+├ ƒ /admin/audit
+├ ƒ /admin/customers
+├ ƒ /admin/inventory
+├ ƒ /admin/inventory/[variantId]
+├ ƒ /admin/inventory/stocktakes
+├ ƒ /admin/inventory/stocktakes/[id]
+├ ƒ /admin/login
+├ ƒ /admin/orders
+├ ƒ /admin/payments
+├ ƒ /admin/products
+├ ƒ /admin/products/[id]
+├ ƒ /admin/products/[id]/preview
+├ ƒ /admin/products/collections
+├ ƒ /admin/products/import
+├ ƒ /admin/products/new
+├ ƒ /admin/promotions
+├ ƒ /admin/returns
+├ ƒ /admin/robots.txt
+├ ƒ /admin/settings
+├ ƒ /admin/setup-mfa
+├ ƒ /admin/shipments
+├ ƒ /api/[...path]
+├ ƒ /api/chat
+├ ƒ /api/internal/revalidate
+├ ƒ /checkout
+├ ƒ /contact
+├ ƒ /privacy-policy
+├ ƒ /products/[handle]
+├ ƒ /refund-policy
+├ ○ /robots.txt
+├ ƒ /shipping-policy
+├ ƒ /sitemap.xml
+├ ƒ /size-guide
+├ ƒ /terms
+└ ƒ /track-order
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+=== exit 0
+=== e2e (npm run test:e2e)
+
+> chaanavya-storefront@2.0.0 test:e2e
+> node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/support/register.mjs --test --test-concurrency=1 "tests/e2e/*.test.mjs"
+
+▶ CHV-S06-001 admin pages are blocked for customers and visitors
+  ✔ the shop host never serves the admin (43.7811ms)
+  ✔ signed-out visitors on the admin host are sent to the login page, which is not indexed (36.1888ms)
+  ✔ old /admin/... addresses on the admin host redirect to the short form (1.7454ms)
+  ✔ a signed-in customer gets a plain 404 on every admin page (471.8687ms)
+  ✔ unknown admin addresses are a plain 404 (9.5992ms)
+✔ CHV-S06-001 admin pages are blocked for customers and visitors (2926.692ms)
+▶ roles and empty states
+  ✔ CHV-S06-004 the overview shows no sales figures, sample rows or currency amounts (33.8833ms)
+  ✔ CHV-S06-004 every planned section says it is not built yet and shows no data (91.8394ms)
+  ✔ the owner sees team and configuration; values never appear (28.3658ms)
+  ✔ STAFF sees no Settings or Audit link, and those pages refuse them (38.2627ms)
+  ✔ CHV-S08 products: an empty catalogue says so; STAFF can look but gets no editing controls (95.0397ms)
+  ✔ CHV-S08 product editor, preview, collections and import pages render from the API (186.6506ms)
+  ✔ CHV-S08/S09 a signed-in customer gets a 404 on the product and inventory pages (445.3478ms)
+  ✔ admin pages may load photos and send uploads to the photo store; shop pages may not upload (38.4489ms)
+  ✔ CHV-S09 inventory: stock list, stocktakes; STAFF reads but cannot start a count (111.5854ms)
+  ✔ the audit trail page lists real entries (20.2719ms)
+✔ roles and empty states (2827.2411ms)
+▶ storefront header
+  ✔ the sign-in button opens our sign-in page; signed in, it says Account (432.8181ms)
+  ✔ robots.txt: the shop keeps crawlers out of private paths; the admin host blocks everything (62.5709ms)
+  ✔ no Shopify anywhere in storefront pages (66.8515ms)
+✔ storefront header (562.5195ms)
+▶ static check
+  ✔ admin code has no chart libraries or hard-coded money figures (11.6131ms)
+✔ static check (11.7113ms)
+▶ CHV-S11-M11 bag drawer on the shop's own cart API
+  ✔ add, change, remove and clear work through the web host, with totals from the API (303.6812ms)
+  ✔ the bag survives a reload through the web host and is never cached (39.4193ms)
+  ✔ errors from the API reach the drawer as the API sent them (61.8187ms)
+  ✔ the drawer calls only the shop's cart API, and the shop's code holds no Shopify cart or browser-only bag (53.5102ms)
+  ✔ adding to the bag reserves no stock (35.6294ms)
+✔ CHV-S11-M11 bag drawer on the shop's own cart API (2079.7982ms)
+▶ CHV-S11-M12 Stage 11 gate
+  ✔ a guest shops, reloads, signs in, changes quantities and signs out: the bag follows every step, and no stock moves (563.3911ms)
+  ✔ prices and availability are always the catalogue's current ones (151.9988ms)
+  ✔ an unreachable API is a clean, uncached error for the bag, and nothing is half-done (3.4383ms)
+  ✔ no shopper sees another's bag, account or session, on any cart route (247.0277ms)
+  ✔ checkout stays closed: no checkout, payment, quote or webhook route, page or API, and the bag's checkout button is disabled (157.3462ms)
+  ✔ the bag never reserves stock, whatever is done to it (194.3356ms)
+✔ CHV-S11-M12 Stage 11 gate (2911.8074ms)
+(node:39924) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M11 the sitemap lists exactly what shoppers can open, and nothing hidden or sample (8326.8635ms)
+✔ CHV-S10-M11 robots.txt keeps private paths out and points at the sitemap (3.5005ms)
+✔ CHV-S10-M11 every listed page opens, is mobile-ready, has a title and its own canonical address, and names no sample product (422.4146ms)
+✔ CHV-S10-M11 an empty collection and the Show more pages are kept out of the index, with one canonical address (72.4281ms)
+✔ CHV-S10-M11 the sitemap follows the catalogue: an unpublish drops the product after the worker delivers it (153.4526ms)
+✔ CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, page or API, and no payment provider on the pages (174.4639ms)
+✔ CHV-S10-M11 when the API is down the sitemap and robots still work, with fixed pages only and no stale or sample product (445.9812ms)
+✔ CHV-S10-M10 the refresh route answers only the worker, and only to POST (6188.1008ms)
+✔ CHV-S10-M10 policy: public reads are cached for a bounded 60 seconds (7.3725ms)
+(node:53444) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M10 a publish becomes visible after the worker delivers it, not before (476.1839ms)
+✔ CHV-S10-M10 a stock change to sold out becomes visible after the worker delivers it (157.9188ms)
+✖ CHV-S10-M10 an unpublish removes the product after the worker delivers it (77.4468ms)
+▶ CHV-S12-M13 the correct quote is produced
+  ✔ within Karnataka: CGST and SGST on goods and fee, cheapest delivery, prices including GST (166.5474ms)
+  ✔ to Maharashtra with a 10% code and two units: IGST, the discount and fee shared, the air option the shopper picked (119.6948ms)
+  ✔ a mixed bag (5% and 12%) with an odd price: the fee's GST split by value, every paisa accounted for (155.5989ms)
+  ✔ a replaced state code (Orissa) is stored as Odisha and priced as inter-state, national zone (103.1209ms)
+  ✔ perfume is quoted by surface only (73.4432ms)
+  ✔ a signed-in customer gets the same quote, with the account's email (147.0381ms)
+  ✔ tampered prices, totals and fees in the request change nothing (92.6161ms)
+✔ CHV-S12-M13 the correct quote is produced (2569.4068ms)
+▶ CHV-S12-M13 checkout blocks with an explanation
+  ✔ address: a malformed PIN, an unknown state, a non-mobile phone, or no address at all (126.7404ms)
+  ✔ delivery: unserviceable PIN, courier outage, restricted item, no weight, over every courier's limit (328.5844ms)
+  ✔ price and stock: a stale bag, a price change after quoting, stock gone, an item withdrawn (298.7681ms)
+  ✔ tax: a category with no rate in the profile, and production without an approved profile (124.7877ms)
+  ✔ an expired quote is refused and must be asked for again (85.9445ms)
+✔ CHV-S12-M13 checkout blocks with an explanation (965.2517ms)
+▶ CHV-S12-M13 payment stays disabled
+  ✔ no payment, order or webhook route exists on the API or the web host; no order, payment or reservation was made (292.1925ms)
+  ✔ the review's final button is disabled; production has no review page and keeps the bag's 'Checkout opens soon' (105.7057ms)
+✔ CHV-S12-M13 payment stays disabled (398.1292ms)
+▶ CHV-S12-M11 the review shows exactly the total the API authorised
+  ✔ through the web host, the shown total is the API's grand total, and it matches the stored quote (228.0626ms)
+  ✔ choosing another delivery option shows the API's new total, not one worked out in the browser (157.7263ms)
+  ✔ the summary only formats the API's figures: a quote whose parts do not add up still shows the API's total (1.16ms)
+  ✔ a test quote says so on the summary; nothing on the page can place an order (86.0949ms)
+✔ CHV-S12-M11 the review shows exactly the total the API authorised (2205.671ms)
+▶ CHV-S12-M11 the review page is open in development and staging only
+  ✔ development serves /checkout, not indexed; production answers 404 (241.5335ms)
+  ✔ the switch: development and staging open, production closed however it is declared (0.202ms)
+  ✔ the bag links to the review only when it is open; otherwise checkout stays a disabled button (1.1922ms)
+✔ CHV-S12-M11 the review page is open in development and staging only (243.1387ms)
+✔ CHV-S10-M08 every collection page keeps its slug and editorial copy and shows an honest empty state (6553.5602ms)
+(node:33480) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M08 each collection shows exactly its published members, newest first (1464.0234ms)
+✔ CHV-S10-M08 a collection with more than 48 products pages with Show more and no product is lost or repeated (368.0512ms)
+✔ CHV-S10-M08 a forged or malformed cursor is a plain 404, never a leak (106.7984ms)
+✔ CHV-S10-M08 unknown slugs, an owner-hidden collection and the old links behave as before (89.477ms)
+✔ CHV-S10-M08 when the API is down each collection page says so calmly and shows no sample products (462.1778ms)
+✔ CHV-S10-M07 with nothing published the homepage keeps its editorial layout and shows no sample products (6248.2845ms)
+(node:2484) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M07 published, counted products render from the API, newest first, capped at four, without hidden ones (1378.3014ms)
+✔ CHV-S10-M07 when the API is down the homepage says so calmly and still shows no sample products (444.5655ms)
+(node:16364) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+✔ CHV-S10-M09 a published product shows its details, both photos, its collection and related products (7618.2795ms)
+✔ CHV-S10-M09 before a choice the price is the first buyable size's and the button asks for a size (36.1824ms)
+✔ CHV-S10-M09 a linked size shows that size's own price, reduced price and stock (91.5296ms)
+✔ CHV-S10-M09 a bad variant link is ignored and reveals nothing (238.9843ms)
+✔ CHV-S10-M09 a fully sold-out product is found, shows its price and cannot be added (26.6013ms)
+✔ CHV-S10-M09 handles keep one canonical spelling; hidden, missing and sample handles are a plain 404 (333.2596ms)
+✔ CHV-S10-M09 when the API is down the page says so, is not indexed and shows no sample or stale product (436.4932ms)
+ℹ tests 79
+ℹ suites 11
+ℹ pass 78
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 83515.3412
+
+✖ failing tests:
+
+test at tests\e2e\catalogue-refresh.test.mjs:118:1
+✖ CHV-S10-M10 an unpublish removes the product after the worker delivers it (77.4468ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /New arrivals will appear here soon\./. Input:
+  
+  `id="new" class="page-wrap section-y"><div style="opacity:0;transform:translateY(22px)"><div class="mb-[clamp(28px,4vw,48px)] flex items-end justify-between gap-6 max-sm:flex-col max-sm:items-start max-sm:gap-2"><div><p class="eyebrow">Just landed</p><h2 class="mt-3 text-[clamp(36px,4.4vw,60px)]">New this week</h2></div><a class="group/link label-caps inline-flex min-h-11 items-center gap-2 transition-colors hover:text-terra shrink-0" href="/new-arrivals"><span class="leading-[1.9] underline decoration-1 underline-offset-[6px]">View the full edit</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 transition-transform duration-200 ease-editorial group-hover/link:translate-x-0.5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-11"><div class="flex min-w-0" style="opacity:0;transform:translateY(22px)"><article class="group/card flex w-full min-w-0 flex-col"><div class="relative aspect-[4/5] overflow-hidden bg-well"><a tabindex="-1" aria-hidden="true" class="absolute inset-0" href="/products/cache-kurta"><img alt="" decoding="async" data-nimg="fill" class="object-cover transition-transform duration-[900ms] ease-editorial group-hover/card:scale-[1.04]" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 33vw, 50vw" srcSet="/_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=256&q=75 256w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=384&q=75 384w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=640&q=75 640w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=750&q=75 750w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=828&q=75 828w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=1080&q=75 1080w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=1200&q=75 1200w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=1920&q=75 1920w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=2048&q=75 2048w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=3840&q=75 3840w" src="/_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=3840&q=75"/></a><button type="button" aria-pressed="false" aria-label="Save Cache kurta to wishlist" class="grid size-11 place-items-center rounded-full bg-paper/90 text-ink transition-colors duration-200 hover:text-terra aria-pressed:text-terra absolute top-2 right-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart size-[18px]" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></button></div><div class="flex flex-1 items-start justify-between gap-3 pt-4 max-sm:flex-col max-sm:gap-1"><div class="min-w-0"><h3 class="text-[21px] leading-tight max-sm:text-[19px]"><a class="hover:underline hover:decoration-1 hover:underline-offset-4" href="/products/cache-kurta">Cache kurta</a></h3><p class="mt-1 line-clamp-2 text-[13px] leading-snug text-muted-foreground">A handloom cotton kurta with a straight cut, side slits and mother-of-pearl buttons.</p></div><strong class="pt-0.5 text-sm font-medium whitespace-nowrap">₹2,499</strong></div><button data-slot="button" data-variant="quiet" data-size="default" class="group/button inline-flex shrink-0 items-center justify-center gap-3 rounded-none border text-xs font-semibold tracking-[0.14em] whitespace-nowrap uppercase transition-colors duration-200 outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-line-strong bg-transparent text-ink hover:border-ink hover:bg-ink hover:text-white h-12 px-6 mt-4 w-full" disabled="">Currently unavailable</button></article></div></div></section><section class="page-wrap pb-[clamp(64px,9vw,128px)]"><div style="opacity:0;transform:translateY(22px)"><div class="mb-[clamp(28px,4vw,48px)] flex items-end justify-between gap-6 max-sm:flex-col max-sm:items-start max-sm:gap-2"><div><p class="eyebrow">`
+  
+      at TestContext.<anonymous> (file:///F:/Chaanavya/backup/upgrade/tests/e2e/catalogue-refresh.test.mjs:125:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: `id="new" class="page-wrap section-y"><div style="opacity:0;transform:translateY(22px)"><div class="mb-[clamp(28px,4vw,48px)] flex items-end justify-between gap-6 max-sm:flex-col max-sm:items-start max-sm:gap-2"><div><p class="eyebrow">Just landed</p><h2 class="mt-3 text-[clamp(36px,4.4vw,60px)]">New this week</h2></div><a class="group/link label-caps inline-flex min-h-11 items-center gap-2 transition-colors hover:text-terra shrink-0" href="/new-arrivals"><span class="leading-[1.9] underline decoration-1 underline-offset-[6px]">View the full edit</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right size-4 transition-transform duration-200 ease-editorial group-hover/link:translate-x-0.5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div class="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-11"><div class="flex min-w-0" style="opacity:0;transform:translateY(22px)"><article class="group/card flex w-full min-w-0 flex-col"><div class="relative aspect-[4/5] overflow-hidden bg-well"><a tabindex="-1" aria-hidden="true" class="absolute inset-0" href="/products/cache-kurta"><img alt="" decoding="async" data-nimg="fill" class="object-cover transition-transform duration-[900ms] ease-editorial group-hover/card:scale-[1.04]" style="position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0;color:transparent" sizes="(min-width: 1100px) 25vw, (min-width: 600px) 33vw, 50vw" srcSet="/_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=256&q=75 256w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=384&q=75 384w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=640&q=75 640w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=750&q=75 750w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=828&q=75 828w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=1080&q=75 1080w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=1200&q=75 1200w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=1920&q=75 1920w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=2048&q=75 2048w, /_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=3840&q=75 3840w" src="/_next/image?url=http%3A%2F%2F127.0.0.1%3A9090%2Fchaanavya-media%2Fpublic%2Fproducts%2F01a18af9-4592-738c-844c-0eb7796390ee%2F01a18af9-460c-771a-9b1a-2809645addb3.png&w=3840&q=75"/></a><button type="button" aria-pressed="false" aria-label="Save Cache kurta to wishlist" class="grid size-11 place-items-center rounded-full bg-paper/90 text-ink transition-colors duration-200 hover:text-terra aria-pressed:text-terra absolute top-2 right-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart size-[18px]" aria-hidden="true"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"></path></svg></button></div><div class="flex flex-1 items-start justify-between gap-3 pt-4 max-sm:flex-col max-sm:gap-1"><div class="min-w-0"><h3 class="text-[21px] leading-tight max-sm:text-[19px]"><a class="hover:underline hover:decoration-1 hover:underline-offset-4" href="/products/cache-kurta">Cache kurta</a></h3><p class="mt-1 line-clamp-2 text-[13px] leading-snug text-muted-foreground">A handloom cotton kurta with a straight cut, side slits and mother-of-pearl buttons.</p></div><strong class="pt-0.5 text-sm font-medium whitespace-nowrap">₹2,499</strong></div><button data-slot="button" data-variant="quiet" data-size="default" class="group/button inline-flex shrink-0 items-center justify-center gap-3 rounded-none border text-xs font-semibold tracking-[0.14em] whitespace-nowrap uppercase transition-colors duration-200 outline-none select-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-line-strong bg-transparent text-ink hover:border-ink hover:bg-ink hover:text-white h-12 px-6 mt-4 w-full" disabled="">Currently unavailable</button></article></div></div></section><section class="page-wrap pb-[clamp(64px,9vw,128px)]"><div style="opacity:0;transform:translateY(22px)"><div class="mb-[clamp(28px,4vw,48px)] flex items-end justify-between gap-6 max-sm:flex-col max-sm:items-start max-sm:gap-2"><div><p class="eyebrow">`,
+    expected: /New arrivals will appear here soon\./,
+    operator: 'match',
+    diff: 'simple'
+  }
+=== exit 1
