@@ -1,0 +1,12 @@
+﻿1. Signature never checked: 2 of 12 failing
+2. Unverified return accepted by the service: 2 of 12 failing
+3. Signature over the order id only: 7 of 12 failing
+4. Signature over the order and payment the wrong way round: 7 of 12 failing
+5. Signature made with the webhook secret: 7 of 12 failing
+6. Only the first 16 characters compared: 0 of 12 failing
+7. Signature checked over the order the browser names: 0 of 12 failing
+8. Order match removed, signature over the browser's order: 2 of 12 failing
+restored
+Rerun after adding the last-digit tamper case:
+6. Only the first 16 characters compared: 1 of 12 failing
+restored (the restored code passes 12 of 12)

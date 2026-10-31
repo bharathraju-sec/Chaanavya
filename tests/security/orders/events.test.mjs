@@ -128,7 +128,7 @@ describe("CHV-S13-M08 no origin, no change", () => {
     const { jar, quote } = await quoted()
     const order = (await place(jar, quote)).json.data
     const hold = await ctx.db.inventoryReservation.findUniqueOrThrow({ where: { orderId: order.id } })
-    const attempt = await ctx.db.paymentAttempt.create({ data: { orderId: order.id, provider: "razorpay", mode: "test", amountPaise: 1n, idempotencyKey: randomUUID() } })
+    const attempt = await ctx.db.paymentAttempt.create({ data: { orderId: order.id, provider: "razorpay", mode: "test", amountPaise: BigInt(quote.grandTotal.amountPaise), idempotencyKey: randomUUID() } })
     await assert.rejects(ctx.db.order.update({ where: { id: order.id }, data: { status: "cancelled" } }), /no auditable origin/)
     await assert.rejects(ctx.db.paymentAttempt.update({ where: { id: attempt.id }, data: { status: "failed" } }), /no auditable origin/)
     await assert.rejects(ctx.db.inventoryReservation.update({ where: { id: hold.id }, data: { status: "released" } }), /no auditable origin/)

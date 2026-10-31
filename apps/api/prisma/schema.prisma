@@ -134,6 +134,14 @@ enum PaymentStatus {
   refunded
 }
 
+/// Stage 14.10: where a webhook event is in its processing (payment_webhook_inbox).
+enum WebhookInboxStatus {
+  received
+  processing
+  processed
+  failed
+}
+
 enum ProviderEventOutcome {
   applied
   duplicate
@@ -1055,12 +1063,65 @@ model PaymentAttempt {
   createdAt           DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt           DateTime        @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  order   Order    @relation(fields: [orderId], references: [id], onDelete: Restrict)
-  refunds Refund[]
+  order          Order                  @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  refunds        Refund[]
+  reconciliation PaymentReconciliation?
 
   @@index([orderId])
   @@index([status, updatedAt])
+  /// Stage 14.03 (migration 20261031000000_payment_attempt_identity, not modelled here): one attempt in progress per
+  /// order (partial unique index); created for the order's own total in INR; identity and provider references fixed once set; never deleted.
   @@map("payment_attempt")
+}
+
+/// Stage 14.14: the payment reconciliation job's record for one payment attempt whose outcome it asks the
+/// provider about: how often it asked, what it found last, the last recoverable error, and when it may ask
+/// again (backing off). Migration 20261031020000_payment_reconciliation keeps checks counting up and rows kept.
+model PaymentReconciliation {
+  attemptId     String    @id @map("attempt_id") @db.Uuid
+  checks        Int       @default(0)
+  lastCheckedAt DateTime? @map("last_checked_at") @db.Timestamptz(3)
+  lastOutcome   String?   @map("last_outcome")
+  lastError     String?   @map("last_error")
+  nextCheckAt   DateTime  @default(now()) @map("next_check_at") @db.Timestamptz(3)
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  attempt PaymentAttempt @relation(fields: [attemptId], references: [id], onDelete: Restrict)
+
+  @@index([nextCheckAt])
+  @@map("payment_reconciliation")
+}
+
+/// Stage 14.10: every verified payment webhook, kept once by (provider, event_id) with where it is in its
+/// processing. Only the normalized, provider-neutral event is kept, never the raw body or its signature.
+/// Migration 20261031010000_payment_webhook_inbox adds what is not modelled here: the event's fields never
+/// change, status moves only forward (received, processing, processed or failed; failed and processed are
+/// final), a conflicting delivery is noted once, and rows are never deleted.
+model PaymentWebhookInbox {
+  id                String             @id @default(uuid(7)) @db.Uuid
+  provider          PaymentProvider
+  eventId           String             @map("event_id")
+  fingerprint       String
+  type              String
+  providerOrderId   String             @map("provider_order_id")
+  providerPaymentId String?            @map("provider_payment_id")
+  providerRefundId  String?            @map("provider_refund_id")
+  amountPaise       BigInt             @map("amount_paise")
+  currency          String             @default("INR") @db.Char(3)
+  occurredAt        DateTime           @map("occurred_at") @db.Timestamptz(3)
+  status            WebhookInboxStatus @default(received)
+  attempts          Int                @default(0)
+  nextAttemptAt     DateTime           @default(now()) @map("next_attempt_at") @db.Timestamptz(3)
+  claimId           String?            @map("claim_id") @db.Uuid
+  lockedUntil       DateTime?          @map("locked_until") @db.Timestamptz(3)
+  lastError         String?            @map("last_error")
+  conflictAt        DateTime?          @map("conflict_at") @db.Timestamptz(3)
+  receivedAt        DateTime           @default(now()) @map("received_at") @db.Timestamptz(3)
+  processedAt       DateTime?          @map("processed_at") @db.Timestamptz(3)
+
+  @@unique([provider, eventId])
+  @@index([status, nextAttemptAt])
+  @@map("payment_webhook_inbox")
 }
 
 /// Every verified webhook or lookup, once. (provider, event_id) is unique, so a replay cannot

@@ -16,6 +16,7 @@ export const retryDelayMs = (attempts: number) => Math.min(60 * 60 * 1000, 60 * 
 
 export const defaultHandlers = (logger: Logger): Record<string, OutboxHandler> => ({
   "catalogue.updated": async event => logger.info("outbox.catalogue_updated", { eventId: event.id, productId: event.aggregateId }),
+  "order.paid": async event => logger.info("outbox.order_paid", { eventId: event.id, orderId: event.aggregateId }),
 })
 
 export function outboxJob(logger: Logger, handlers: Record<string, OutboxHandler> = defaultHandlers(logger)): Job {

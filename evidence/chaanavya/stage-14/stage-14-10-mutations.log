@@ -1,0 +1,14 @@
+﻿1. Insert without deduplication: 4 of 10 failing
+2. Every delivery reported as newly stored: 3 of 10 failing
+3. A different body under a kept id treated as a duplicate: 1 of 10 failing
+4. Conflict noted on every conflicting delivery: 1 of 10 failing
+5. Acknowledged without keeping the event: 9 of 10 failing
+6. Claim without skipping rows another worker holds: 0 of 10 failing
+7. Claim takes events whose lease has not lapsed: 2 of 10 failing
+8. Lapsed claims never taken over: 1 of 10 failing
+9. Anyone may complete, not only the claim's holder: 1 of 10 failing
+10. Retried at once, with no wait: 1 of 10 failing
+11. Never given up: 1 of 10 failing
+12. Database lets a processed event go back: 2 of 10 failing
+13. Database lets a kept event's amount change: 2 of 10 failing
+restored

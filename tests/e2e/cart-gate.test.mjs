@@ -226,14 +226,18 @@ describe("CHV-S11-M12 Stage 11 gate", () => {
     // Since Stage 12.11 /checkout is the order review page in development and staging (this server runs as
     // development); production answers 404 and the bag keeps its disabled button there
     // (tests/e2e/checkout-review.test.mjs). Payment and order routes stay closed everywhere.
-    for (const path of ["/payment", "/api/checkout", "/api/payments", "/api/quotes", "/api/cart/checkout", "/api/webhooks/razorpay"]) {
+    for (const path of ["/payment", "/api/checkout", "/api/payments", "/api/quotes", "/api/cart/checkout"]) {
       const res = await fetch(WEB + path, { method: path.startsWith("/api") ? "POST" : "GET", headers: { "content-type": "application/json", origin: WEB }, body: path.startsWith("/api") ? "{}" : undefined, redirect: "manual" })
       assert.ok([401, 404, 405].includes(res.status), `${path} answered ${res.status}`)
     }
+    // Since Stage 14.09 Razorpay's webhook exists outside production; this test's API has no payment key, so
+    // payments are off (503) and an unsigned call is never taken (tests/security/payments/webhook-signature.test.mjs).
+    const webhook = await fetch(`${WEB}/api/webhooks/razorpay`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}", redirect: "manual" })
+    assert.equal(webhook.status, 503)
     const api = JSON.parse(readFileSync(join(ROOT, "packages/contracts/openapi/api.json"), "utf8"))
     // Stage 12.09 and 12.10 add the quote preview and its check, which price the bag and place no order, take no payment
     // and reserve nothing (tests/security/checkout/quote*.test.mjs). Every other such path stays closed.
-    assert.deepEqual(Object.keys(api.paths).filter(p => /checkout|payment|webhook|quote/i.test(p) && p !== "/api/v1/cart/quote" && p !== "/api/v1/cart/quote/{quoteId}"), [])
+    assert.deepEqual(Object.keys(api.paths).filter(p => /checkout|payment|webhook|quote/i.test(p) && p !== "/api/v1/cart/quote" && p !== "/api/v1/cart/quote/{quoteId}"), ["/api/v1/cart/order/{orderId}/payment", "/api/v1/cart/order/{orderId}/payment/return", "/api/v1/admin/payments/{attemptId}/refunds", "/api/v1/webhooks/razorpay"])
     assert.ok(Object.keys(api.paths).some(p => p.startsWith("/api/v1/cart")), "the cart API itself exists")
     const sheet = readFileSync(join(ROOT, "components/cart/cart-sheet.tsx"), "utf8")
     assert.match(sheet, /<Button[^>]*disabled[^>]*>\s*Checkout opens soon/s)

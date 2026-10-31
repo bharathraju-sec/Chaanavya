@@ -28,11 +28,12 @@ describe("CHV-S04-001 empty database migrates", () => {
     assert.equal(diff.status, 0, diff.output)
   })
 
-  test("all 44 tables exist", () => {
+  test("all 46 tables exist", () => {
     const tables = psqlOk(NAME, "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' AND table_name <> '_prisma_migrations' ORDER BY 1").split("\n")
-    // 41 through Stage 12; Stage 13 adds the order event trail, staff order actions and recovery cases.
-    assert.equal(tables.length, 44, tables.join(", "))
-    for (const t of ["user", "role", "auth_session", "account", "verification", "two_factor", "rate_limit", "guest_session", "customer_profile", "address", "collection", "product", "product_variant", "product_media", "inventory_balance", "inventory_movement", "inventory_reservation", "cart", "cart_line", "promotion", "order", "order_item", "payment_attempt", "provider_event", "refund", "shipment", "shipment_tracking_event", "return_request", "audit_event", "media_upload", "outbox_event", "stocktake", "stocktake_line", "cart_request", "cart_contact", "tax_profile", "tax_rate", "checkout_quote", "order_event", "order_admin_action", "order_recovery_case"]) {
+    // 41 through Stage 12; Stage 13 adds the order event trail, staff order actions and recovery cases; Stage
+    // 14.10 the payment webhook inbox; 14.14 the payment reconciliation record.
+    assert.equal(tables.length, 46, tables.join(", "))
+    for (const t of ["user", "role", "auth_session", "account", "verification", "two_factor", "rate_limit", "guest_session", "customer_profile", "address", "collection", "product", "product_variant", "product_media", "inventory_balance", "inventory_movement", "inventory_reservation", "cart", "cart_line", "promotion", "order", "order_item", "payment_attempt", "provider_event", "refund", "shipment", "shipment_tracking_event", "return_request", "audit_event", "media_upload", "outbox_event", "stocktake", "stocktake_line", "cart_request", "cart_contact", "tax_profile", "tax_rate", "checkout_quote", "order_event", "order_admin_action", "order_recovery_case", "payment_webhook_inbox", "payment_reconciliation"]) {
       assert.ok(tables.includes(t), `missing table ${t}`)
     }
   })

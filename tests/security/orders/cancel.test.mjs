@@ -47,7 +47,11 @@ const holdStatus = async id => (await ctx.db.inventoryReservation.findUniqueOrTh
 const cancelledEvents = id => ctx.db.orderEvent.count({ where: { orderId: id, kind: "status", toState: "cancelled" } })
 const afterWindow = order => new Date(new Date(order.payableUntil).getTime() + 1000)
 const expire = (order, now = afterWindow(order)) => ctx.db.$transaction(tx => cancel.cancelUnpaidOrder(tx, order.id, { reason: "payment_window_ended", actor: { kind: "system", id: null }, correlationId: `test-expiry-${randomUUID()}`, now }))
-const attempt = (orderId, status) => ctx.db.paymentAttempt.create({ data: { orderId, provider: "razorpay", mode: "test", amountPaise: 1n, idempotencyKey: randomUUID(), status } })
+// An attempt asks for its order's own total (Stage 14.03).
+const attempt = async (orderId, status) => {
+  const { grandTotalPaise } = await ctx.db.order.findUniqueOrThrow({ where: { id: orderId }, select: { grandTotalPaise: true } })
+  return ctx.db.paymentAttempt.create({ data: { orderId, provider: "razorpay", mode: "test", amountPaise: grandTotalPaise, idempotencyKey: randomUUID(), status } })
+}
 
 before(async () => {
   ctx = await setup("chaanavya_test_s13_cancel")

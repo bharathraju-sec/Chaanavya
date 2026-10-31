@@ -1060,8 +1060,42 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Cancel the shopper's own unpaid order and release its stock, once. Repeating is harmless. An order whose payment is still in flight is left pending (awaiting_payment_outcome); another shopper's order is 404 */
+        /** Cancel the shopper's own unpaid order and release its stock, once. Repeating is harmless. An opened checkout is first closed by what the payment provider says (only failed tries: failed; no payment: expired). An order whose payment is captured, authorized or still in progress is left pending (awaiting_payment_outcome); another shopper's order is 404; 502 when the provider cannot be asked */
         post: operations["OrderIntentController_cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/order/{orderId}/payment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Open the payment provider's checkout for the shopper's own pending order, for the saved order total in paise. Nothing in the request body is read: the browser cannot set the amount. The same Idempotency-Key, another tab or a retry returns the same attempt and checkout. Sandbox only; 503 when payments are off */
+        post: operations["OrderIntentController_payment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cart/order/{orderId}/payment/return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Report what the payment provider's checkout handed the browser. An untrusted signal: its shape and the provider's signature are checked against the checkout we opened (a tampered return is a 400), nothing is recorded, and the order is never marked paid by it. The answer is our own record of the order and its payment */
+        post: operations["OrderIntentController_paymentReturn"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1198,6 +1232,40 @@ export interface paths {
         put?: never;
         /** Close an open recovery case with a reason; changes nothing on the order (a closed case is 409) */
         post: operations["OrderRecoveryController_resolve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/payments/{attemptId}/refunds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Refund part or all of a captured payment (sandbox). Needs refunds.approve and a two-factor session; the amount must be within the approver's limit (ADMIN up to ₹5,000) and what is still refundable by the provider's own record. The same Idempotency-Key returns the same refund; a refund whose outcome was lost is resumed by retrying with it */
+        post: operations["RefundAdminController_refund"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/webhooks/razorpay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Razorpay's webhook. Verified before anything is read: the signature over the exact raw body with the webhook secret, the event id, then the event type and its entity (INR only). Anything that does not verify is a 400. Each event is kept once in the inbox before it is acknowledged; a duplicate changes nothing. Sandbox only; not yet acted on */
+        post: operations["WebhooksController_razorpay"];
         delete?: never;
         options?: never;
         head?: never;
@@ -6001,6 +6069,101 @@ export interface operations {
             };
         };
     };
+    OrderIntentController_payment: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _ */
+                "Idempotency-Key": string;
+            };
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            attemptId: string;
+                            provider: string;
+                            providerOrderId: string;
+                            amount: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            /** @description How the browser continues: open the provider's checkout on our page, or go to the provider's page. Public values only */
+                            next: {
+                                /** @enum {string} */
+                                kind: "embedded";
+                                publicParams: {
+                                    [key: string]: string;
+                                };
+                            } | {
+                                /** @enum {string} */
+                                kind: "redirect";
+                                /** Format: uri */
+                                url: string;
+                            };
+                        };
+                        /** @description The attempt or its checkout already existed (a retry or another tab) */
+                        reused: boolean;
+                    };
+                };
+            };
+        };
+    };
+    OrderIntentController_paymentReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            orderId: string;
+                            orderStatus: string;
+                            paymentStatus: string;
+                            /**
+                             * @description From our records only: paid once the provider has confirmed it, never because the browser said so
+                             * @enum {string}
+                             */
+                            outcome: "paid" | "confirming" | "not_paid";
+                            /**
+                             * @description The provider signed this return for the checkout we opened (an unsigned or tampered return is a 400)
+                             * @enum {boolean}
+                             */
+                            verified: true;
+                        };
+                    };
+                };
+            };
+        };
+    };
     OrderAdminController_list: {
         parameters: {
             query?: {
@@ -6506,6 +6669,93 @@ export interface operations {
                             /** Format: uuid */
                             closedBy: string | null;
                             resolution: string | null;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    RefundAdminController_refund: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description 8 to 100 letters, digits, - or _: one per refund */
+                "Idempotency-Key": string;
+            };
+            path: {
+                attemptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amountPaise: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            paymentAttemptId: string;
+                            amount: {
+                                amountPaise: number;
+                                /** @enum {string} */
+                                currency: "INR";
+                            };
+                            /** @enum {string} */
+                            status: "requested" | "processing" | "succeeded" | "failed" | "rejected";
+                            providerRefundId: string | null;
+                            reason: string;
+                            /** Format: date-time */
+                            createdAt: string;
+                        };
+                        created: boolean;
+                    };
+                };
+            };
+        };
+    };
+    WebhooksController_razorpay: {
+        parameters: {
+            query?: never;
+            header: {
+                /** @description Razorpay's id for this event */
+                "X-Razorpay-Event-Id": string;
+                /** @description Hex HMAC-SHA256 of the raw body with the webhook secret */
+                "X-Razorpay-Signature": string;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {boolean} */
+                        received: true;
+                        /** @description The verified event, or null for a verified event we do not act on */
+                        event: null | {
+                            type: string;
+                            eventId: string;
+                            /**
+                             * @description Kept now, already kept (changes nothing), or a different body under a kept id (never stored over it)
+                             * @enum {string}
+                             */
+                            inbox: "stored" | "duplicate" | "conflict";
                         };
                     };
                 };

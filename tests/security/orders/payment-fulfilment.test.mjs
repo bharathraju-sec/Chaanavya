@@ -114,11 +114,11 @@ describe("CHV-S13-M07 payments move on their own provider's events only", () => 
   test("the database allows exactly the payment machine's moves, and the actor table covers each of them", async () => {
     const allowed = new Set(PAYMENT_MACHINE.transitions.map(t => `${t.from}->${t.to}`))
     assert.deepEqual(Object.keys(PAYMENT_TRANSITION_ACTORS).sort(), [...allowed].sort())
-    const o = await order()
     for (const from of PAYMENT_STATUSES) {
       for (const to of PAYMENT_STATUSES) {
         if (from === to) continue
-        const a = await attempt(o, from)
+        // One order per attempt: an order has at most one attempt in progress (Stage 14.03).
+        const a = await attempt(await order(), from)
         const ok = await withOrigin(ctx.db, tx => tx.paymentAttempt.update({ where: { id: a.id }, data: { status: to } })).then(() => true, () => false)
         assert.equal(ok, allowed.has(`${from}->${to}`), `${from} -> ${to}`)
       }

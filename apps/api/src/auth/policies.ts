@@ -2,10 +2,10 @@
 import type { Capability } from "@chaanavya/shared/auth/rbac"
 
 /**
- * Refund approval limits (decision 030, proposed: the threshold is the owner's call).
- * STAFF cannot approve refunds; ADMIN up to the threshold; OWNER without limit.
+ * Refund approval limits (decision 030). STAFF cannot approve refunds; ADMIN up to the threshold; OWNER without
+ * limit. The threshold is ₹5,000 per refund (owner decision, 31 October 2026, at the Stage 14 gate).
  */
-export const REFUND_LARGE_THRESHOLD_PAISE = 1_000_000 // Rs 10,000
+export const REFUND_LARGE_THRESHOLD_PAISE = 500_000 // Rs 5,000
 
 export function refundApprovalLimitPaise(capabilities: ReadonlySet<Capability>): number | null {
   if (capabilities.has("refunds.approve_large")) return null

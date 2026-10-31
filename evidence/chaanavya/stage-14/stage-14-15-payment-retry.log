@@ -1,0 +1,23 @@
+▶ CHV-S14-M15 while an attempt is in progress, retrying never opens another
+  ✔ retries with the same key, a new key, and ten at once all get the one attempt and the one Razorpay order (457.6167ms)
+  ✔ an outcome still unknown (being reconciled) or money authorized: retrying is refused, nothing new is opened (428.7514ms)
+✔ CHV-S14-M15 while an attempt is in progress, retrying never opens another (1613.9598ms)
+▶ CHV-S14-M15 a new attempt replaces an ended one only when Razorpay confirms it is safe
+  ✔ only failed tries on the ended checkout: a new attempt and checkout are opened, and paying it confirms the order once (233.6013ms)
+  ✔ an ended checkout that was paid anyway (late success, old tab): the retry is refused, nothing new is opened, staff are told once (501.0823ms)
+  ✔ every ended checkout is asked about, not only the latest: an older one paid late refuses the retry (161.4215ms)
+  ✔ Razorpay cannot be asked about the ended checkout: the retry is refused (502) and nothing new is opened; later it works (1185.2701ms)
+  ✔ five simultaneous retries after an ended attempt open exactly one new attempt (217.1315ms)
+✔ CHV-S14-M15 a new attempt replaces an ended one only when Razorpay confirms it is safe (2299.0368ms)
+▶ CHV-S14-M15 money that reaches Razorpay twice is never applied twice
+  ✔ paid on the new attempt and on the old tab: confirmed and allocated once; the second payment is kept for a refund (235.4804ms)
+  ✔ after the order is paid, paying again is refused and opens nothing; replays of the capture change nothing (240.4015ms)
+✔ CHV-S14-M15 money that reaches Razorpay twice is never applied twice (476.2117ms)
+ℹ tests 9
+ℹ suites 3
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10306.6339

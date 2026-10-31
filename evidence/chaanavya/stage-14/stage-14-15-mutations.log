@@ -1,0 +1,11 @@
+﻿1. Ended attempts never checked (as before 14.15): 2 of 8 failing
+2. Only captured money blocks a retry (authorized or in progress ignored): 1 of 8 failing
+3. Razorpay down read as safe: 1 of 8 failing
+4. Staff told on every retry: 1 of 8 failing
+5. Only the latest ended attempt checked: 0 of 8 failing
+6. Expired attempts not checked: 1 of 8 failing
+7. A payment under way does not refuse the retry: 0 of 8 failing
+restored
+Rerun after adding the two-ended-attempts test (9 tests):
+1. Only the latest ended attempt checked: 1 of 9 failing
+restored

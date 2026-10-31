@@ -1,0 +1,85 @@
+Stage 14 gate, full run, 2026-10-31T20:55:51
+
+===== build:api =====
+
+exit 0, 8 s
+
+===== api:openapi =====
+OpenAPI document written: 79 paths
+exit 0, 4 s
+
+===== build (web) =====
+
+exit 0, 8 s
+
+===== typecheck =====
+
+exit 0, 13 s
+
+===== lint =====
+✖ 2 problems (0 errors, 2 warnings)
+exit 0, 11 s
+
+===== test (unit) =====
+ℹ tests 112
+ℹ suites 23
+ℹ pass 112
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 288.7804
+exit 0, 0 s
+
+===== test:db =====
+ℹ tests 61
+ℹ suites 19
+ℹ pass 61
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 62394.6107
+exit 0, 62 s
+
+===== test:security =====
+ℹ tests 746
+ℹ suites 166
+ℹ pass 746
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 593542.4507
+exit 0, 601 s
+
+===== test:e2e =====
+  ✖ checkout stays closed: no checkout, payment, quote or webhook route, page or API, and the bag's checkout button is disabled (142.6971ms)
+✖ CHV-S11-M12 Stage 11 gate (3027.831ms)
+✖ CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, page or API, and no payment provider on the pages (90.4621ms)
+ℹ tests 87
+ℹ suites 15
+ℹ pass 85
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100689.2549
+✖ failing tests:
+test at tests\e2e\cart-gate.test.mjs:225:3
+✖ checkout stays closed: no checkout, payment, quote or webhook route, page or API, and the bag's checkout button is disabled (142.6971ms)
+  AssertionError [ERR_ASSERTION]: /api/webhooks/razorpay answered 503
+    code: 'ERR_ASSERTION',
+test at tests\e2e\catalogue-gate.test.mjs:187:1
+✖ CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, page or API, and no payment provider on the pages (90.4621ms)
+  AssertionError [ERR_ASSERTION]: /api/webhooks/razorpay answered 503
+    code: 'ERR_ASSERTION',
+exit 1, 101 s
+
+finished 2026-10-31T21:09:24
+
+===== test:e2e (rerun after updating the Stage 10 and 11 gates for the Stage 14 payment paths) =====
+ℹ tests 87
+ℹ pass 87
+ℹ fail 0
+exit 0

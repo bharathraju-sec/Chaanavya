@@ -3,7 +3,9 @@
 // a secret, when it is required, and the test/live separation rules. `npm run check:env` and CI run it against a
 // target environment; reports name settings and problems but never contain values.
 //
-// Self-contained runtime code (no runtime imports) so Node scripts and tests can load it directly.
+// Self-contained runtime code (relative imports only) so Node scripts and tests can load it directly.
+
+import { LIVE_GATE_CLOSED, LIVE_PAYMENTS_GATE, livePaymentsApproved, type LivePaymentsGate } from "./payments-gate.ts"
 
 export const APP_ENVIRONMENTS = ["development", "staging", "production"] as const
 export type AppEnvironment = (typeof APP_ENVIRONMENTS)[number]
@@ -13,7 +15,7 @@ export type EnvKind = "secret" | "public" | "config"
 
 export type Env = Readonly<Record<string, string | undefined>>
 
-type Context = { environment: AppEnvironment; env: Env }
+type Context = { environment: AppEnvironment; env: Env; liveGate: LivePaymentsGate }
 
 export const SERVICES = ["web", "api", "worker"] as const
 export type Service = (typeof SERVICES)[number]
@@ -72,6 +74,7 @@ export const ENV_SPECS: readonly Spec[] = [
     services: ["api", "worker"],
     check: (v, c) => {
       if (v !== "test" && v !== "live") return "must be test or live"
+      if (v === "live" && !livePaymentsApproved(c.liveGate)) return LIVE_GATE_CLOSED
       return v === expectedPaymentMode(c.environment) ? null : `${c.environment} must use ${expectedPaymentMode(c.environment)} payments`
     },
   },
@@ -79,7 +82,10 @@ export const ENV_SPECS: readonly Spec[] = [
     name: "RAZORPAY_KEY_ID",
     kind: "config",
     services: ["api", "worker"],
-    check: (v, c) => (v.startsWith(`rzp_${expectedPaymentMode(c.environment)}_`) ? null : `${c.environment} needs an rzp_${expectedPaymentMode(c.environment)}_ key`),
+    check: (v, c) => {
+      if (v.startsWith("rzp_live_") && !livePaymentsApproved(c.liveGate)) return LIVE_GATE_CLOSED
+      return v.startsWith(`rzp_${expectedPaymentMode(c.environment)}_`) ? null : `${c.environment} needs an rzp_${expectedPaymentMode(c.environment)}_ key`
+    },
   },
   { name: "RAZORPAY_KEY_SECRET", kind: "secret", services: ["api", "worker"], required: c => Boolean(readEnv(c.env, "RAZORPAY_KEY_ID")), check: v => (v.startsWith("rzp_") ? "holds a key ID, not the key secret" : null) },
   { name: "RAZORPAY_WEBHOOK_SECRET", kind: "secret", services: ["api"], required: c => Boolean(readEnv(c.env, "RAZORPAY_KEY_ID")) },
@@ -259,9 +265,9 @@ export type EnvReport = {
 }
 
 /** Validates an environment without returning or printing any value. Without `service`, every setting is checked. */
-export function checkEnv(env: Env, options: { target?: AppEnvironment; service?: Service } = {}): EnvReport {
+export function checkEnv(env: Env, options: { target?: AppEnvironment; service?: Service; liveGate?: LivePaymentsGate } = {}): EnvReport {
   const environment = resolveEnvironment(env, options.target)
-  const context: Context = { environment, env }
+  const context: Context = { environment, env, liveGate: options.liveGate ?? LIVE_PAYMENTS_GATE }
   const errors: EnvProblem[] = []
   const warnings: EnvProblem[] = []
 

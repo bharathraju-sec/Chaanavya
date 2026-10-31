@@ -1,0 +1,24 @@
+▶ CHV-S14-M04 the provider is asked for the saved order total, in INR paise
+  ✔ opening the checkout creates one sandbox order for exactly the order's total, and the browser gets public values only (297.6245ms)
+  ✔ whatever the browser sends (body, query, headers), the provider is asked for the saved total (844.194ms)
+✔ CHV-S14-M04 the provider is asked for the saved order total, in INR paise (1936.2913ms)
+▶ CHV-S14-M04 one provider order per attempt, however often it is asked
+  ✔ a retry, another tab, and five simultaneous requests all get the same checkout from one provider call (241.3421ms)
+  ✔ five simultaneous first requests for a fresh order ask the provider once (195.3673ms)
+  ✔ a provider order for a different amount, or not new, is not believed: nothing recorded, and a retry asks again (346.9192ms)
+  ✔ a provider that cannot be reached is a 502, a refused key a 503; nothing is recorded either way (274.8786ms)
+✔ CHV-S14-M04 one provider order per attempt, however often it is asked (1058.9436ms)
+▶ CHV-S14-M04 only the shopper's own pending order, only in the sandbox
+  ✔ another shopper's order is 404; a visitor, a missing or bad key are refused; the provider is never asked (280.9499ms)
+  ✔ a cancelled order, or a payment already under way, is a 409 without a new provider order (299.0947ms)
+  ✔ with payments off there is no checkout (503) and no attempt; in production the route does not exist (147.7105ms)
+  ✔ the adapter itself refuses amounts below ₹1 and anything but INR, without asking the provider (2.0218ms)
+✔ CHV-S14-M04 only the shopper's own pending order, only in the sandbox (730.3094ms)
+ℹ tests 10
+ℹ suites 3
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9767.4248

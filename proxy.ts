@@ -1,5 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
 import { isMeasurementId } from "@/lib/consent"
+import { checkoutReviewOpen } from "@/lib/checkout"
+import { isPayPath, RAZORPAY_CHECKOUT_HOSTS } from "@/lib/payment-handoff"
 import { mediaOrigins } from "@chaanavya/shared/media"
 import { adminUrl, isAdminHost } from "@chaanavya/shared/admin/host"
 
@@ -45,13 +47,19 @@ export function proxy(request: NextRequest) {
   const photos = [media.public, adminPage ? media.upload : null].filter((o, i, all): o is string => Boolean(o) && all.indexOf(o) === i).map(o => ` ${o}`).join("")
   const uploads = adminPage && media.upload ? ` ${media.upload}` : ""
 
+  // Razorpay's checkout (Stage 14.06): on the pay page only, its script, its payment frame and the hosts
+  // the frame talks to. The buyer's payment details are typed into that frame, on Razorpay's host.
+  const pay = !adminPage && checkoutReviewOpen(process.env) && isPayPath(request.nextUrl.pathname)
+  const rzp = (hosts: readonly string[]) => (pay ? hosts.map(h => ` ${h}`).join("") : "")
+
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${rzp(RAZORPAY_CHECKOUT_HOSTS.script)}${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
-    `img-src 'self' data: blob: https://images.unsplash.com${photos}${ga}`,
+    `img-src 'self' data: blob: https://images.unsplash.com${photos}${ga}${rzp(RAZORPAY_CHECKOUT_HOSTS.img)}`,
     "font-src 'self'",
-    `connect-src 'self'${uploads}${ga}`,
+    `connect-src 'self'${uploads}${ga}${rzp(RAZORPAY_CHECKOUT_HOSTS.connect)}`,
+    ...(pay ? [`frame-src${rzp(RAZORPAY_CHECKOUT_HOSTS.frame)}`] : []),
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

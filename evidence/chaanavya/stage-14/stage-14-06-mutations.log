@@ -1,0 +1,12 @@
+﻿1. Razorpay allowed on every page: 2 of 8 failing
+2. Razorpay allowed in production too: 1 of 8 failing
+3. Pay page without its frame rule: 1 of 8 failing
+4. Form posts allowed to Razorpay: 1 of 8 failing
+5. Pay page keeps same-origin opener (pop-ups cut off): 1 of 8 failing
+6. Every session value passed to Razorpay: 1 of 8 failing
+7. Live keys accepted: 1 of 8 failing
+8. Razorpay order not checked against the session: 1 of 8 failing
+9. Amount not checked against the session: 1 of 8 failing
+10. Pay path matches any segment: 1 of 8 failing
+11. Pay button sends a body: 1 of 8 failing
+restored

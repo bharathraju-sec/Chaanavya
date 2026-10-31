@@ -1,0 +1,15 @@
+﻿Stage 14.05 mutations, each applied, built, tested against tests/security/payments/retries.test.mjs, then restored
+1. No lookup before creating: 4 of 12 failing
+2. No lookup after an unknown create: build failed (caught by the compiler)
+2b. Order found after an unknown create is ignored: 3 of 12 failing
+3. Create repeated after any failure (timeouts and 5xx too): 5 of 12 failing
+4. Create never repeated, even when certainly not acted: 1 of 12 failing
+5. Lookups never repeated: 3 of 12 failing
+6. Unbounded attempts: 2 of 12 failing
+7. Timeout not cut to the budget: 1 of 12 failing
+8. Adopts an order for another amount: 1 of 12 failing
+9. A refused connection treated as possibly sent: 1 of 12 failing
+10. Timeout counted as certainly not acted: 4 of 12 failing
+11. Budget longer than the lock: 1 of 12 failing
+12. Client ignores the shorter timeout: 1 of 12 failing
+restored (the restored code passes 22 of 22 with tests/security/payments/start.test.mjs)

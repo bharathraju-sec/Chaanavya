@@ -9,7 +9,8 @@
 // turns ApiError into the response envelope.
 import { createHash } from "node:crypto"
 
-export type ApiErrorCode = "invalid_request" | "not_found" | "conflict" | "precondition_required" | "precondition_failed" | "forbidden" | "rate_limited"
+// "unavailable": a dependency (such as the payment provider) could not do it now; trying again may work.
+export type ApiErrorCode = "invalid_request" | "not_found" | "conflict" | "precondition_required" | "precondition_failed" | "forbidden" | "rate_limited" | "unavailable"
 
 export class ApiError extends Error {
   readonly status: number
@@ -61,7 +62,8 @@ export function pageOf<T>(rows: T[], limit: number, cursorOf: (row: T) => object
 // ---- validation ----------------------------------------------------------------------------
 
 /** A request body as read by src/http/body.ts: the raw text, or null when it exceeded the read limit. */
-export type RawBody = { contentType: string; text: string | null }
+/** The body as received: its text, and the exact bytes for signature checks (Stage 14.09). Null past the read limit. */
+export type RawBody = { contentType: string; text: string | null; bytes?: Buffer | null }
 
 export function readJson(body: RawBody, maxBytes = 8 * 1024): Record<string, unknown> {
   if (!body.contentType.startsWith("application/json")) throw new ApiError(415, "invalid_request", "send application/json")

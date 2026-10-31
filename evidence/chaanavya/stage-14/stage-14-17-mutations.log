@@ -1,0 +1,16 @@
+﻿1. A wrong amount confirms the order: 0 of 12 failing
+2. Inbox deduplication removed: 1 of 12 failing
+3. Webhook acknowledged without keeping the event: 8 of 12 failing
+4. Refund balance not checked: 0 of 12 failing
+5. No lock while deciding a refund: 0 of 12 failing
+6. A failed try ends the attempt: 2 of 12 failing
+7. Closing does not ask Razorpay: 0 of 12 failing
+8. Quiet checkouts never reconciled: 3 of 12 failing
+9. Bridge forgets which events it recorded, and captured payments are captured again: 0 of 12 failing
+10. order.paid written on every capture: 12 of 12 failing
+restored
+Rerun after the lenient refund stand-in, the overlap and the money-in-flight cancel (12 tests):
+1. Refund balance not checked: 3 of 12 failing
+2. No lock while deciding a refund: 3 of 12 failing
+3. Closing does not ask Razorpay: 1 of 12 failing
+restored

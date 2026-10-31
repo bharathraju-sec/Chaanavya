@@ -14879,7 +14879,240 @@
             }
           }
         },
-        "summary": "Cancel the shopper's own unpaid order and release its stock, once. Repeating is harmless. An order whose payment is still in flight is left pending (awaiting_payment_outcome); another shopper's order is 404",
+        "summary": "Cancel the shopper's own unpaid order and release its stock, once. Repeating is harmless. An opened checkout is first closed by what the payment provider says (only failed tries: failed; no payment: expired). An order whose payment is captured, authorized or still in progress is left pending (awaiting_payment_outcome); another shopper's order is 404; 502 when the provider cannot be asked",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/order/{orderId}/payment": {
+      "post": {
+        "operationId": "OrderIntentController_payment",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "8 to 100 letters, digits, - or _",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "attemptId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "provider": {
+                          "type": "string"
+                        },
+                        "providerOrderId": {
+                          "type": "string"
+                        },
+                        "amount": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 0
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "next": {
+                          "oneOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "embedded"
+                                  ]
+                                },
+                                "publicParams": {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "string"
+                                  }
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "publicParams"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "enum": [
+                                    "redirect"
+                                  ]
+                                },
+                                "url": {
+                                  "type": "string",
+                                  "format": "uri"
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "url"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ],
+                          "description": "How the browser continues: open the provider's checkout on our page, or go to the provider's page. Public values only"
+                        }
+                      },
+                      "required": [
+                        "attemptId",
+                        "provider",
+                        "providerOrderId",
+                        "amount",
+                        "next"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "reused": {
+                      "type": "boolean",
+                      "description": "The attempt or its checkout already existed (a retry or another tab)"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "reused"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Open the payment provider's checkout for the shopper's own pending order, for the saved order total in paise. Nothing in the request body is read: the browser cannot set the amount. The same Idempotency-Key, another tab or a retry returns the same attempt and checkout. Sandbox only; 503 when payments are off",
+        "tags": [
+          "cart"
+        ]
+      }
+    },
+    "/api/v1/cart/order/{orderId}/payment/return": {
+      "post": {
+        "operationId": "OrderIntentController_paymentReturn",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string",
+                  "maxLength": 256
+                },
+                "maxProperties": 8,
+                "description": "The provider's fields as its checkout gave them (Razorpay: razorpay_payment_id, razorpay_order_id, razorpay_signature)"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "orderId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "orderStatus": {
+                          "type": "string"
+                        },
+                        "paymentStatus": {
+                          "type": "string"
+                        },
+                        "outcome": {
+                          "type": "string",
+                          "enum": [
+                            "paid",
+                            "confirming",
+                            "not_paid"
+                          ],
+                          "description": "From our records only: paid once the provider has confirmed it, never because the browser said so"
+                        },
+                        "verified": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ],
+                          "description": "The provider signed this return for the checkout we opened (an unsigned or tampered return is a 400)"
+                        }
+                      },
+                      "required": [
+                        "orderId",
+                        "orderStatus",
+                        "paymentStatus",
+                        "outcome",
+                        "verified"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "data"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Report what the payment provider's checkout handed the browser. An untrusted signal: its shape and the provider's signature are checked against the checkout we opened (a tampered return is a 400), nothing is recorded, and the order is never marked paid by it. The answer is our own record of the order and its payment",
         "tags": [
           "cart"
         ]
@@ -16513,6 +16746,236 @@
         "summary": "Close an open recovery case with a reason; changes nothing on the order (a closed case is 409)",
         "tags": [
           "orders admin"
+        ]
+      }
+    },
+    "/api/v1/admin/payments/{attemptId}/refunds": {
+      "post": {
+        "operationId": "RefundAdminController_refund",
+        "parameters": [
+          {
+            "name": "attemptId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "8 to 100 letters, digits, - or _: one per refund",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amountPaise": {
+                    "type": "integer",
+                    "minimum": 100
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 3,
+                    "maxLength": 500
+                  }
+                },
+                "required": [
+                  "amountPaise",
+                  "reason"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "paymentAttemptId": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "amount": {
+                          "type": "object",
+                          "properties": {
+                            "amountPaise": {
+                              "type": "integer",
+                              "minimum": 100
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": [
+                                "INR"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "amountPaise",
+                            "currency"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "requested",
+                            "processing",
+                            "succeeded",
+                            "failed",
+                            "rejected"
+                          ]
+                        },
+                        "providerRefundId": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "reason": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "paymentAttemptId",
+                        "amount",
+                        "status",
+                        "providerRefundId",
+                        "reason",
+                        "createdAt"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "created": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "created"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Refund part or all of a captured payment (sandbox). Needs refunds.approve and a two-factor session; the amount must be within the approver's limit (ADMIN up to ₹5,000) and what is still refundable by the provider's own record. The same Idempotency-Key returns the same refund; a refund whose outcome was lost is resumed by retrying with it",
+        "tags": [
+          "payments admin"
+        ]
+      }
+    },
+    "/api/v1/webhooks/razorpay": {
+      "post": {
+        "operationId": "WebhooksController_razorpay",
+        "parameters": [
+          {
+            "name": "X-Razorpay-Event-Id",
+            "in": "header",
+            "description": "Razorpay's id for this event",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Razorpay-Signature",
+            "in": "header",
+            "description": "Hex HMAC-SHA256 of the raw body with the webhook secret",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "received": {
+                      "type": "boolean",
+                      "enum": [
+                        true
+                      ]
+                    },
+                    "event": {
+                      "oneOf": [
+                        {
+                          "type": "null"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string"
+                            },
+                            "eventId": {
+                              "type": "string"
+                            },
+                            "inbox": {
+                              "type": "string",
+                              "enum": [
+                                "stored",
+                                "duplicate",
+                                "conflict"
+                              ],
+                              "description": "Kept now, already kept (changes nothing), or a different body under a kept id (never stored over it)"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "eventId",
+                            "inbox"
+                          ],
+                          "additionalProperties": false
+                        }
+                      ],
+                      "description": "The verified event, or null for a verified event we do not act on"
+                    }
+                  },
+                  "required": [
+                    "received",
+                    "event"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "summary": "Razorpay's webhook. Verified before anything is read: the signature over the exact raw body with the webhook secret, the event id, then the event type and its entity (INR only). Anything that does not verify is a 400. Each event is kept once in the inbox before it is acknowledged; a duplicate changes nothing. Sandbox only; not yet acted on",
+        "tags": [
+          "webhooks"
         ]
       }
     },

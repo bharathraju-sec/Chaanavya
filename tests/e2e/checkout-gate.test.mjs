@@ -339,7 +339,13 @@ describe("CHV-S12-M13 checkout blocks with an explanation", () => {
 describe("CHV-S12-M13 payment stays disabled", () => {
   test("no payment, order or webhook route exists on the API or the web host; no order, payment or reservation was made", async () => {
     const api = JSON.parse(readFileSync(join(ROOT, "packages/contracts/openapi/api.json"), "utf8"))
-    assert.deepEqual(Object.keys(api.paths).filter(p => /payment|webhook|checkout|confirm/i.test(p)), [])
+    // Since 14.04 the one payment path opens a sandbox checkout for a pending order, for its saved total only
+    // (tests/security/payments/start.test.mjs). Since 14.07 the browser's report from that checkout is read as an
+    // untrusted signal and never marks an order paid (tests/security/payments/checkout-return.test.mjs). Since
+    // 14.09 Razorpay's webhook is verified over its raw bytes before anything is read, and nothing is acted on yet
+    // (tests/security/payments/webhook-signature.test.mjs). Since 14.16 staff with refund permission can refund a
+    // captured payment (tests/security/payments/refund.test.mjs). No capture or confirm path exists.
+    assert.deepEqual(Object.keys(api.paths).filter(p => /payment|webhook|checkout|confirm/i.test(p)), ["/api/v1/cart/order/{orderId}/payment", "/api/v1/cart/order/{orderId}/payment/return", "/api/v1/admin/payments/{attemptId}/refunds", "/api/v1/webhooks/razorpay"])
     assert.deepEqual(Object.keys(api.paths).filter(p => /quote/.test(p)).sort(), ["/api/v1/cart/quote", "/api/v1/cart/quote/{quoteId}"])
     // Order writes: claiming an existing guest order into an account (Stage 07), and since Stage 13.02 the
     // order intent, which places a pending order from a checked quote outside production only and takes
@@ -349,13 +355,16 @@ describe("CHV-S12-M13 payment stays disabled", () => {
     // (tests/security/orders/admin-orders.test.mjs). Since 13.13 admins and owners can hold, release and
     // note an order; none of these moves its status, payment or stock (tests/security/orders/admin-actions.test.mjs).
     // Since 13.14 they can close an order recovery case, which changes nothing on the order (recovery.test.mjs).
-    assert.deepEqual(Object.entries(api.paths).filter(([p, ops]) => /order/.test(p) && Object.keys(ops).some(m => m !== "get")).map(([p]) => p).sort(), ["/api/v1/account/claim-order", "/api/v1/admin/order-recovery/cases/{caseId}/resolve", "/api/v1/admin/orders/{orderId}/contact", "/api/v1/admin/orders/{orderId}/hold", "/api/v1/admin/orders/{orderId}/notes", "/api/v1/admin/orders/{orderId}/release", "/api/v1/cart/order", "/api/v1/cart/order/{orderId}/cancel"])
+    assert.deepEqual(Object.entries(api.paths).filter(([p, ops]) => /order/.test(p) && Object.keys(ops).some(m => m !== "get")).map(([p]) => p).sort(), ["/api/v1/account/claim-order", "/api/v1/admin/order-recovery/cases/{caseId}/resolve", "/api/v1/admin/orders/{orderId}/contact", "/api/v1/admin/orders/{orderId}/hold", "/api/v1/admin/orders/{orderId}/notes", "/api/v1/admin/orders/{orderId}/release", "/api/v1/cart/order", "/api/v1/cart/order/{orderId}/cancel", "/api/v1/cart/order/{orderId}/payment", "/api/v1/cart/order/{orderId}/payment/return"])
     for (const server of [DEV, PROD]) {
-      for (const path of ["/payment", "/api/payments", "/api/checkout", "/api/cart/checkout", "/api/cart/quote/confirm", "/api/orders", "/api/webhooks/razorpay"]) {
+      for (const path of ["/payment", "/api/payments", "/api/checkout", "/api/cart/checkout", "/api/cart/quote/confirm", "/api/orders"]) {
         const res = await new Browser(server).call(path.startsWith("/api") ? "POST" : "GET", path, path.startsWith("/api") ? {} : undefined)
         assert.ok([401, 404, 405].includes(res.status), `${path} on ${server.port} answered ${res.status}`)
       }
     }
+    // The webhook (14.09) is forwarded by both web hosts to this test's one API, which has no payment key, so
+    // payments are off (503) and nothing is taken. The API's own 404 in production is in webhook-signature.test.mjs.
+    for (const server of [DEV, PROD]) assert.equal((await new Browser(server).call("POST", "/api/webhooks/razorpay", {})).status, 503)
     assert.deepEqual(
       { orders: await ctx.db.order.count(), payments: await ctx.db.paymentAttempt.count(), reservations: await ctx.db.inventoryReservation.count(), providerEvents: await ctx.db.providerEvent.count(), shipments: await ctx.db.shipment.count() },
       { orders: 0, payments: 0, reservations: 0, providerEvents: 0, shipments: 0 },

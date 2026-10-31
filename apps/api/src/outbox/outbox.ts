@@ -8,6 +8,10 @@
 //                       events never reveal unpublished products. The worker turns it into a refresh of
 //                       the storefront's catalogue caches (Stage 10.10). `change` is `stock` when what
 //                       shoppers can buy changed (a stock movement or a signed count).
+//   order.paid          an order was confirmed by its verified, captured payment (Stage 14.12). Written in the
+//                       same transaction as the confirmation and the stock allocation, once per order. Payload:
+//                       order id and number, the payment attempt, the captured amount in paise. Its handler
+//                       tells the buyer and staff (notifications arrive in a later stage; until then it is logged).
 import type { Tx } from "../db/client.ts"
 
 export type CatalogueUpdated = {
@@ -17,9 +21,11 @@ export type CatalogueUpdated = {
   change: "published" | "unpublished" | "archived" | "changed" | "media" | "stock"
 }
 
-export type OutboxTopic = "catalogue.updated"
+export type OrderPaid = { orderId: string; orderNumber: string; paymentAttemptId: string; capturedAmountPaise: number; currency: "INR" }
 
-export async function writeOutbox(tx: Tx, topic: OutboxTopic, aggregate: { type: string; id: string }, payload: CatalogueUpdated) {
+export type OutboxTopic = "catalogue.updated" | "order.paid"
+
+export async function writeOutbox(tx: Tx, topic: OutboxTopic, aggregate: { type: string; id: string }, payload: CatalogueUpdated | OrderPaid) {
   await tx.outboxEvent.create({ data: { topic, aggregateType: aggregate.type, aggregateId: aggregate.id, payload } })
 }
 

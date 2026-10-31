@@ -1,0 +1,13 @@
+﻿1. A failed try ends the attempt (retry on the same checkout lost): 2 of 11 failing
+2. A failed try believed without asking Razorpay: 1 of 11 failing
+3. Closing does not ask Razorpay (money in flight closed over): build failed (caught by the compiler)
+4. No payment read as failed (expired never used): build failed (caught by the compiler)
+5. A failed latest try hides an earlier payment in progress: 1 of 11 failing
+6. Cancel ignores the checkout (as before 14.13): 4 of 11 failing
+7. Razorpay down read as no payment: 1 of 11 failing
+8. Another shopper's attempts closed: 1 of 11 failing
+9. Status not re-checked under the lock: 0 of 11 failing
+restored
+1. Closing does not ask Razorpay (money in flight closed over): 4 of 11 failing
+2. No payment read as failed (expired never used): 2 of 11 failing
+restored

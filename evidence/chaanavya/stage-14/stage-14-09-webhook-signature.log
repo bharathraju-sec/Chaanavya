@@ -1,0 +1,32 @@
+﻿▶ CHV-S14-M09 a webhook Razorpay signed over these exact bytes is accepted
+  ✔ a signed payment.captured event through the web host is acknowledged with its type and id (21.2689ms)
+  ✔ the bytes are checked as sent, not as re-serialized JSON: odd spacing, key order and non-ASCII text all verify (5.5375ms)
+  ✔ the signature covers the bytes themselves: a body with bytes that are not valid UTF-8 verifies as sent (10.3706ms)
+  ✔ a signed event of a type we do not act on is acknowledged with no event (7.6189ms)
+  ✔ each event we act on is normalized from the verified bytes: order, payment, refund, amount, fingerprint, time (0.9019ms)
+✔ CHV-S14-M09 a webhook Razorpay signed over these exact bytes is accepted (526.8121ms)
+▶ CHV-S14-M09 invalid signatures are rejected
+  ✔ a missing, empty, malformed, wrongly keyed or altered signature is a 400 with one message (25.601ms)
+  ✔ a correct signature for another event cannot be reused (1.4793ms)
+✔ CHV-S14-M09 invalid signatures are rejected (27.2753ms)
+▶ CHV-S14-M09 mutated bodies are rejected
+  ✔ any change to the signed bytes, however small, is a 400 (14.9201ms)
+  ✔ a byte-level change the text cannot show (a different encoding of the same text) is a 400 (2.6271ms)
+✔ CHV-S14-M09 mutated bodies are rejected (17.7587ms)
+▶ CHV-S14-M09 the event id and the event itself must hold, even with a valid signature
+  ✔ a missing or malformed event id is a 400 (5.6944ms)
+  ✔ a signed body that is not a Razorpay event, or an event without the entity its type needs, is a 400 (19.6159ms)
+✔ CHV-S14-M09 the event id and the event itself must hold, even with a valid signature (25.5219ms)
+▶ CHV-S14-M09 only through the web host, only in the sandbox, nothing kept
+  ✔ a valid event replayed is acknowledged each time and nothing is stored or moved (the inbox is Stage 14.10) (105.4217ms)
+  ✔ the API refuses a caller without the web host's key; production has no webhook; payments off is a 503 (4.9027ms)
+  ✔ a body over the read limit is a 413, and no answer ever carries a secret or the signature (5.7188ms)
+✔ CHV-S14-M09 only through the web host, only in the sandbox, nothing kept (116.3367ms)
+ℹ tests 14
+ℹ suites 5
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6401.8301

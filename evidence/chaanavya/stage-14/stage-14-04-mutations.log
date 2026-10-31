@@ -1,0 +1,13 @@
+1. Adapter asks the provider for a different amount: 6 of 10 failing
+2. Adapter believes an order for another amount: 1 of 10 failing
+3. Adapter believes an order that is not new: 1 of 10 failing
+4. Adapter accepts amounts below one rupee: 1 of 10 failing
+5. Service opens a new provider order on every retry: 2 of 10 failing
+6. Service does not lock the attempt: 1 of 10 failing
+7. Service ignores an attempt already under way (outer check only): 0 of 10 failing
+8. Service ignores an attempt already under way (inner check only): 0 of 10 failing
+9. Service ignores an attempt already under way (both checks): 1 of 10 failing
+10. Route open in production: 1 of 10 failing
+11. Misconfigured provider reported as a retryable 502: 1 of 10 failing
+12. Another shopper's order allowed: 1 of 10 failing
+restored

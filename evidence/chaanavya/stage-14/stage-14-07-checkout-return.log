@@ -1,0 +1,20 @@
+﻿▶ CHV-S14-M07 the browser saying 'paid' never marks the order paid
+  ✔ a well-formed success report for the order's own checkout is read, and the order, payment and stock do not move (435.5952ms)
+  ✔ replayed and simultaneous reports, with different payment ids, change nothing either (355.5866ms)
+  ✔ reports that claim more (a status, an amount, paid: true) or do not have Razorpay's shape are refused, and change nothing (300.3952ms)
+  ✔ another order's Razorpay checkout cannot be reported against this order (400.3432ms)
+  ✔ the answer is our record: a payment the provider failed is 'not_paid' whatever the browser says (199.4202ms)
+✔ CHV-S14-M07 the browser saying 'paid' never marks the order paid (2671.7228ms)
+▶ CHV-S14-M07 only the shopper's own opened checkout, only in the sandbox
+  ✔ another shopper's order, a visitor, an unknown or malformed id are all 404; an order with no checkout is 409 (713.2805ms)
+  ✔ with payments off it is 503, and in production the route does not exist (179.6871ms)
+  ✔ the pay page passes on Razorpay's three fields only (0.3953ms)
+✔ CHV-S14-M07 only the shopper's own opened checkout, only in the sandbox (893.797ms)
+ℹ tests 8
+ℹ suites 2
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12186.4529

@@ -1,0 +1,24 @@
+▶ CHV-S14-M03 an attempt records what it pays for
+  ✔ opening records the order's own total in INR, the order, provider, mode, state and key; the provider refs come later (272.2746ms)
+✔ CHV-S14-M03 an attempt records what it pays for (974.1357ms)
+▶ CHV-S14-M03 one logical attempt has a stable identity
+  ✔ the same key, another key, or a second tab all get the same attempt (146.3276ms)
+  ✔ twelve simultaneous opens with mixed keys create one attempt, and every caller gets it (196.9588ms)
+  ✔ a key is scoped to its order: the same key on another order is a different attempt (303.2483ms)
+  ✔ only after an attempt ends can a new one start, with its own identity; the old one stays (154.2359ms)
+  ✔ refused, with nothing written: a bad key, a provider not switched on, a closed order, an ended window, an unknown order (281.6649ms)
+  ✔ the provider's checkout reference is written once: the same again is a no-op, a different one is refused (138.0795ms)
+✔ CHV-S14-M03 one logical attempt has a stable identity (1221.1684ms)
+▶ CHV-S14-M03 the database keeps the identity, whoever writes
+  ✔ an attempt's order, provider, mode, amount, currency, key and creation time cannot change, and it cannot be deleted (303.7561ms)
+  ✔ provider references are set once in the database too; the state still moves through its machine (177.604ms)
+  ✔ a direct insert must ask for the order's total in INR, and a second attempt in progress is refused (241.9252ms)
+✔ CHV-S14-M03 the database keeps the identity, whoever writes (723.6279ms)
+ℹ tests 10
+ℹ suites 3
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8483.3933

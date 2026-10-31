@@ -1,0 +1,24 @@
+﻿▶ CHV-S14-M06 the browser may reach Razorpay on the pay page only
+  ✔ the pay page lets Razorpay's script, frame and hosts in, nothing else, and keeps form posts on our own host (164.47ms)
+  ✔ every other page keeps the strict policy: no Razorpay, no frames, same-origin opener (102.3436ms)
+  ✔ in production the pay page does not exist and Razorpay is allowed nowhere (123.5071ms)
+✔ CHV-S14-M06 the browser may reach Razorpay on the pay page only (2236.658ms)
+▶ CHV-S14-M06 Razorpay is handed public values only
+  ✔ only the key ID, Razorpay's order, the amount, the currency and the shop's own words are passed; anything else is dropped (0.2354ms)
+  ✔ a session that does not agree with itself, a live key, another provider or a redirect is not opened (0.1649ms)
+✔ CHV-S14-M06 Razorpay is handed public values only (0.5553ms)
+▶ CHV-S14-M06 card details sent to us are never kept
+  ✔ the whole hand-off with a card stuffed into every part of the request: the checkout opens, and the card is nowhere (432.2663ms)
+✔ CHV-S14-M06 card details sent to us are never kept (432.5059ms)
+▶ CHV-S14-M06 no Chaanavya page or component asks for payment details
+  ✔ no field anywhere in the storefront or admin is a card, CVV or expiry field (12.4367ms)
+  ✔ the pay component has no form or input, sends the payment request without a body, and loads Razorpay from one place (9.8135ms)
+✔ CHV-S14-M06 no Chaanavya page or component asks for payment details (22.478ms)
+ℹ tests 8
+ℹ suites 4
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8183.7646

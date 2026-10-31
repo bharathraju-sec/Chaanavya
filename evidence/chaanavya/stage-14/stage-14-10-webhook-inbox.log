@@ -1,0 +1,25 @@
+﻿▶ CHV-S14-M10 a duplicate delivery is kept once and changes nothing
+  ✔ a new event is kept once, normalized, without its raw body or signature; repeats, in order and at once, change nothing (230.1749ms)
+  ✔ ten simultaneous first deliveries of one event keep it once: one 'stored', nine 'duplicate' (34.2897ms)
+  ✔ the same event id with a different body is a conflict: never stored over the first, noted once (30.8624ms)
+{"time":"2026-10-31T07:47:03.420Z","level":"error","event":"route.failed","correlationId":"91cd1573-229c-473f-b73c-5108377f45e6","path":"/api/v1/webhooks/razorpay","method":"POST","error":{"name":"PrismaClientKnownRequestError","message":"\nInvalid `prisma.$queryRaw()` invocation:\n\n\nRaw query failed. Code: `P0001`. Message: `storage is down`"}}
+  ✔ an event is acknowledged only once it is kept: if keeping it fails the provider gets an error, and its retry is kept (29.3277ms)
+  ✔ a verified event of a type we do not act on is acknowledged and not kept (14.0074ms)
+✔ CHV-S14-M10 a duplicate delivery is kept once and changes nothing (863.9939ms)
+▶ CHV-S14-M10 the worker runs each event once
+  ✔ an event delivered three times is processed once; a later duplicate does not reopen it (47.1314ms)
+  ✔ three workers at once over twelve events run every handler exactly once (145.214ms)
+  ✔ a failure is retried after a wait, then succeeds once; after the last try it is given up for staff (140.8517ms)
+  ✔ a lapsed claim is taken over; the first holder can no longer finish or fail it (19.5791ms)
+✔ CHV-S14-M10 the worker runs each event once (353.3551ms)
+▶ CHV-S14-M10 the database keeps the inbox honest
+  ✔ a kept event's fields never change, status only moves forward, and events are never deleted (65.8971ms)
+✔ CHV-S14-M10 the database keeps the inbox honest (66.0972ms)
+ℹ tests 10
+ℹ suites 3
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6975.3878

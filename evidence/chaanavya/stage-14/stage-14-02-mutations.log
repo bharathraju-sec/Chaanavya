@@ -1,0 +1,13 @@
+C:\Users\bhara\AppData\Local\Temp\claude\F--Chaanavya\4ec03a05-dfab-4528-96d7-aa06e4de4cca\scratchpad\mutate_1402.py:9: SyntaxWarning: "\/" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\/"? A raw string is also an option.
+  ("Client lets a path leave the Razorpay host", "apps/api/src/integrations/razorpay/config.ts", 'if (!/^\/v1\/[A-Za-z0-9/_-]+$/.test(path)) throw', 'if (false) throw'),
+C:\Users\bhara\AppData\Local\Temp\claude\F--Chaanavya\4ec03a05-dfab-4528-96d7-aa06e4de4cca\scratchpad\mutate_1402.py:12: SyntaxWarning: "\d" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\d"? A raw string is also an option.
+  ("Gate ignores the approval date", "packages/shared/src/config/payments-gate.ts", '&& /^\d{4}-\d{2}-\d{2}$/.test(gate.approvedOn ?? "")', ''),
+1. Loader accepts a key from the other mode: 1 of 34 failing
+2. Loader ignores the other mode's key in spare settings: 1 of 34 failing
+3. Client boundary skips the legal gate: 1 of 34 failing
+4. Client boundary skips the key-prefix check: 1 of 34 failing
+5. Client lets a path leave the Razorpay host: 1 of 34 failing
+6. Configuration object is not frozen: 1 of 34 failing
+7. Start-up check ignores the gate for PAYMENT_MODE: 2 of 34 failing
+8. Gate ignores the approval date: 1 of 34 failing
+restored

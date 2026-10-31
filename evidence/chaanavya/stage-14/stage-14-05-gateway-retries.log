@@ -1,0 +1,42 @@
+﻿▶ CHV-S14-M05 a timeout never opens a second Razorpay order for one attempt
+  ✔ Razorpay opens the order but the answer is lost: the same request asks for it and adopts it (324.4198ms)
+  ✔ a 5xx after Razorpay acted is treated as unknown too: asked for, adopted, never created twice (179.3746ms)
+  ✔ the answer and the lookups are lost: 502 with nothing recorded; the shopper's retry finds the order opened earlier (1278.6368ms)
+  ✔ a timeout before Razorpay acted: 502 now, and the retry opens exactly one order (169.1134ms)
+  ✔ five simultaneous first requests while the create's answer is lost: one order, the same checkout for all (236.8741ms)
+✔ CHV-S14-M05 a timeout never opens a second Razorpay order for one attempt (3203.7658ms)
+▶ CHV-S14-M05 retries are bounded and only where safe
+  ✔ a create Razorpay certainly did not act on (refused connection, 429) is repeated, and still opens one order (889.792ms)
+  ✔ lookups change nothing, so they are repeated after a timeout, a refused connection or a 503 (1185.1053ms)
+  ✔ a Razorpay that keeps failing is asked a bounded number of times, then the shopper gets a 502 and no order is created (1197.7649ms)
+  ✔ the adapter's whole budget ends before the payment lock does (0.2976ms)
+✔ CHV-S14-M05 retries are bounded and only where safe (3273.3962ms)
+▶ CHV-S14-M05 a hung Razorpay is cut off by the timeout
+  ✔ a create that never answers is aborted within the budget, is not repeated, and is reported as unknown (809.3259ms)
+  ✔ a lookup that never answers uses up the budget, and no create is attempted without knowing (816.1115ms)
+  ✔ an order Razorpay holds for the attempt but for another amount is never adopted or shown (0.7291ms)
+✔ CHV-S14-M05 a hung Razorpay is cut off by the timeout (1626.4366ms)
+▶ CHV-S14-M04 the provider is asked for the saved order total, in INR paise
+  ✔ opening the checkout creates one sandbox order for exactly the order's total, and the browser gets public values only (323.5131ms)
+  ✔ whatever the browser sends (body, query, headers), the provider is asked for the saved total (951.3324ms)
+✔ CHV-S14-M04 the provider is asked for the saved order total, in INR paise (2290.5012ms)
+▶ CHV-S14-M04 one provider order per attempt, however often it is asked
+  ✔ a retry, another tab, and five simultaneous requests all get the same checkout from one provider call (271.2123ms)
+  ✔ five simultaneous first requests for a fresh order ask the provider once (209.7982ms)
+  ✔ a provider order for a different amount, or not new, is not believed: nothing recorded, and a retry asks again (340.2208ms)
+  ✔ a provider that cannot be reached is a 502, a refused key a 503; nothing is recorded either way (1345.1793ms)
+✔ CHV-S14-M04 one provider order per attempt, however often it is asked (2166.9612ms)
+▶ CHV-S14-M04 only the shopper's own pending order, only in the sandbox
+  ✔ another shopper's order is 404; a visitor, a missing or bad key are refused; the provider is never asked (347.4382ms)
+  ✔ a cancelled order, or a payment already under way, is a 409 without a new provider order (305.751ms)
+  ✔ with payments off there is no checkout (503) and no attempt; in production the route does not exist (130.864ms)
+  ✔ the adapter itself refuses amounts below ₹1 and anything but INR, without asking the provider (1.5374ms)
+✔ CHV-S14-M04 only the shopper's own pending order, only in the sandbox (786.0302ms)
+ℹ tests 22
+ℹ suites 6
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16034.0652

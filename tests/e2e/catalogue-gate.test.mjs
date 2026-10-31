@@ -187,11 +187,14 @@ test("CHV-S10-M11 the sitemap follows the catalogue: an unpublish drops the prod
 test("CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, page or API, and no payment provider on the pages", async () => {
   // Since Stage 12.11 /checkout is the order review page in development and staging (this server runs as
   // development); production answers 404 (tests/e2e/checkout-review.test.mjs).
-  for (const path of ["/cart", "/payment", "/payments", "/order", "/orders", "/api/checkout", "/api/payments", "/api/cart", "/api/webhooks/razorpay", "/api/orders"]) {
+  for (const path of ["/cart", "/payment", "/payments", "/order", "/orders", "/api/checkout", "/api/payments", "/api/cart", "/api/orders"]) {
     const res = await get(path, { method: path.startsWith("/api") ? "POST" : "GET", body: path.startsWith("/api") ? "{}" : undefined })
     assert.ok([401, 404, 405].includes(res.status), `${path} answered ${res.status}`)
     assert.notEqual(res.status, 200, `${path} must not exist`)
   }
+  // Since Stage 14.09 Razorpay's webhook exists outside production; with no payment key here payments are off
+  // (503), and nothing unsigned is ever taken (tests/security/payments/webhook-signature.test.mjs).
+  assert.equal((await get("/api/webhooks/razorpay", { method: "POST", body: "{}" })).status, 503)
   for (const path of ["/", `/products/${made.e1.handle}`, "/dresses"]) {
     const html = (await get(path)).text.toLowerCase()
     for (const provider of ["razorpay", "phonepe", "shiprocket", "cdn.shopify", "myshopify"]) assert.ok(!html.includes(provider), `${path} loads no ${provider}`)
@@ -199,7 +202,7 @@ test("CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, 
   const api = JSON.parse(readFileSync(join(ROOT, "packages/contracts/openapi/api.json"), "utf8"))
   // Stage 12.09 and 12.10 add the quote preview and its check, which price the bag and place no order, take no payment
   // and reserve nothing (tests/security/checkout/quote*.test.mjs). Every other such path stays closed.
-  assert.deepEqual(Object.keys(api.paths).filter(p => /checkout|payment|webhook|quote/i.test(p) && p !== "/api/v1/cart/quote" && p !== "/api/v1/cart/quote/{quoteId}"), [], "the API has no checkout or payment path")
+  assert.deepEqual(Object.keys(api.paths).filter(p => /checkout|payment|webhook|quote/i.test(p) && p !== "/api/v1/cart/quote" && p !== "/api/v1/cart/quote/{quoteId}"), ["/api/v1/cart/order/{orderId}/payment", "/api/v1/cart/order/{orderId}/payment/return", "/api/v1/admin/payments/{attemptId}/refunds", "/api/v1/webhooks/razorpay"], "only the Stage 14 sandbox payment paths (tests/security/payments/)")
   // The bag's checkout button is a disabled placeholder where checkout is closed. Only the bag links to the
   // review page, and only when it is open (Stage 12.11); nothing links to a checkout API.
   const sheet = readFileSync(join(ROOT, "components/cart/cart-sheet.tsx"), "utf8")
@@ -210,6 +213,8 @@ test("CHV-S10-M11 checkout stays closed: no checkout, payment or webhook route, 
     const source = readFileSync(file, "utf8")
     assert.doesNotMatch(source, /\/api\/checkout/, `${relative(ROOT, file)} calls a checkout API`)
     if (relative(ROOT, file).replaceAll("\\", "/") === "components/cart/cart-sheet.tsx") assert.match(source, /checkoutOpen && lines\.length > 0 \?[\s\S]*<Link href="\/checkout"/, "the bag links to the review only when open")
+    // The pay page (Stage 14.06) exists only where the review does, and links back to it from its error card.
+    else if (relative(ROOT, file).replaceAll("\\", "/") === "components/checkout/payment-handoff.tsx") assert.match(source, /<Link href="\/checkout">Back to checkout<\/Link>/)
     else assert.doesNotMatch(source, /href=["'`]\/checkout|router\.push\(["'`]\/checkout/, `${relative(ROOT, file)} links to checkout`)
   }
 })

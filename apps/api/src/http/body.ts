@@ -26,7 +26,9 @@ export function readBody(req: Request, _res: Response, next: NextFunction) {
     else chunks.push(chunk)
   })
   req.on("end", () => {
-    context.body.text = tooLarge ? null : Buffer.concat(chunks).toString("utf8")
+    const bytes = tooLarge ? null : Buffer.concat(chunks)
+    context.body.bytes = bytes
+    context.body.text = bytes ? bytes.toString("utf8") : null
     next()
   })
   req.on("error", next)

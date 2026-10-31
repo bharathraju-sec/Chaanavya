@@ -1,0 +1,26 @@
+﻿▶ CHV-S14-M07 the browser saying 'paid' never marks the order paid
+  ✔ a well-formed success report for the order's own checkout is read, and the order, payment and stock do not move (356.3971ms)
+  ✔ replayed and simultaneous reports, with different payment ids, change nothing either (216.2025ms)
+  ✔ reports that claim more (a status, an amount, paid: true) or do not have Razorpay's shape are refused, and change nothing (298.8768ms)
+  ✔ another order's Razorpay checkout cannot be reported against this order (366.1151ms)
+  ✔ the answer is our record: a payment the provider failed is 'not_paid' whatever the browser says (174.099ms)
+✔ CHV-S14-M07 the browser saying 'paid' never marks the order paid (2218.9374ms)
+▶ CHV-S14-M07 only the shopper's own opened checkout, only in the sandbox
+  ✔ another shopper's order, a visitor, an unknown or malformed id are all 404; an order with no checkout is 409 (561.4253ms)
+  ✔ with payments off it is 503, and in production the route does not exist (157.696ms)
+  ✔ the pay page passes on Razorpay's three fields only (0.438ms)
+✔ CHV-S14-M07 only the shopper's own opened checkout, only in the sandbox (719.8438ms)
+▶ CHV-S14-M08 a tampered payment id or signature is rejected
+  ✔ a return Razorpay signed for this checkout verifies; the same return with any part changed does not, and nothing moves (196.1225ms)
+  ✔ a payment genuinely signed for another order cannot be moved onto this one (332.1626ms)
+  ✔ a valid signed return replayed, and sent many times at once, verifies each time and records nothing (170.2813ms)
+  ✔ the signature check itself: constant-time, needs the exact secret, and keeps the secret to itself (0.8285ms)
+✔ CHV-S14-M08 a tampered payment id or signature is rejected (699.6769ms)
+ℹ tests 12
+ℹ suites 3
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9613.0513

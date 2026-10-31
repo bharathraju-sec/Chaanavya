@@ -1,0 +1,17 @@
+﻿1. Signature never checked: 3 of 13 failing
+2. Signature over re-serialized JSON, not the bytes: 2 of 13 failing
+3. Signature over the decoded text, not the bytes: 0 of 13 failing
+4. Signature made with the key secret: 6 of 13 failing
+5. Only the first 8 bytes compared: 1 of 13 failing
+6. Event id not required: 1 of 13 failing
+7. Payment entity not checked: build failed (caught by the compiler)
+8. Currency not checked: 1 of 13 failing
+9. Refund for another payment accepted: 1 of 13 failing
+10. Event name format not checked: 1 of 13 failing
+11. Service accepts an unverified webhook: build failed (caught by the compiler)
+12. Route open in production: 1 of 13 failing
+13. Forwarder drops the signature header: 5 of 13 failing
+restored
+Rerun after adding the non-UTF-8 bytes test:
+3. Signature over the decoded text, not the bytes: 1 of 14 failing
+restored (the restored code passes 14 of 14)

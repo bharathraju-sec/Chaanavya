@@ -1,5 +1,6 @@
 import type { Actor, ContractVersion, IdempotencyKey, IsoDateTime, OrderId, PaymentAttemptId, PaymentProviderName, RefundId, Result } from "./common.ts"
 import type { MoneyPaise } from "./money.ts"
+import type { CheckoutSessionV1 } from "../integrations/payment-gateway.ts"
 import type { PaymentStatus, RefundStatus } from "./state-machines.ts"
 
 // Payment module. Authority for whether money moved: the payment provider. Our records mirror it
@@ -21,13 +22,16 @@ export type PaymentAttemptV1 = {
   updatedAt: IsoDateTime
 }
 
-/** What the browser needs to open the provider's checkout. Public values only, never secrets. */
+/**
+ * What the browser needs to continue to the provider's checkout: open it on our page (embedded) or go to
+ * the provider's page (redirect), as the adapter says (Stage 14.01). Public values only, never secrets.
+ */
 export type PaymentSessionV1 = {
   attemptId: PaymentAttemptId
   provider: PaymentProviderName
   providerOrderId: string
   amount: MoneyPaise
-  publicParams: Record<string, string>
+  next: CheckoutSessionV1["next"]
 }
 
 /** Read-only view on an order. Derived from attempts and refunds; not a second status field. */
@@ -50,7 +54,7 @@ export type RefundV1 = {
   createdAt: IsoDateTime
 }
 
-/** Normalized, verified provider event (built by the gateway adapter after signature checks). */
+/** Normalized, verified provider event, built by the payment adapter after its signature checks; the same shape for every provider. */
 export type ProviderPaymentEventV1 = {
   provider: PaymentProviderName
   eventId: string

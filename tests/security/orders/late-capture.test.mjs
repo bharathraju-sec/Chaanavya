@@ -129,8 +129,9 @@ describe("CHV-S13-M11 a capture after expiry does not oversell", () => {
   test("a second payment for an order already confirmed is an exception: nothing allocated twice", async () => {
     const v = await product(2)
     const p = await placed(v)
-    const second = await attemptFor(p.order)
     assert.equal((await captured(p)).outcome, "confirmed")
+    // An order has one attempt in progress at a time (Stage 14.03), so the second exists once the first ended.
+    const second = await attemptFor(p.order)
     assert.equal((await captured(p, event(), second)).outcome, "exception")
     assert.equal((await ctx.db.paymentAttempt.findUniqueOrThrow({ where: { id: second.id } })).status, "captured", "the money is recorded as taken")
     assert.deepEqual(await state(p), { order: "confirmed", hold: "allocated", payment: "captured" })

@@ -1,0 +1,31 @@
+▶ CHV-S14-M01 one contract, embedded, authorize then capture (Razorpay-shaped)
+  ✔ implements every method and declares what it can do (0.6199ms)
+  ✔ a checkout carries the server's amount in paise, and the same key returns the same checkout (0.2348ms)
+  ✔ the browser's return is a hint: forged returns are refused, and checking one changes nothing (0.9967ms)
+  ✔ capture status in neutral words; a provider state the adapter cannot map is unknown, never a guess (1.2189ms)
+  ✔ webhooks: verified events take one shape, a forged body is refused, events we do not act on are null (0.8052ms)
+  ✔ refunds: the same key never refunds twice, and more than was captured is refused (0.354ms)
+  ✔ a timeout leaves the outcome unknown: retryable with the same key, never read as a failed payment (0.3224ms)
+✔ CHV-S14-M01 one contract, embedded, authorize then capture (Razorpay-shaped) (5.3934ms)
+▶ CHV-S14-M01 one contract, redirect, captured at once (PhonePe-shaped)
+  ✔ implements every method and declares what it can do (0.2252ms)
+  ✔ a checkout carries the server's amount in paise, and the same key returns the same checkout (0.3413ms)
+  ✔ the browser's return is a hint: forged returns are refused, and checking one changes nothing (0.2597ms)
+  ✔ capture status in neutral words; a provider state the adapter cannot map is unknown, never a guess (0.1398ms)
+  ✔ webhooks: verified events take one shape, a forged body is refused, events we do not act on are null (0.3619ms)
+  ✔ refunds: the same key never refunds twice, and more than was captured is refused (0.2227ms)
+  ✔ a timeout leaves the outcome unknown: retryable with the same key, never read as a failed payment (0.1266ms)
+✔ CHV-S14-M01 one contract, redirect, captured at once (PhonePe-shaped) (1.9814ms)
+▶ CHV-S14-M01 the payment code names no provider
+  ✔ no provider name, key prefix or provider field name in the payment code (comments aside) (1.5928ms)
+  ✔ the contract uses no provider-shaped fields, and no card data can pass through it (0.3963ms)
+  ✔ providers are named only in the registries, and PhonePe stays a valid provider (0.2742ms)
+✔ CHV-S14-M01 the payment code names no provider (2.3839ms)
+ℹ tests 17
+ℹ suites 3
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 121.693

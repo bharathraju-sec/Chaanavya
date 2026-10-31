@@ -1,0 +1,25 @@
+﻿▶ CHV-S14-M13 a failed try is recorded, ends nothing, and never pays the order
+  ✔ a verified payment.failed: recorded once for staff; the attempt stays open, the stock held, no order.paid; the retry reuses the checkout (324.6617ms)
+  ✔ failed twice, then the third try succeeds in the same window: the order is confirmed once (260.6861ms)
+  ✔ a payment.failed Razorpay does not hold as failed is not believed: a late success is left to the capture flow, an unknown payment ignored (199.2582ms)
+✔ CHV-S14-M13 a failed try is recorded, ends nothing, and never pays the order (1658.2912ms)
+▶ CHV-S14-M13 a shopper cancelling is told apart from a failure, by what Razorpay says
+  ✔ after only failed tries: the attempt ends failed, the order is cancelled, the stock released; paying again is refused (267.5609ms)
+  ✔ with a checkout opened but no payment at Razorpay: the attempt ends expired; with no checkout at all, as before (344.9281ms)
+  ✔ money captured, authorized or still in progress at Razorpay is never closed over: the order stays pending, the stock held (471.6779ms)
+  ✔ when Razorpay cannot be asked, nothing is cancelled (502); asking again later works (1190.014ms)
+  ✔ another shopper cannot close or cancel my attempt (261.9003ms)
+✔ CHV-S14-M13 a shopper cancelling is told apart from a failure, by what Razorpay says (2536.6465ms)
+▶ CHV-S14-M13 an expired window, and money arriving too late
+  ✔ the payment window ends: the expiry job holds the order for reconciliation, closing it by Razorpay's word cancels it (222.1337ms)
+  ✔ a payment that succeeds after its attempt was closed failed never pays the cancelled order (154.6855ms)
+  ✔ closing is safe to repeat and to race: five at once close the attempt once (138.5135ms)
+✔ CHV-S14-M13 an expired window, and money arriving too late (515.6358ms)
+ℹ tests 11
+ℹ suites 3
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10593.2007

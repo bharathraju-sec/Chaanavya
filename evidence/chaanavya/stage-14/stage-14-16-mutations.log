@@ -1,0 +1,24 @@
+﻿1. Any staff may refund (permission lowered): 0 of 15 failing
+2. Approval limit ignored: 1 of 15 failing
+3. Refund over the refundable balance allowed: 3 of 15 failing
+4. Razorpay's own refunded amount ignored: 1 of 15 failing
+5. Our refunds under way not counted: 0 of 15 failing
+6. No lock while deciding (races): 0 of 15 failing
+7. A failed refund still counted (amount never freed): 1 of 15 failing
+8. Uncaptured payments refundable: 0 of 15 failing
+9. Same key, another amount accepted: 1 of 15 failing
+10. Adapter does not look for its refund first (retry refunds twice): 1 of 15 failing
+11. Adapter does not look after a lost answer: 1 of 15 failing
+12. A pending refund marked succeeded: 1 of 15 failing
+13. Payment never moved to refunded: 4 of 15 failing
+14. Refund webhook trusted without asking Razorpay: 0 of 15 failing
+15. Route open in production: 1 of 15 failing
+restored
+Rerun after the lenient stand-in and two added tests (17 tests):
+1. Our refunds under way not counted: 2 of 17 failing
+2. No lock while deciding (races): 0 of 17 failing
+3. Refund webhook trusted without asking Razorpay: 1 of 17 failing
+restored
+Rerun with overlapping refund decisions (17 tests):
+1. No lock while deciding (races): 1 of 17 failing
+restored

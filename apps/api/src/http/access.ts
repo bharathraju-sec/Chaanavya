@@ -7,6 +7,9 @@
 //   @Access.customer()                  same-origin check, then any signed-in user (401)
 //   @Access.shopper()                   same-origin check only; the handler decides ownership
 //   @Access.probe()                     health probes, no checks
+//   @Access.webhook()                   a payment provider calling us (Stage 14.09): no same-origin check
+//                                       and no session (the provider has neither); the handler accepts
+//                                       nothing until the provider's signature over the raw body verifies
 //
 // AccessGuard is registered globally: a route without a rule is refused (fails closed), and the
 // static test in tests/security/api/routes.test.mjs checks that every route declares one.
@@ -17,7 +20,7 @@ import type { Capability } from "@chaanavya/shared/auth/rbac"
 import { assertSameOrigin, AuthError, requireCustomer, requirePermission, type SignedIn, type StaffActor } from "../auth/session.ts"
 import { factsOf, headersOf, type ApiRequest } from "./context.ts"
 
-export type AccessRule = { kind: "permission"; capability: Capability } | { kind: "customer" } | { kind: "shopper" } | { kind: "probe" }
+export type AccessRule = { kind: "permission"; capability: Capability } | { kind: "customer" } | { kind: "shopper" } | { kind: "probe" } | { kind: "webhook" }
 
 export const ACCESS_RULE = "chaanavya:access"
 
@@ -26,6 +29,7 @@ export const Access = {
   customer: () => SetMetadata(ACCESS_RULE, { kind: "customer" } satisfies AccessRule),
   shopper: () => SetMetadata(ACCESS_RULE, { kind: "shopper" } satisfies AccessRule),
   probe: () => SetMetadata(ACCESS_RULE, { kind: "probe" } satisfies AccessRule),
+  webhook: () => SetMetadata(ACCESS_RULE, { kind: "webhook" } satisfies AccessRule),
 }
 
 @Injectable()
@@ -35,7 +39,7 @@ export class AccessGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const rule = this.reflector.getAllAndOverride<AccessRule | undefined>(ACCESS_RULE, [context.getHandler(), context.getClass()])
     if (!rule) throw new Error(`no access rule on ${context.getClass().name}.${context.getHandler().name}`)
-    if (rule.kind === "probe") return true
+    if (rule.kind === "probe" || rule.kind === "webhook") return true
     const req = context.switchToHttp().getRequest<ApiRequest>()
     const headers = headersOf(req)
     const facts = factsOf(req)

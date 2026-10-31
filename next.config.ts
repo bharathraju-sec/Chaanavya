@@ -21,8 +21,17 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()" },
+]
+// Razorpay's checkout opens some payment methods (net banking, card authentication) in a pop-up that
+// reports back to its window, which "same-origin" would cut off. The pay page alone (Stage 14.06,
+// lib/payment-handoff.ts) allows its own pop-ups; every other page keeps "same-origin".
+// The same paths as PAY_PATH in lib/payment-handoff.ts: one order id, nothing after it.
+const ORDER_ID = "[0-9a-fA-F-]{36}"
+const PAY_PAGE = `/checkout/pay/:orderId(${ORDER_ID})`
+const openerPolicies = [
+  { source: `/:path((?!checkout/pay/${ORDER_ID}$).*)`, headers: [{ key: "Cross-Origin-Opener-Policy", value: "same-origin" }] },
+  { source: PAY_PAGE, headers: [{ key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" }] },
 ]
 
 const nextConfig: NextConfig = {
@@ -45,7 +54,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowLocalIP: development,
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }]
+    return [{ source: "/:path*", headers: securityHeaders }, ...openerPolicies]
   },
   async redirects() {
     // Keep links to the old static .html pages working.

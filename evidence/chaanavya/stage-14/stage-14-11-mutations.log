@@ -1,0 +1,13 @@
+﻿1. The webhook's amount used instead of Razorpay's: 3 of 11 failing
+2. Amount not compared with the order: 2 of 11 failing
+3. A mismatch handed on as verified: 2 of 11 failing
+4. A mismatch never recorded (captured money ignored): 2 of 11 failing
+5. Currency not checked: 1 of 11 failing
+6. Another order's payment accepted: 1 of 11 failing
+7. Another payment than the event names accepted: 1 of 11 failing
+8. Authorized treated as captured: 1 of 11 failing
+9. Razorpay not asked (the event trusted): 7 of 11 failing
+10. A provider that cannot be asked read as not captured: 1 of 11 failing
+11. Lookup answer's amount not checked as whole paise: 1 of 11 failing
+12. Lookup by order picks the newest, not the captured one: 1 of 11 failing
+restored

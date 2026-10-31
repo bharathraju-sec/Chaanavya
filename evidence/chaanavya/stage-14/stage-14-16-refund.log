@@ -1,0 +1,31 @@
+▶ CHV-S14-M16 a refund needs permission
+  ✔ a visitor, a customer, STAFF and staff without a two-factor session cannot refund; nothing reaches Razorpay (422.4012ms)
+  ✔ ADMIN refunds within the ₹10,000 limit; above it only OWNER can (281.6474ms)
+  ✔ the storefront has no way to start a refund: no shopper route, no web code calling the refund API (224.7688ms)
+✔ CHV-S14-M16 a refund needs permission (3071.8239ms)
+▶ CHV-S14-M16 a refund needs the correct paid amount
+  ✔ a full refund succeeds with Razorpay's refund id and status; nothing more can be refunded after it (231.3388ms)
+  ✔ partial refunds add up to the paid amount and no further: partially refunded, then refunded, then refused (235.6635ms)
+  ✔ a refund Razorpay already made outside our records (on its dashboard) counts against the balance (173.7089ms)
+  ✔ amounts that are not whole paise of at least ₹1, and anything but an amount and a reason, are refused (242.2566ms)
+  ✔ only a captured payment can be refunded; an unknown attempt is 404 (350.8886ms)
+✔ CHV-S14-M16 a refund needs the correct paid amount (1234.3922ms)
+▶ CHV-S14-M16 a refund happens once, and its status is Razorpay's
+  ✔ the same key again returns the same refund and asks Razorpay nothing new; the same key for another amount is refused (251.2604ms)
+  ✔ five simultaneous full refunds with different keys: one refund, the others refused, never more than paid (564.5891ms)
+  ✔ Razorpay made the refund but the answer was lost: the same request finds it by our key; never a second refund (199.8434ms)
+  ✔ the answer and the follow-up lookups lost: 502, and the retry with the same key adopts the refund, never a second (1235.1174ms)
+  ✔ a pending refund waits for Razorpay's refund.processed webhook; refund.failed frees the amount again (291.7455ms)
+  ✔ a refund still under way (its request never reached Razorpay) counts: another key cannot refund the same money (1247.2623ms)
+  ✔ a refund webhook that disagrees with Razorpay's own record of the refund is not believed (230.6155ms)
+  ✔ a refund Razorpay refuses is recorded as failed and refunds nothing (207.6018ms)
+  ✔ in production the route does not exist; with payments off it is a 503 (170.1787ms)
+✔ CHV-S14-M16 a refund happens once, and its status is Razorpay's (4398.8744ms)
+ℹ tests 17
+ℹ suites 3
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14542.1557

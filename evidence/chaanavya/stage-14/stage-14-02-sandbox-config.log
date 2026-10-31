@@ -1,0 +1,62 @@
+▶ CHV-S03-002 required secrets per target
+  ✔ development needs nothing: the placeholder catalogue runs with an empty environment (0.7242ms)
+  ✔ production refuses each missing required setting (database, auth, URLs, API key, photo storage) (1.1077ms)
+  ✔ staging refuses each missing server secret, and payment secrets once a key is set (0.3008ms)
+  ✔ the CLI exits 1 on a missing secret and prints no values (87.0382ms)
+✔ CHV-S03-002 required secrets per target (89.9952ms)
+▶ Stage 07 service scopes
+  ✔ each service is checked only for its own settings (0.2746ms)
+  ✔ the web host refuses database and sign-in secrets outside development (0.1315ms)
+  ✔ photo storage addresses: https in production, the public base ends in /, the upload origin is an origin only (0.1342ms)
+  ✔ the API address must be https in production and the internal key long and random (0.1043ms)
+✔ Stage 07 service scopes (0.8333ms)
+▶ test and live separation
+  ✔ live payment keys are refused outside production (0.1633ms)
+  ✔ test payment keys are refused in production (0.4431ms)
+  ✔ a test credential hidden in any other setting is still refused in production (0.1404ms)
+  ✔ development and staging cannot point at a production-looking database; production cannot use a local one (0.1085ms)
+  ✔ APP_ENV=production is refused on a Vercel preview deployment (0.1119ms)
+✔ test and live separation (1.181ms)
+▶ secrets never reach the browser
+  ✔ secret-looking NEXT_PUBLIC_ settings are refused (0.2819ms)
+  ✔ a public setting may not carry a server secret's value (0.0879ms)
+  ✔ reports contain names and statuses, never values (0.1823ms)
+✔ secrets never reach the browser (0.6432ms)
+▶ environment resolution and secret classification
+  ✔ VERCEL_ENV maps preview to staging (0.0597ms)
+  ✔ secret names (0.0787ms)
+✔ environment resolution and secret classification (0.2001ms)
+▶ sign-in settings (Stage 05)
+  ✔ the auth secret must be long and the production URL must use https (0.1486ms)
+  ✔ the admin URL must be https in production and on its own host (0.0718ms)
+✔ sign-in settings (Stage 05) (0.2857ms)
+▶ CHV-S14-M02 keys load on the server, and test and live never mix
+  ✔ no key configured: payments are off, not an error (0.7857ms)
+  ✔ a sandbox configuration loads in development and staging, and its secrets never show (0.3885ms)
+  ✔ every mix of test and live is refused at loading (0.577ms)
+  ✔ sandbox stays out of production, and live stays out of development and staging (0.1382ms)
+✔ CHV-S14-M02 keys load on the server, and test and live never mix (2.5248ms)
+▶ CHV-S14-M02 live stays shut until the legal gate opens
+  ✔ the gate is closed today (0.1185ms)
+  ✔ live keys in production are refused while any part of the gate is missing; the full approval lets them load (0.2003ms)
+  ✔ the start-up check refuses live settings while the gate is closed (0.3967ms)
+✔ CHV-S14-M02 live stays shut until the legal gate opens (0.8753ms)
+▶ CHV-S14-M02 the client cannot be pointed at the live gateway with sandbox credentials
+  ✔ a sandbox client sends its own test key, to the Razorpay API host only (0.3738ms)
+  ✔ a forged path cannot leave the Razorpay host; nothing is sent (0.2937ms)
+  ✔ a loaded configuration cannot be switched to live or given another key (0.1566ms)
+  ✔ a configuration built by hand is checked too: mixed or ungated, it never exists, so no call can be made (0.1153ms)
+  ✔ an object posing as a configuration is checked again at the call: nothing is sent (0.089ms)
+✔ CHV-S14-M02 the client cannot be pointed at the live gateway with sandbox credentials (1.2019ms)
+▶ CHV-S14-M02 the web host never holds a payment secret
+  ✔ no storefront or admin UI code reads a payment secret or the Razorpay integration (11.2439ms)
+  ✔ the start-up check refuses payment secrets on the web host and in browser settings (0.212ms)
+✔ CHV-S14-M02 the web host never holds a payment secret (11.5333ms)
+ℹ tests 34
+ℹ suites 10
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 263.5415

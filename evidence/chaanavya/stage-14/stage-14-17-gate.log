@@ -1,0 +1,28 @@
+▶ CHV-S14-M17 success, failure and timeout
+  ✔ success: paid, confirmed once, stock allocated (352.5892ms)
+  ✔ failure: failed tries end nothing, a retry on the same checkout succeeds; a shopper who gives up gets the stock released (678.4649ms)
+  ✔ timeout: Razorpay opens the order but the answer is lost; the checkout is still the one order, and paying it confirms once (230.7233ms)
+  ✔ expiry: a window that ends with no payment holds, reconciles to expired and cancels; the stock comes back (252.21ms)
+✔ CHV-S14-M17 success, failure and timeout (2711.4322ms)
+▶ CHV-S14-M17 replay
+  ✔ the same webhook, new events for the same payment, and several workers at once confirm once (291.5523ms)
+  ✔ a missing webhook reconciled, then the late webhook, then the job again: confirmed once (260.1208ms)
+  ✔ a worker that dies after confirming: the event runs again and changes nothing (216.9956ms)
+  ✔ a payment on an old tab's checkout after the order was paid on a new one is never applied (266.579ms)
+✔ CHV-S14-M17 replay (1035.7383ms)
+▶ CHV-S14-M17 wrong amounts and refunds
+  ✔ a wrong captured amount, by webhook or by reconciliation, goes to review with the stock held, never confirmed (377.1219ms)
+  ✔ refunds: partial then the rest, a race of five, and one over the paid amount; never past what was captured (655.0388ms)
+  ✔ a refund webhook replayed and a refund retried with its key change nothing (302.3345ms)
+✔ CHV-S14-M17 wrong amounts and refunds (1334.8533ms)
+▶ CHV-S14-M17 everything at once
+  ✔ eight orders with mixed outcomes, their events delivered twice in shuffled order, three workers and the jobs racing (676.9442ms)
+✔ CHV-S14-M17 everything at once (677.1151ms)
+ℹ tests 12
+ℹ suites 4
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11524.6695

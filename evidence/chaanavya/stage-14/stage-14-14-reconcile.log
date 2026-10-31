@@ -1,0 +1,26 @@
+﻿▶ CHV-S14-M14 a capture nobody told us about is reconciled once
+  ✔ the buyer paid and the webhook never came: after the quiet period the job confirms the order once (347.9462ms)
+  ✔ the late webhook for a payment the job already settled changes nothing; nor does a webhook-settled payment get asked about (442.1183ms)
+  ✔ two runs at the same moment, with the webhook arriving too, still confirm once (203.4933ms)
+  ✔ a missing webhook for a wrong amount sends the order to review once, never confirmed (190.7285ms)
+  ✔ a capture Razorpay reports in another currency is never applied and is noted for staff once over many runs (179.0464ms)
+✔ CHV-S14-M14 a capture nobody told us about is reconciled once (2006.5475ms)
+▶ CHV-S14-M14 a window that ends is closed by Razorpay's word; money in progress is left
+  ✔ only failed tries: still open while the window lasts, closed failed when it ends, then the order is cancelled and the stock released (210.813ms)
+  ✔ no payment at all after the window: the expiry job holds the order, the job closes it expired, the expiry job cancels it (183.02ms)
+  ✔ money authorized or in progress is never closed over, however late; it is asked about again with growing waits (138.104ms)
+✔ CHV-S14-M14 a window that ends is closed by Razorpay's word; money in progress is left (532.2768ms)
+▶ CHV-S14-M14 rate limits and recoverable errors
+  ✔ at most a batch a run: twenty-five quiet checkouts are asked about over two runs, each once (4086.3149ms)
+  ✔ Razorpay down: the first failure stops the run, the error is kept, and the next run after the wait settles it (1366.9383ms)
+  ✔ the job: idle with payments off; with them on it reconciles on its clock (166.7352ms)
+  ✔ the record keeps its count and is never deleted (131.7564ms)
+✔ CHV-S14-M14 rate limits and recoverable errors (5752.0956ms)
+ℹ tests 12
+ℹ suites 3
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13407.996

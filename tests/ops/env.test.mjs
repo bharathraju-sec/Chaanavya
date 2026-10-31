@@ -6,6 +6,7 @@ import { spawnSync } from "node:child_process"
 import { checkEnv, isSecretName, resolveEnvironment } from "../../packages/shared/src/config/env.ts"
 
 const names = report => report.errors.map(e => e.name)
+const APPROVED_GATE = { merchantKyc: true, banking: true, tax: true, approvedBy: "Owner (test fixture)", approvedOn: "2026-10-31" }
 
 const minimalProduction = {
   DATABASE_URL: "postgresql://app:fake-password@primary.db.example.net:5432/chaanavya",
@@ -115,7 +116,9 @@ describe("test and live separation", () => {
   })
 
   test("test payment keys are refused in production", () => {
-    assert.equal(checkEnv(commerceProduction, { target: "production" }).ok, true)
+    // Live keys pass only once the legal gate is approved (Stage 14.02); here, a recorded approval for the fixture.
+    assert.equal(checkEnv(commerceProduction, { target: "production", liveGate: APPROVED_GATE }).ok, true)
+    assert.deepEqual(names(checkEnv(commerceProduction, { target: "production" })).sort(), ["PAYMENT_MODE", "RAZORPAY_KEY_ID"], "refused while the gate is closed")
     const report = checkEnv({ ...commerceProduction, RAZORPAY_KEY_ID: "rzp_test_FAKE0000000001" }, { target: "production" })
     assert.ok(names(report).includes("RAZORPAY_KEY_ID"))
     assert.equal(checkEnv({ ...commerceProduction, PAYMENT_MODE: "test" }, { target: "production" }).ok, false)

@@ -25,11 +25,13 @@
 //          the expiry jobs can't deadlock, and the hold is locked before it is decided, so the Stage 09
 //          expiry job either releases it first (a late payment) or finds it allocated.
 // Origins  every move names the provider and the request (Stage 13.08). Fulfilment never moves here.
+// Outbox   (Stage 14.12) a confirmation writes one order.paid outbox event in the same transaction.
 import { actorClassOf, type ProviderEventRef } from "@chaanavya/contracts/modules/state-machines"
 import { ApiError } from "../admin/api.ts"
 import type { Db, Tx } from "../db/client.ts"
 import { transitionOrder, transitionPayment } from "../db/transitions.ts"
 import { settleReservation } from "../inventory/reservations.ts"
+import { writeOutbox } from "../outbox/outbox.ts"
 
 export type CaptureInput = {
   paymentAttemptId: string
@@ -120,6 +122,10 @@ async function allocateAndConfirm(tx: Tx, c: Captured, actor: ProviderActor, cor
     if (settled === "needs_review") return "needs_review"
     if (settled !== "allocated") throw new ApiError(409, "conflict", "the stock hold could not be settled", { reservation: settled })
     await transitionOrder(tx, { orderId: c.orderId, from: "pending_payment", to: "confirmed", facts: { paymentStatus: "captured", amountMatches: true, reservationStatus: "allocated" }, actor, correlationId })
+    // Stage 14.12: the confirmation is announced from the same transaction, so it exists exactly when the order
+    // is confirmed: a crash before commit leaves neither, and a replay never reaches here again.
+    const confirmed = await tx.order.findUniqueOrThrow({ where: { id: c.orderId }, select: { number: true } })
+    await writeOutbox(tx, "order.paid", { type: "order", id: c.orderId }, { orderId: c.orderId, orderNumber: confirmed.number, paymentAttemptId: c.paymentAttemptId, capturedAmountPaise: c.capturedAmountPaise, currency: "INR" })
     return "confirmed"
   }
   if (hold && hold.status !== "released") throw new ApiError(409, "conflict", "the stock hold is in an unexpected state", { reservation: hold.status })

@@ -8,11 +8,19 @@ import { settleReservation } from "@chaanavya/api/inventory/reservations"
 import { cancelUnpaidOrder } from "@chaanavya/api/orders/cancel"
 import { reconcileOrders } from "@chaanavya/api/orders/recovery"
 import { mediaStorage } from "@chaanavya/api/media/storage"
+import { paymentAdapterFor } from "@chaanavya/api/integrations/payments"
+import { PAYMENT_EVENT_TYPES, paymentEventsHandler } from "@chaanavya/api/payments/capture-handler"
+import { failureHandler } from "@chaanavya/api/payments/failure-handler"
+import { processWebhookInbox } from "@chaanavya/api/payments/inbox"
+import { reconcilePayments } from "@chaanavya/api/payments/reconcile"
+import { refundEventHandler } from "@chaanavya/api/payments/refund"
 import { createLogger } from "@chaanavya/shared/observability/logger"
 import { housekeeping } from "./jobs/housekeeping.ts"
 import { inventoryReconciliationJob } from "./jobs/inventory-reconciliation.ts"
 import { mediaCleanupJob } from "./jobs/media-cleanup.ts"
 import { outboxJob } from "./jobs/outbox.ts"
+import { paymentInboxJob } from "./jobs/payment-inbox.ts"
+import { paymentReconciliationJob } from "./jobs/payment-reconciliation.ts"
 import { storefrontRefresh, storefrontTarget } from "./jobs/storefront-refresh.ts"
 import { orderExpiryJob } from "./jobs/order-expiry.ts"
 import { orderReconciliationJob } from "./jobs/order-reconciliation.ts"
@@ -23,7 +31,16 @@ const logger = createLogger({ base: { service: "worker" } })
 const db = createDbClient()
 // Catalogue changes refresh the storefront's cached pages through the web host (WEB_URL).
 const storefront = storefrontTarget(process.env)
-const jobs = startJobs(db, [housekeeping, outboxJob(logger, { "catalogue.updated": storefrontRefresh(storefront, logger) }), mediaCleanupJob(mediaStorage), reservationExpiryJob(db, settleReservation), orderExpiryJob(db, cancelUnpaidOrder), orderReconciliationJob(db, reconcileOrders), inventoryReconciliationJob], logger)
+// Payment events (Stages 14.12, 14.13): captures from the inbox confirm their orders; failed tries are recorded
+// and end nothing; the reconciliation job asks the provider about outcomes nobody told us (14.14). Payments off: idle.
+const payments = paymentAdapterFor(process.env)
+const paymentInbox = paymentInboxJob(db, processWebhookInbox, payments ? paymentEventsHandler(db, payments, failureHandler(db, payments), refundEventHandler(db, payments)) : null, PAYMENT_EVENT_TYPES)
+const outboxHandlers = {
+  "catalogue.updated": storefrontRefresh(storefront, logger),
+  // Notifications arrive in a later stage; until then a confirmed order is logged (ids and amount only).
+  "order.paid": async (event: { id: string; aggregateId: string }) => logger.info("outbox.order_paid", { eventId: event.id, orderId: event.aggregateId }),
+}
+const jobs = startJobs(db, [housekeeping, outboxJob(logger, outboxHandlers), mediaCleanupJob(mediaStorage), reservationExpiryJob(db, settleReservation), orderExpiryJob(db, cancelUnpaidOrder), orderReconciliationJob(db, reconcileOrders), inventoryReconciliationJob, paymentInbox, paymentReconciliationJob(db, reconcilePayments, payments)], logger)
 
 const port = Number(process.env.WORKER_HEALTH_PORT?.trim() || 4001)
 const server = createServer(async (request, response) => {

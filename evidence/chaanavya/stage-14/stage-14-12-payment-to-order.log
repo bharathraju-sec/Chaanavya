@@ -1,0 +1,22 @@
+﻿▶ CHV-S14-M12 a captured payment confirms its order once, in one transaction
+  ✔ webhook, inbox, worker job: payment captured, stock allocated, order confirmed and one order.paid event, all together (388.0292ms)
+  ✔ a crash inside the transaction (the last write fails) leaves nothing half done; the retry confirms once (287.5191ms)
+  ✔ a crash at commit, after every write was made, leaves no order.paid and no stock moved; the retry confirms once (306.5989ms)
+  ✔ a crash after the transaction commits but before the inbox hears of it: the event runs again and changes nothing (211.6619ms)
+  ✔ replays: the same webhook again, a new event for the same payment, and both at once with two workers confirm once (549.1188ms)
+  ✔ a wrong captured amount is recorded and sent to review once; replays never confirm it (193.9717ms)
+✔ CHV-S14-M12 a captured payment confirms its order once, in one transaction (2640.0619ms)
+▶ CHV-S14-M12 what the worker does not confirm
+  ✔ Razorpay not yet showing the capture: retried, then confirmed once it does (208.3975ms)
+  ✔ another currency is never applied, and is noted for staff once however often it runs (176.9286ms)
+  ✔ events this handler does not act on wait in the inbox; with payments off the job does nothing (189.4563ms)
+  ✔ the order.paid event is delivered by the outbox job (logged until notifications exist) (211.3254ms)
+✔ CHV-S14-M12 what the worker does not confirm (786.6219ms)
+ℹ tests 10
+ℹ suites 2
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9468.8349

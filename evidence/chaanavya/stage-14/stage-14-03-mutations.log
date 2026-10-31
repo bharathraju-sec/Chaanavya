@@ -1,0 +1,11 @@
+1. No one-open-attempt-per-order index: 1 of 10 failing
+2. Insert does not check the order's total: 1 of 10 failing
+3. Amount may change after creation: 1 of 10 failing
+4. Provider order reference may be replaced: 1 of 10 failing
+5. Attempts may be deleted: 1 of 10 failing
+6. Service ignores an attempt already in progress: 0 of 10 failing
+7. Service key not scoped to the order: 2 of 10 failing
+8. Service takes any provider: 1 of 10 failing
+9. Service skips the payment-window check: 1 of 10 failing
+10. Service replaces a provider reference: 1 of 10 failing
+restored

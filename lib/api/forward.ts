@@ -21,8 +21,12 @@ const DEVELOPMENT_INTERNAL_KEY = "development-only-internal-key-not-a-secret"
 const DEVELOPMENT_API_URL = "http://127.0.0.1:4000"
 const TIMEOUT_MS = 15_000
 
-/** Browser headers the API needs, passed through as sent. Nothing else crosses (no hop-by-hop or spoofable forwarding headers). */
-const PASS_THROUGH = ["accept", "content-type", "cookie", "idempotency-key", "if-match", "origin", "sec-fetch-site", "user-agent", "x-correlation-id"]
+/**
+ * Browser headers the API needs, passed through as sent. Nothing else crosses (no hop-by-hop or spoofable
+ * forwarding headers). The payment provider's webhook signature and event id (Stage 14.09) cross too; the
+ * API checks the signature itself, over the body's exact bytes, which are forwarded unchanged.
+ */
+const PASS_THROUGH = ["accept", "content-type", "cookie", "idempotency-key", "if-match", "origin", "sec-fetch-site", "user-agent", "x-correlation-id", "x-razorpay-signature", "x-razorpay-event-id"]
 /** Response headers that describe this hop, not the content. */
 const DROP_FROM_RESPONSE = new Set(["connection", "keep-alive", "transfer-encoding", "content-encoding", "content-length", "set-cookie"])
 

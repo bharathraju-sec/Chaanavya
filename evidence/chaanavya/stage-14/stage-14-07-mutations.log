@@ -1,0 +1,13 @@
+﻿1. Browser's success believed: outcome 'paid' for a valid report: 3 of 8 failing
+2. Extra fields accepted (status, amount, paid): 1 of 8 failing
+3. Report for another Razorpay order accepted: 2 of 8 failing
+4. Signature format not checked: 1 of 8 failing
+5. Payment id format not checked: 1 of 8 failing
+6. Shape check removed (any values passed on): 1 of 8 failing
+7. Another shopper's order allowed: 1 of 8 failing
+8. Route open in production: 1 of 8 failing
+9. No-checkout check removed: build failed (caught by the compiler)
+10. A failed payment still reported as confirming: 1 of 8 failing
+11. Report size limit lifted: 1 of 8 failing
+12. Pay page passes on every field Razorpay hands it: 2 of 8 failing
+restored

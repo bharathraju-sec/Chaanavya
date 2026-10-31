@@ -1,0 +1,23 @@
+﻿▶ CHV-S14-M11 a captured wrong amount cannot complete the order
+  ✔ the order's exact total captured in INR is verified and completes the order: stock allocated, order confirmed (457.8599ms)
+  ✔ one paisa less, one paisa more, or half: the money is recorded, the order goes to review with its stock held, never confirmed (702.0081ms)
+  ✔ a webhook claiming a wrong amount does not matter: Razorpay's captured amount decides (241.281ms)
+  ✔ a capture Razorpay reports in another currency is never applied: the order, payment and stock stay as they were (175.2347ms)
+  ✔ another order's money, or another payment than the event names, is never applied to this order (330.7315ms)
+  ✔ authorized, failed, created or unknown to Razorpay is not a capture: nothing is applied (629.0462ms)
+  ✔ when Razorpay cannot be asked, nothing is decided: the error is retryable, and the retry completes the order once (1233.5603ms)
+  ✔ five simultaneous deliveries of a mismatched capture leave one review, never a confirmation (209.5297ms)
+  ✔ an event for a Razorpay order we never opened finds no attempt and asks Razorpay nothing (4.3523ms)
+✔ CHV-S14-M11 a captured wrong amount cannot complete the order (5086.1686ms)
+▶ CHV-S14-M11 Razorpay's payment, read strictly
+  ✔ a payment is read by id, or found by its order (the captured one first), in provider-neutral words (1.0693ms)
+  ✔ an answer that is not a Razorpay payment is never believed, and a lookup is repeated after a 503 (1021.2033ms)
+✔ CHV-S14-M11 Razorpay's payment, read strictly (1022.674ms)
+ℹ tests 11
+ℹ suites 2
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14004.508

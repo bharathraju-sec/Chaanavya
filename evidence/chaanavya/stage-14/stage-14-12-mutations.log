@@ -1,0 +1,14 @@
+﻿1. No order.paid outbox event: 6 of 9 failing
+2. order.paid written on every capture call, replays too: 6 of 9 failing
+3. Outbox written outside the confirming transaction: 0 of 9 failing
+4. A capture Razorpay does not show yet is dropped, not retried: 1 of 9 failing
+5. Rejected money applied anyway: 1 of 9 failing
+6. Staff note written on every run: 1 of 9 failing
+7. Inbox marks the event done before the handler runs: 4 of 9 failing
+8. Worker claims every event type: 5 of 9 failing
+9. Bridge forgets which events it has recorded: 0 of 9 failing
+10. Handler trusts the webhook instead of asking Razorpay: 2 of 9 failing
+restored
+Rerun after adding the crash-at-commit test (10 tests):
+3. Outbox written outside the confirming transaction: 1 of 10 failing
+restored (the restored code passes 10 of 10)
